@@ -30,14 +30,16 @@
   },
 
   "oman": {
-    "title": "🇴🇲 오만 입국 규정",
-    "items": [
-      {"name": "입국 가능 여부", "desc": "한국인 무비자 14일"},
-      {"name": "여권 조건", "desc": "유효기간 6개월 이상"},
-      {"name": "비자 종류", "desc": "eVisa 또는 도착 비자"},
-      {"name": "주의사항", "desc": "알코올 반입 제한"}
-    ]
-  },
+  "title": "🇴🇲 오만 입국 규정",
+  "image": "https://upload.wikimedia.org/wikipedia/commons/8/8a/Muttrah_Corniche.jpg",
+  "items": [
+    {"name": "입국 가능 여부", "desc": "한국인 무비자 14일"},
+    {"name": "여권 조건", "desc": "유효기간 6개월 이상"},
+    {"name": "비자 종류", "desc": "eVisa 또는 도착 비자"},
+    {"name": "주의사항", "desc": "알코올 반입 제한"}
+  ]
+}
+
 
   "kuwait": {
     "title": "🇰🇼 쿠웨이트 입국 규정",
