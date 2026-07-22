@@ -2,84 +2,70 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>두바이 입국 규정</title>
+<title>중동 맞춤정보</title>
 <style>
-  body {
-    font-family: 'Segoe UI', sans-serif;
-    background: #f7f7f7;
-    padding: 20px;
+  body { font-family: 'Segoe UI', sans-serif; background:#f7f7f7; padding:20px; }
+  .btns { text-align:center; margin-bottom:20px; }
+  .btns button {
+    padding:10px 18px; margin:5px; border:none; border-radius:8px;
+    background:#0078ff; color:white; cursor:pointer; font-size:15px;
   }
-  .container {
-    max-width: 1200px;
-    margin: auto;
-  }
+  .btns button:hover { background:#005fcc; }
+
+  .container { max-width:1200px; margin:auto; }
   .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 20px;
+    display:grid; grid-template-columns:repeat(auto-fit, minmax(260px,1fr));
+    gap:20px;
   }
   .card {
-    background: #fff;
-    border-radius: 14px;
-    padding: 20px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    border: 1px solid #eee;
-    transition: 0.2s;
+    background:#fff; border-radius:14px; padding:20px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.08);
+    border:1px solid #eee; transition:0.2s;
   }
-  .card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 6px 16px rgba(0,0,0,0.12);
-  }
-  .title {
-    font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 10px;
-  }
-  .desc {
-    font-size: 15px;
-    color: #555;
-  }
+  .card:hover { transform:translateY(-4px); }
+  .title { font-size:18px; font-weight:600; margin-bottom:10px; }
+  .desc { font-size:15px; color:#555; }
 </style>
 </head>
+
 <body>
 
-<h2 style="text-align:center; margin-bottom:25px;">🇦🇪 두바이 입국 규정 (한국인 기준)</h2>
+<h2 style="text-align:center;">중동 맞춤정보 시작하기</h2>
+<p style="text-align:center;">궁금한 나라를 선택하면 기본 정보를 먼저 보여드립니다.</p>
+
+<div class="btns">
+  <button onclick="loadCountry('dubai')">두바이 / UAE</button>
+  <button onclick="loadCountry('saudi')">사우디아라비아</button>
+  <button onclick="loadCountry('qatar')">카타르</button>
+</div>
+
+<h2 id="countryTitle" style="text-align:center; margin-top:30px;"></h2>
 
 <div class="container">
-  <div class="grid">
-
-    <div class="card">
-      <div class="title">입국 가능 여부</div>
-      <div class="desc">한국인 30일 무비자 입국 가능</div>
-    </div>
-
-    <div class="card">
-      <div class="title">여권 조건</div>
-      <div class="desc">유효기간 6개월 이상</div>
-    </div>
-
-    <div class="card">
-      <div class="title">비자 종류</div>
-      <div class="desc">도착 비자(Arrival Visa)</div>
-    </div>
-
-    <div class="card">
-      <div class="title">eGate 사용 여부</div>
-      <div class="desc">자동출입국(eGate) 사용 가능</div>
-    </div>
-
-    <div class="card">
-      <div class="title">주의해야 할 규정</div>
-      <div class="desc">특정 의약품 반입 시 사전 승인 필요</div>
-    </div>
-
-    <div class="card">
-      <div class="title">한국인 특수 규정</div>
-      <div class="desc">비자 발급 수수료 무료</div>
-    </div>
-
-  </div>
+  <div id="countryGrid" class="grid"></div>
 </div>
+
+<script>
+async function loadCountry(country) {
+  const res = await fetch('data.json');
+  const data = await res.json();
+  const info = data[country];
+
+  document.getElementById('countryTitle').innerText = info.title;
+
+  const grid = document.getElementById('countryGrid');
+  grid.innerHTML = '';
+
+  info.items.forEach(item => {
+    grid.innerHTML += `
+      <div class="card">
+        <div class="title">${item.name}</div>
+        <div class="desc">${item.desc}</div>
+      </div>
+    `;
+  });
+}
+</script>
 
 </body>
 </html>
