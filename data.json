@@ -1,63 +1,91 @@
 {
   "dubai": {
     "title": "🇦🇪 두바이 입국 규정",
-    "items": [
-      {"name": "입국 가능 여부", "desc": "한국인 30일 무비자 입국 가능"},
-      {"name": "여권 조건", "desc": "유효기간 6개월 이상"},
-      {"name": "비자 종류", "desc": "도착 비자"},
-      {"name": "주의사항", "desc": "특정 의약품 반입 시 승인 필요"}
-    ]
+    "image": "https://upload.wikimedia.org/wikipedia/commons/9/9f/Dubai_skyline_2015.jpg",
+    "sections": {
+      "entry": [
+        {"name": "입국 가능 여부", "desc": "한국인 30일 무비자 입국 가능"},
+        {"name": "여권 조건", "desc": "유효기간 6개월 이상"},
+        {"name": "비자 종류", "desc": "도착 비자"},
+        {"name": "주의사항", "desc": "특정 의약품 반입 시 승인 필요"}
+      ],
+      "currency": [
+        {"name": "통화", "desc": "AED (디르함)"},
+        {"name": "환전 팁", "desc": "공항보다 시내 환전소가 유리"}
+      ],
+      "safety": [
+        {"name": "치안 수준", "desc": "중동에서 가장 안전한 도시 중 하나"},
+        {"name": "주의사항", "desc": "공공장소 복장 규정 준수"}
+      ]
+    }
   },
 
   "saudi": {
     "title": "🇸🇦 사우디아라비아 입국 규정",
-    "items": [
-      {"name": "입국 가능 여부", "desc": "한국인 무비자 30일"},
-      {"name": "여권 조건", "desc": "유효기간 6개월 이상"},
-      {"name": "비자 종류", "desc": "도착 비자"},
-      {"name": "주의사항", "desc": "종교 관련 물품 반입 제한"}
-    ]
+    "image": "https://upload.wikimedia.org/wikipedia/commons/0/0c/Riyadh_skyline.jpg",
+    "sections": {
+      "entry": [
+        {"name": "입국 가능 여부", "desc": "한국인 무비자 30일"},
+        {"name": "여권 조건", "desc": "유효기간 6개월 이상"},
+        {"name": "비자 종류", "desc": "도착 비자"},
+        {"name": "주의사항", "desc": "종교 관련 물품 반입 제한"}
+      ],
+      "currency": [
+        {"name": "통화", "desc": "SAR (리얄)"},
+        {"name": "환전 팁", "desc": "은행 환전이 가장 안전"}
+      ],
+      "safety": [
+        {"name": "치안 수준", "desc": "도시 지역은 안전"},
+        {"name": "주의사항", "desc": "사진 촬영 제한 구역 존재"}
+      ]
+    }
   },
 
   "qatar": {
     "title": "🇶🇦 카타르 입국 규정",
-    "items": [
-      {"name": "입국 가능 여부", "desc": "한국인 무비자 30일"},
-      {"name": "여권 조건", "desc": "유효기간 6개월 이상"},
-      {"name": "비자 종류", "desc": "도착 비자"},
-      {"name": "주의사항", "desc": "전자담배 반입 제한"}
-    ]
+    "image": "https://upload.wikimedia.org/wikipedia/commons/7/7f/Doha_skyline.jpg",
+    "sections": {
+      "entry": [
+        {"name": "입국 가능 여부", "desc": "한국인 무비자 30일"},
+        {"name": "여권 조건", "desc": "유효기간 6개월 이상"},
+        {"name": "비자 종류", "desc": "도착 비자"},
+        {"name": "주의사항", "desc": "전자담배 반입 제한"}
+      ],
+      "currency": [
+        {"name": "통화", "desc": "QAR (리얄)"},
+        {"name": "환전 팁", "desc": "시내 환전소가 유리"}
+      ],
+      "safety": [
+        {"name": "치안 수준", "desc": "중동에서 가장 안전한 국가 중 하나"},
+        {"name": "주의사항", "desc": "공공장소 복장 규정 준수"}
+      ]
+    }
   },
 
   "oman": {
-  "title": "🇴🇲 오만 입국 규정",
-  "image": "https://upload.wikimedia.org/wikipedia/commons/8/8a/Muttrah_Corniche.jpg",
-  "items": [
-    {"name": "입국 가능 여부", "desc": "한국인 무비자 14일"},
-    {"name": "여권 조건", "desc": "유효기간 6개월 이상"},
-    {"name": "비자 종류", "desc": "eVisa 또는 도착 비자"},
-    {"name": "주의사항", "desc": "알코올 반입 제한"}
-  ]
-}
-
+    "title": "🇴🇲 오만 입국 규정",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/8/8a/Muttrah_Corniche.jpg",
+    "sections": {
+      "entry": [
+        {"name": "입국 가능 여부", "desc": "한국인 무비자 14일"},
+        {"name": "여권 조건", "desc": "유효기간 6개월 이상"},
+        {"name": "비자 종류", "desc": "eVisa 또는 도착 비자"},
+        {"name": "주의사항", "desc": "알코올 반입 제한"}
+      ],
+      "currency": [
+        {"name": "통화", "desc": "OMR (리얄)"},
+        {"name": "환전 팁", "desc": "은행 환전이 가장 안전"}
+      ],
+      "safety": [
+        {"name": "치안 수준", "desc": "매우 안전한 국가"},
+        {"name": "주의사항", "desc": "사막 지역 이동 시 주의"}
+      ]
+    }
+  },
 
   "kuwait": {
     "title": "🇰🇼 쿠웨이트 입국 규정",
-    "items": [
-      {"name": "입국 가능 여부", "desc": "한국인 eVisa 가능"},
-      {"name": "여권 조건", "desc": "유효기간 6개월 이상"},
-      {"name": "비자 종류", "desc": "eVisa"},
-      {"name": "주의사항", "desc": "사진 촬영 제한 구역 존재"}
-    ]
-  },
-
-  "bahrain": {
-    "title": "🇧🇭 바레인 입국 규정",
-    "items": [
-      {"name": "입국 가능 여부", "desc": "한국인 도착 비자 가능"},
-      {"name": "여권 조건", "desc": "유효기간 6개월 이상"},
-      {"name": "비자 종류", "desc": "도착 비자 또는 eVisa"},
-      {"name": "주의사항", "desc": "공공장소 복장 규정 준수 필요"}
-    ]
-  }
-}
+    "image": "https://upload.wikimedia.org/wikipedia/commons/2/2c/Kuwait_City_skyline.jpg",
+    "sections": {
+      "entry": [
+        {"name": "입국 가능 여부", "desc": "한국인 eVisa 가능"},
