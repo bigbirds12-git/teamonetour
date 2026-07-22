@@ -33,18 +33,25 @@
 <h2 style="text-align:center;">중동 맞춤정보 시작하기</h2>
 <p style="text-align:center;">궁금한 나라를 선택하면 기본 정보를 먼저 보여드립니다.</p>
 
+<!-- ⭐ 버튼 영역 -->
 <div class="btns">
   <button onclick="loadCountry('dubai')">두바이 / UAE</button>
   <button onclick="loadCountry('saudi')">사우디아라비아</button>
   <button onclick="loadCountry('qatar')">카타르</button>
+  <button onclick="loadCountry('oman')">오만</button>
+  <button onclick="loadCountry('kuwait')">쿠웨이트</button>
+  <button onclick="loadCountry('bahrain')">바레인</button>
 </div>
 
+<!-- ⭐ 나라 제목 표시 -->
 <h2 id="countryTitle" style="text-align:center; margin-top:30px;"></h2>
 
+<!-- ⭐ 나라 정보 카드가 표시될 영역 -->
 <div class="container">
   <div id="countryGrid" class="grid"></div>
 </div>
 
+<!-- ⭐ SPA 기능 JavaScript -->
 <script>
 async function loadCountry(country) {
   const res = await fetch('data.json');
