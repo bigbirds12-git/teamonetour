@@ -1,10 +1,12 @@
 {
   "dubai": {
-    "title": "🇦🇪 두바이 기본 정보",
+    "title": "🇦🇪 두바이 입국 규정",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/9/9f/Dubai_skyline_2015.jpg",
     "sections": {
       "entry": [
         {"name": "입국 가능 여부", "desc": "한국인 30일 무비자 입국 가능"},
         {"name": "여권 조건", "desc": "유효기간 6개월 이상"},
+        {"name": "비자 종류", "desc": "도착 비자"},
         {"name": "주의사항", "desc": "특정 의약품 반입 시 승인 필요"}
       ],
       "currency": [
@@ -14,159 +16,111 @@
       "safety": [
         {"name": "치안 수준", "desc": "중동에서 가장 안전한 도시 중 하나"},
         {"name": "주의사항", "desc": "공공장소 복장 규정 준수"}
-      ],
-      "airport": [
-        {"name": "주요 공항", "desc": "DXB 두바이 국제공항"},
-        {"name": "공항 특징", "desc": "세계 최대 국제 환승 허브"}
-      ],
-      "transport": [
-        {"name": "대중교통", "desc": "메트로·버스·택시 모두 편리"},
-        {"name": "주의사항", "desc": "메트로 앞칸은 여성 전용칸"}
-      ],
-      "hotel": [
-        {"name": "추천 지역", "desc": "마리나·다운타운·주메이라"},
-        {"name": "가격대", "desc": "중급 120~200달러 / 고급 300달러 이상"}
-      ],
-      "weather": [
-        {"name": "기후", "desc": "연중 대부분 맑고 건조"},
-        {"name": "주의사항", "desc": "여름 체감온도 45~50도"}
       ]
     }
   },
 
   "saudi": {
-    "title": "🇸🇦 사우디아라비아 기본 정보",
+    "title": "🇸🇦 사우디아라비아 입국 규정",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/0/0c/Riyadh_skyline.jpg",
     "sections": {
       "entry": [
         {"name": "입국 가능 여부", "desc": "한국인 무비자 30일"},
+        {"name": "여권 조건", "desc": "유효기간 6개월 이상"},
+        {"name": "비자 종류", "desc": "도착 비자"},
         {"name": "주의사항", "desc": "종교 관련 물품 반입 제한"}
       ],
       "currency": [
-        {"name": "통화", "desc": "SAR (리얄)"}
+        {"name": "통화", "desc": "SAR (리얄)"},
+        {"name": "환전 팁", "desc": "은행 환전이 가장 안전"}
       ],
       "safety": [
         {"name": "치안 수준", "desc": "도시 지역은 안전"},
         {"name": "주의사항", "desc": "사진 촬영 제한 구역 존재"}
-      ],
-      "airport": [
-        {"name": "주요 공항", "desc": "리야드·제다 국제공항"}
-      ],
-      "transport": [
-        {"name": "대중교통", "desc": "택시·우버 중심"}
-      ],
-      "hotel": [
-        {"name": "추천 지역", "desc": "리야드 시티센터·제다 코니쉬"}
-      ],
-      "weather": [
-        {"name": "기후", "desc": "건조하고 더움"}
       ]
     }
   },
 
   "qatar": {
-    "title": "🇶🇦 카타르 기본 정보",
+    "title": "🇶🇦 카타르 입국 규정",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/7/7f/Doha_skyline.jpg",
     "sections": {
       "entry": [
-        {"name": "입국 가능 여부", "desc": "한국인 무비자 30일"}
+        {"name": "입국 가능 여부", "desc": "한국인 무비자 30일"},
+        {"name": "여권 조건", "desc": "유효기간 6개월 이상"},
+        {"name": "비자 종류", "desc": "도착 비자"},
+        {"name": "주의사항", "desc": "전자담배 반입 제한"}
       ],
       "currency": [
-        {"name": "통화", "desc": "QAR (리얄)"}
+        {"name": "통화", "desc": "QAR (리얄)"},
+        {"name": "환전 팁", "desc": "시내 환전소가 유리"}
       ],
       "safety": [
-        {"name": "치안 수준", "desc": "중동에서 가장 안전한 국가 중 하나"}
-      ],
-      "airport": [
-        {"name": "주요 공항", "desc": "하마드 국제공항"}
-      ],
-      "transport": [
-        {"name": "대중교통", "desc": "메트로·버스·택시"}
-      ],
-      "hotel": [
-        {"name": "추천 지역", "desc": "웨스트베이·더 펄"}
-      ],
-      "weather": [
-        {"name": "기후", "desc": "연중 맑음"}
+        {"name": "치안 수준", "desc": "중동에서 가장 안전한 국가 중 하나"},
+        {"name": "주의사항", "desc": "공공장소 복장 규정 준수"}
       ]
     }
   },
 
   "oman": {
-    "title": "🇴🇲 오만 기본 정보",
+    "title": "🇴🇲 오만 입국 규정",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/8/8a/Muttrah_Corniche.jpg",
     "sections": {
       "entry": [
-        {"name": "입국 가능 여부", "desc": "한국인 무비자 14일"}
+        {"name": "입국 가능 여부", "desc": "한국인 무비자 14일"},
+        {"name": "여권 조건", "desc": "유효기간 6개월 이상"},
+        {"name": "비자 종류", "desc": "eVisa 또는 도착 비자"},
+        {"name": "주의사항", "desc": "알코올 반입 제한"}
       ],
       "currency": [
-        {"name": "통화", "desc": "OMR (리얄)"}
+        {"name": "통화", "desc": "OMR (리얄)"},
+        {"name": "환전 팁", "desc": "은행 환전이 가장 안전"}
       ],
       "safety": [
-        {"name": "치안 수준", "desc": "매우 안전한 국가"}
-      ],
-      "airport": [
-        {"name": "주요 공항", "desc": "무스카트 국제공항"}
-      ],
-      "transport": [
-        {"name": "대중교통", "desc": "택시 중심"}
-      ],
-      "hotel": [
-        {"name": "추천 지역", "desc": "무스카트 시내"}
-      ],
-      "weather": [
-        {"name": "기후", "desc": "건조하고 따뜻함"}
+        {"name": "치안 수준", "desc": "매우 안전한 국가"},
+        {"name": "주의사항", "desc": "사막 지역 이동 시 주의"}
       ]
     }
   },
 
   "kuwait": {
-    "title": "🇰🇼 쿠웨이트 기본 정보",
+    "title": "🇰🇼 쿠웨이트 입국 규정",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/2/2c/Kuwait_City_skyline.jpg",
     "sections": {
       "entry": [
-        {"name": "입국 가능 여부", "desc": "한국인 eVisa 가능"}
+        {"name": "입국 가능 여부", "desc": "한국인 eVisa 가능"},
+        {"name": "여권 조건", "desc": "유효기간 6개월 이상"},
+        {"name": "비자 종류", "desc": "eVisa"},
+        {"name": "주의사항", "desc": "사진 촬영 제한 구역 존재"}
       ],
       "currency": [
-        {"name": "통화", "desc": "KWD (디나르)"}
+        {"name": "통화", "desc": "KWD (디나르)"},
+        {"name": "환전 팁", "desc": "은행 환전이 가장 유리"}
       ],
       "safety": [
-        {"name": "치안 수준", "desc": "도시 지역은 안전"}
-      ],
-      "airport": [
-        {"name": "주요 공항", "desc": "쿠웨이트 국제공항"}
-      ],
-      "transport": [
-        {"name": "대중교통", "desc": "택시 중심"}
-      ],
-      "hotel": [
-        {"name": "추천 지역", "desc": "살미야·시티센터"}
-      ],
-      "weather": [
-        {"name": "기후", "desc": "더운 사막 기후"}
+        {"name": "치안 수준", "desc": "도시 지역은 안전"},
+        {"name": "주의사항", "desc": "공공장소 복장 규정 준수"}
       ]
     }
   },
 
   "bahrain": {
-    "title": "🇧🇭 바레인 기본 정보",
+    "title": "🇧🇭 바레인 입국 규정",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/3/3c/Manama_skyline.jpg",
     "sections": {
       "entry": [
-        {"name": "입국 가능 여부", "desc": "한국인 도착 비자 가능"}
+        {"name": "입국 가능 여부", "desc": "한국인 도착 비자 가능"},
+        {"name": "여권 조건", "desc": "유효기간 6개월 이상"},
+        {"name": "비자 종류", "desc": "도착 비자 또는 eVisa"},
+        {"name": "주의사항", "desc": "공공장소 복장 규정 준수"}
       ],
       "currency": [
-        {"name": "통화", "desc": "BHD (디나르)"}
+        {"name": "통화", "desc": "BHD (디나르)"},
+        {"name": "환전 팁", "desc": "시내 환전소가 유리"}
       ],
       "safety": [
-        {"name": "치안 수준", "desc": "중동에서 안전한 국가"}
-      ],
-      "airport": [
-        {"name": "주요 공항", "desc": "바레인 국제공항"}
-      ],
-      "transport": [
-        {"name": "대중교통", "desc": "버스·택시"}
-      ],
-      "hotel": [
-        {"name": "추천 지역", "desc": "시티센터·주페어"}
-      ],
-      "weather": [
-        {"name": "기후", "desc": "더운 기후"}
+        {"name": "치안 수준", "desc": "중동에서 안전한 국가"},
+        {"name": "주의사항", "desc": "주말(금요일) 교통 혼잡"}
       ]
     }
   }
