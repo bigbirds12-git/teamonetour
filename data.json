@@ -89,3 +89,39 @@
     "sections": {
       "entry": [
         {"name": "입국 가능 여부", "desc": "한국인 eVisa 가능"},
+        {"name": "여권 조건", "desc": "유효기간 6개월 이상"},
+        {"name": "비자 종류", "desc": "eVisa"},
+        {"name": "주의사항", "desc": "사진 촬영 제한 구역 존재"}
+      ],
+      "currency": [
+        {"name": "통화", "desc": "KWD (디나르)"},
+        {"name": "환전 팁", "desc": "은행 환전이 가장 유리"}
+      ],
+      "safety": [
+        {"name": "치안 수준", "desc": "도시 지역은 안전"},
+        {"name": "주의사항", "desc": "공공장소 복장 규정 준수"}
+      ]
+    }
+  },
+
+  "bahrain": {
+    "title": "🇧🇭 바레인 입국 규정",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/3/3c/Manama_skyline.jpg",
+    "sections": {
+      "entry": [
+        {"name": "입국 가능 여부", "desc": "한국인 도착 비자 가능"},
+        {"name": "여권 조건", "desc": "유효기간 6개월 이상"},
+        {"name": "비자 종류", "desc": "도착 비자 또는 eVisa"},
+        {"name": "주의사항", "desc": "공공장소 복장 규정 준수"}
+      ],
+      "currency": [
+        {"name": "통화", "desc": "BHD (디나르)"},
+        {"name": "환전 팁", "desc": "시내 환전소가 유리"}
+      ],
+      "safety": [
+        {"name": "치안 수준", "desc": "중동에서 안전한 국가"},
+        {"name": "주의사항", "desc": "주말(금요일) 교통 혼잡"}
+      ]
+    }
+  }
+}
