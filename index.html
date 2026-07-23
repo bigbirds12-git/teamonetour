@@ -3,24 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>중동 맞춤 정보</title>
+<title>중동 맞춤정보</title>
 
 <style>
   html, body {
     width: 100%;
-    height: 100%;
+    height: auto;
+    min-height: 200vh;
     margin: 0;
     padding: 0;
   }
 
-  /* 길이 확장 */
   body {
     max-width: 1200px;
     margin: auto;
     font-family: 'Segoe UI', sans-serif;
     background:#f7f7f7;
     padding:20px;
-    transition:0.3s
+    transition:0.3s;
   }
 
   * { box-sizing: border-box; }
@@ -70,8 +70,8 @@
 
 <button onclick="toggleDarkMode()" style="position:fixed; top:20px; right:20px;">🌙</button>
 
-<h1 style="text-align:center;">중동 맞춤 정보</h1>
-<p style="text-align:center;">궁금한 나라를 선택하면 기본 정보를 보여드립니다.</p>
+<h2 style="text-align:center;">중동 맞춤정보</h2>
+<p style="text-align:center;">궁금한 나라를 선택하면 기본 정보를 먼저 보여드립니다.</p>
 
 <div class="btns">
   <button onclick="loadCountry('dubai')">두바이 / UAE</button>
@@ -88,6 +88,10 @@
   <button onclick="changeTab('entry')">입국 규정</button>
   <button onclick="changeTab('currency')">환전</button>
   <button onclick="changeTab('safety')">치안</button>
+  <button onclick="changeTab('airport')">공항</button>
+  <button onclick="changeTab('transport')">교통</button>
+  <button onclick="changeTab('hotel')">호텔</button>
+  <button onclick="changeTab('weather')">날씨</button>
 </div>
 
 <div class="container">
