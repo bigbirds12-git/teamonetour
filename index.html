@@ -1,129 +1,61 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>중동 맞춤정보</title>
-
-<style>
-  html, body {
-    width: 100%;
-    height: auto;
-    min-height: 200vh;
-    margin: 0;
-    padding: 0;
-  }
-
-  body {
-    max-width: 1200px;
-    margin: auto;
-    font-family: 'Segoe UI', sans-serif;
-    background:#f7f7f7;
-    padding:20px;
-    transition:0.3s;
-  }
-
-  * { box-sizing: border-box; }
-
-  .btns { text-align:center; margin-bottom:20px; }
-  .btns button {
-    padding:10px 18px; margin:5px; border:none; border-radius:8px;
-    background:#0078ff; color:white; cursor:pointer; font-size:15px;
-  }
-  .btns button:hover { background:#005fcc; }
-
-  .tabs { text-align:center; margin:20px 0; }
-  .tabs button {
-    padding:8px 16px; margin:5px; border:none; border-radius:6px;
-    background:#444; color:white; cursor:pointer;
-  }
-  .tabs button:hover { background:#222; }
-
-  .container { max-width:1200px; margin:auto; }
-  .grid {
-    display:grid;
-    grid-template-columns:repeat(auto-fit, minmax(280px,1fr));
-    gap:20px;
-  }
-
-  .card {
-    background:#fff; border-radius:14px; padding:20px;
-    box-shadow:0 4px 12px rgba(0,0,0,0.08);
-    border:1px solid #eee; transition:0.2s;
-  }
-  .card:hover { transform:translateY(-4px); }
-
-  .title { font-size:18px; font-weight:600; margin-bottom:10px; }
-  .desc { font-size:15px; color:#555; }
-
-  @media (max-width: 600px) {
-    .btns button { width:100%; margin:8px 0; }
-    .tabs button { width:100%; margin:6px 0; }
-  }
-
-  .dark { background:#1e1e1e; color:#eee; }
-  .dark .card { background:#2a2a2a; border-color:#444; }
-</style>
+  <meta charset="UTF-8">
+  <title>Team One Tour</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f5f5f5;
+    }
+    header {
+      background: #0f172a;
+      color: white;
+      padding: 16px 24px;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 20px;
+    }
+    main {
+      max-width: 960px;
+      margin: 24px auto;
+      background: white;
+      padding: 24px;
+      border-radius: 8px;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+    }
+    h2 {
+      margin-top: 0;
+    }
+    footer {
+      text-align: center;
+      font-size: 12px;
+      color: #6b7280;
+      padding: 16px;
+    }
+  </style>
 </head>
-
 <body>
-
-<button onclick="toggleDarkMode()" style="position:fixed; top:20px; right:20px;">🌙</button>
-
-<div class="btns">
-  <button onclick="loadCountry('dubai')">두바이 / UAE</button>
-  <button onclick="loadCountry('saudi')">사우디아라비아</button>
-  <button onclick="loadCountry('qatar')">카타르</button>
-  <button onclick="loadCountry('oman')">오만</button>
-  <button onclick="loadCountry('kuwait')">쿠웨이트</button>
-  <button onclick="loadCountry('bahrain')">바레인</button>
-</div>
-
-<h2 id="countryTitle" style="text-align:center; margin-top:30px;"></h2>
-
-<div class="tabs">
-  <button onclick="changeTab('entry')">입국 규정</button>
-  <button onclick="changeTab('currency')">환전</button>
-  <button onclick="changeTab('safety')">치안</button>
- 
-</div>
-
-<div class="container">
-  <div id="countryGrid" class="grid"></div>
-</div>
-
-<script>
-let currentCountry = null;
-
-async function loadCountry(country) {
-  const res = await fetch('data.json');
-  const data = await res.json();
-  currentCountry = data[country];
-
-  document.getElementById('countryTitle').innerText = currentCountry.title;
-
-  changeTab('entry');
-}
-
-function changeTab(tab) {
-  const info = currentCountry.sections[tab];
-  const grid = document.getElementById('countryGrid');
-  grid.innerHTML = '';
-
-  info.forEach(item => {
-    grid.innerHTML += `
-      <div class="card">
-        <div class="title">${item.name}</div>
-        <div class="desc">${item.desc}</div>
-      </div>
-    `;
-  });
-}
-
-function toggleDarkMode() {
-  document.body.classList.toggle('dark');
-}
-</script>
-
+  <header>
+    <h1>Team One Tour · 두바이 & GCC 여행</h1>
+  </header>
+  <main>
+    <h2>여행자와 가이드를 위한 정보 허브</h2>
+    <p>
+      이 페이지는 Cloudflare Pages + GitHub로 만든<br>
+      Team One Tour의 새로운 시작 화면입니다.
+    </p>
+    <p>
+      앞으로 여기에서 두바이, GCC 지역의 여행 정보와<br>
+      가이드용 자료를 정리해 나갈 수 있습니다.
+    </p>
+  </main>
+  <footer>
+    © Team One Tour · Cloudflare Pages + GitHub
+  </footer>
 </body>
 </html>
