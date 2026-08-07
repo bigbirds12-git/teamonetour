@@ -13,14 +13,26 @@
             color: #333;
              }
 
-        /* Header */
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 25px;
-            border-bottom: 1px solid #ddd;
-               }
+     /* Header */
+        
+    /* 헤더 전체 배경 영역 */
+    header {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      background-color: #ffffff;
+           }
+
+    /* 헤더 내부 실제 콘텐츠 영역 */
+    .header-container {
+      width: 100%;
+      max-width: 1200px; /* 본문 이미지 폭과 맞출 기준 너비 */
+      padding: 0 24px;   /* 최소 좌우 여백 */
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+                      }
+ 
 
         .logo img {
             height: 25px; /* 로고 크기 조절 */
