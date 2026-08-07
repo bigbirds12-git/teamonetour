@@ -1,16 +1,14 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Team One Tour</title>
-
-     <style>
+  <meta charset="UTF-8" />
+  <title>Klook-style Travel Landing</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
     body { margin:0; font-family:system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background:#f5f5f7; color:#222; }
-    a { text-decoration:none; color:inherit; } 
-         }
+    a { text-decoration:none; color:inherit; }
 
-       /* Header */
+    /* Header */
     .header {
       display:flex;
       justify-content:space-between;
@@ -22,80 +20,392 @@
       top:0;
       z-index:10;
     }
-    .logo img {
-            height: 35px; /* 로고 크기 */
-        }
-           
+    .logo { font-weight:700; color:#ff5a5f; font-size:20px; }
+    .nav { display:flex; gap:16px; font-size:14px; }
+    .nav a { padding:6px 10px; border-radius:999px; }
+    .nav a:hover { background:#f0f0f0; }
+    .header-right { display:flex; gap:12px; align-items:center; font-size:13px; }
+    .btn-outline {
+      padding:6px 12px;
+      border-radius:999px;
+      border:1px solid #ddd;
+      font-size:13px;
+    }
+    .btn-primary {
+      padding:6px 14px;
+      border-radius:999px;
+      background:#ff5a5f;
+      color:#fff;
+      font-size:13px;
+      border:none;
+    }
 
-        .site-name {
-            color: #777;
-            font-size: 14px;
-        }
+    /* Hero */
+    .hero {
+      padding:40px 32px 24px;
+      background:linear-gradient(135deg,#ff9a9e 0%,#fad0c4 50%,#fbc2eb 100%);
+      color:#fff;
+    }
+    .hero-inner {
+      max-width:960px;
+      margin:0 auto;
+      display:flex;
+      flex-wrap:wrap;
+      gap:24px;
+      align-items:flex-start;
+    }
+    .hero-text { flex:1 1 280px; }
+    .hero-title { font-size:32px; font-weight:700; margin-bottom:8px; }
+    .hero-sub { font-size:15px; opacity:0.9; margin-bottom:16px; }
+    .hero-search {
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+    .hero-search input {
+      flex:1 1 220px;
+      padding:10px 12px;
+      border-radius:999px;
+      border:none;
+      outline:none;
+    }
+    .hero-search button {
+      padding:10px 18px;
+      border-radius:999px;
+      border:none;
+      background:#ff5a5f;
+      color:#fff;
+      font-weight:600;
+      cursor:pointer;
+    }
+    .hero-search button:hover { opacity:0.9; }
+    .hero-badges { margin-top:12px; font-size:12px; display:flex; gap:12px; flex-wrap:wrap; }
+    .hero-badge { padding:4px 10px; border-radius:999px; background:rgba(255,255,255,0.15); }
 
-        /* Main Section */
-        .main {
-            text-align: center;
-            padding: 40px 20px;
-        }
+    .hero-image {
+      flex:1 1 260px;
+      min-height:160px;
+      border-radius:16px;
+      background:rgba(255,255,255,0.2);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:13px;
+      text-align:center;
+      padding:16px;
+    }
 
-        .main h1 {
-            font-size: 36px;
-            margin-bottom: 10px;
-        }
+    /* Sections */
+    .section {
+      max-width:960px;
+      margin:0 auto;
+      padding:24px 32px;
+    }
+    .section-header {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:16px;
+    }
+    .section-title { font-size:18px; font-weight:600; }
+    .section-sub { font-size:13px; color:#666; }
 
-        .main p.subtitle {
-            font-size: 18px;
-            margin-bottom: 30px;
-            color: #555;
-        }
+    /* Category chips */
+    .chips {
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-bottom:8px;
+    }
+    .chip {
+      padding:6px 12px;
+      border-radius:999px;
+      background:#ffffff;
+      border:1px solid #eee;
+      font-size:13px;
+      cursor:pointer;
+    }
+    .chip:hover { background:#f8f8f8; }
 
-        .main img {
-            width: 90%;
-            max-width: 900px;
-            border-radius: 10px;
-            margin: 20px 0;
-        }
+    /* Cards grid */
+    .grid {
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+      gap:16px;
+    }
+    .card {
+      background:#ffffff;
+      border-radius:12px;
+      overflow:hidden;
+      box-shadow:0 1px 3px rgba(0,0,0,0.06);
+      display:flex;
+      flex-direction:column;
+    }
+    .card-img {
+      height:140px;
+      background:#ddd;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:12px;
+      color:#666;
+    }
+    .card-body {
+      padding:10px 12px 12px;
+      font-size:13px;
+    }
+    .card-title {
+      font-weight:600;
+      margin-bottom:4px;
+    }
+    .card-meta {
+      font-size:12px;
+      color:#777;
+      margin-bottom:6px;
+    }
+    .card-price {
+      font-size:14px;
+      font-weight:700;
+      color:#ff5a5f;
+      margin-bottom:6px;
+    }
+    .card-tags {
+      display:flex;
+      flex-wrap:wrap;
+      gap:4px;
+      font-size:11px;
+    }
+    .tag {
+      padding:2px 6px;
+      border-radius:999px;
+      background:#f5f5f7;
+    }
 
-        .contact {
-            font-size: 16px;
-            margin-top: 20px;
-            color: #444;
-        }
-
-        footer {
-            margin-top: 40px;
-            padding: 20px;
-            text-align: center;
-            font-size: 14px;
-            color: #666;
-            border-top: 1px solid #ddd;
-        }
-    </style>
+    /* Footer */
+    .footer {
+      margin-top:32px;
+      padding:24px 32px;
+      background:#111;
+      color:#ccc;
+      font-size:12px;
+    }
+    .footer-inner {
+      max-width:960px;
+      margin:0 auto;
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+      gap:16px;
+    }
+    .footer-title { font-weight:600; margin-bottom:8px; color:#fff; }
+    .footer a { display:block; margin-bottom:4px; color:#ccc; }
+    .footer-bottom {
+      max-width:960px;
+      margin:16px auto 0;
+      border-top:1px solid #333;
+      padding-top:12px;
+      display:flex;
+      justify-content:space-between;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+  </style>
 </head>
 <body>
-
-<header>
-    <div class="logo">
-        <!-- images 폴더 안의 로고 파일 -->
-        <img src="images/logo.png" alt="Team One Tour Logo">
+  <!-- Header -->
+  <header class="header">
+    <div class="logo">Klook Travel</div>
+    <nav class="nav">
+      <a href="#">Things to do</a>
+      <a href="#">Attractions</a>
+      <a href="#">Transport</a>
+      <a href="#">Hotels</a>
+      <a href="#">Packages</a>
+    </nav>
+    <div class="header-right">
+      <span>USD ▾</span>
+      <button class="btn-outline">Log in</button>
+      <button class="btn-primary">Sign up</button>
     </div>
-    <div class="site-name">Team One Tour</div>
-</header>
+  </header>
 
-<section class="main">
-    <h1>Team One Tour</h1>
-    <p class="subtitle">정보는 AI로, 감동은 현지 전문 가이드로</p>
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-text">
+        <h1 class="hero-title">Discover and book amazing experiences</h1>
+        <p class="hero-sub">
+          Activities, attractions, transport and stays—book everything in one place with instant confirmation.
+        </p>
+        <div class="hero-search">
+          <input type="text" placeholder="Where are you going?" />
+          <button>Search</button>
+        </div>
+        <div class="hero-badges">
+          <span class="hero-badge">Instant confirmation</span>
+          <span class="hero-badge">Free cancellation on selected activities</span>
+          <span class="hero-badge">Best price guarantee</span>
+        </div>
+      </div>
+      <div class="hero-image">
+        Hero image / illustration area<br />
+        (Use your own banner or city photo here)
+      </div>
+    </div>
+  </section>
 
-    <!-- images 폴더 안의 메인 사진 -->
-    <img src="images/main-photo.png" alt="Dubai Tour">
+  <!-- Popular destinations -->
+  <section class="section">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">Popular destinations</h2>
+        <p class="section-sub">Trending cities and regions to explore right now.</p>
+      </div>
+      <a href="#" style="font-size:13px; color:#ff5a5f;">View all ▸</a>
+    </div>
+    <div class="chips">
+      <button class="chip">Tokyo</button>
+      <button class="chip">Osaka</button>
+      <button class="chip">Seoul</button>
+      <button class="chip">Dubai</button>
+      <button class="chip">Singapore</button>
+    </div>
+    <div class="grid">
+      <article class="card">
+        <div class="card-img">Tokyo city image</div>
+        <div class="card-body">
+          <div class="card-title">Tokyo, Japan</div>
+          <div class="card-meta">Top attractions · Food · Anime & culture</div>
+          <div class="card-tags">
+            <span class="tag">Family-friendly</span>
+            <span class="tag">City breaks</span>
+          </div>
+        </div>
+      </article>
+      <article class="card">
+        <div class="card-img">Dubai skyline image</div>
+        <div class="card-body">
+          <div class="card-title">Dubai, UAE</div>
+          <div class="card-meta">Burj Khalifa · Desert safari · Theme parks</div>
+          <div class="card-tags">
+            <span class="tag">Desert</span>
+            <span class="tag">Luxury</span>
+          </div>
+        </div>
+      </article>
+      <article class="card">
+        <div class="card-img">Osaka image</div>
+        <div class="card-body">
+          <div class="card-title">Osaka, Japan</div>
+          <div class="card-meta">USJ · Street food · Nightlife</div>
+          <div class="card-tags">
+            <span class="tag">Theme park</span>
+            <span class="tag">Food</span>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
 
-    <p class="contact">아랍에미레이트의 여행을 준비하신다면 이메일로 문의 주세요.</p>
-</section>
+  <!-- Featured activities -->
+  <section class="section">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">Featured activities</h2>
+        <p class="section-sub">Handpicked experiences with great reviews and flexible booking.</p>
+      </div>
+      <a href="#" style="font-size:13px; color:#ff5a5f;">See more ▸</a>
+    </div>
+    <div class="grid">
+      <article class="card">
+        <div class="card-img">TeamLab Planets image</div>
+        <div class="card-body">
+          <div class="card-title">teamLab Planets TOKYO Ticket</div>
+          <div class="card-meta">⭐ 4.8 · 12k+ bookings</div>
+          <div class="card-price">From US$ 28.00</div>
+          <div class="card-tags">
+            <span class="tag">Instant confirmation</span>
+            <span class="tag">Free cancellation</span>
+          </div>
+        </div>
+      </article>
+      <article class="card">
+        <div class="card-img">Burj Khalifa image</div>
+        <div class="card-body">
+          <div class="card-title">Burj Khalifa At The Top Ticket</div>
+          <div class="card-meta">⭐ 4.7 · 20k+ bookings</div>
+          <div class="card-price">From US$ 45.00</div>
+          <div class="card-tags">
+            <span class="tag">Mobile ticket</span>
+            <span class="tag">Klook's choice</span>
+          </div>
+        </div>
+      </article>
+      <article class="card">
+        <div class="card-img">Universal Studios Japan image</div>
+        <div class="card-body">
+          <div class="card-title">Universal Studios Japan 1-Day Pass</div>
+          <div class="card-meta">⭐ 4.9 · 30k+ bookings</div>
+          <div class="card-price">From US$ 80.00</div>
+          <div class="card-tags">
+            <span class="tag">Popular</span>
+            <span class="tag">Skip-the-line</span>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
 
-<footer>
-    운영 : Team One Tour fz llc - United Arab Emirates<br>
-    문의 : Admin@teamonetour.com
-</footer>
+  <!-- App / promo section -->
+  <section class="section">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">Download the app</h2>
+        <p class="section-sub">Manage bookings, access mobile tickets and get exclusive app-only deals.</p>
+      </div>
+    </div>
+    <div style="display:flex; flex-wrap:wrap; gap:16px; align-items:center;">
+      <div style="flex:1 1 260px; font-size:13px;">
+        Scan the QR code or search “Klook” in the App Store or Google Play.
+        <br /><br />
+        Save your favourites, track bookings and access tickets offline.
+      </div>
+      <div style="flex:0 0 160px; height:120px; background:#ddd; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:12px;">
+        QR / app image
+      </div>
+    </div>
+  </section>
 
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div>
+        <div class="footer-title">Company</div>
+        <a href="#">About us</a>
+        <a href="#">Careers</a>
+        <a href="#">Press</a>
+      </div>
+      <div>
+        <div class="footer-title">Partner with us</div>
+        <a href="#">List your services</a>
+        <a href="#">Affiliate program</a>
+      </div>
+      <div>
+        <div class="footer-title">Support</div>
+        <a href="#">Help center</a>
+        <a href="#">Contact us</a>
+        <a href="#">Refund policy</a>
+      </div>
+      <div>
+        <div class="footer-title">Legal</div>
+        <a href="#">Terms of use</a>
+        <a href="#">Privacy policy</a>
+        <a href="#">Cookie policy</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Klook-style Demo. For learning & personal use only.</span>
+      <span>Language: English · Currency: USD</span>
+    </div>
+  </footer>
 </body>
 </html>
