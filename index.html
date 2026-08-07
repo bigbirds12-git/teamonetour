@@ -14,29 +14,32 @@
              }
 
      /* Header */
-        
-    /* 헤더 전체 배경 영역 */
-    header {
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      background-color: #ffffff;
-           }
+        Header {
+          width: 100%;
+          background-color: #ffffff;
+          display: flex;
+          justify-content: center;
+          border-bottom: 1px solid #e5e5e5; /* 하단 얇은 구분선 (선택사항) */
+              }
 
-    /* 헤더 내부 실제 콘텐츠 영역 */
-    .header-container {
-      width: 100%;
-      max-width: 1200px; /* 본문 이미지 폭과 맞출 기준 너비 */
-      padding: 0 24px;   /* 최소 좌우 여백 */
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-                      }
- 
+    /* 헤더 내부 컨테이너 (양끝 정렬 핵심) */
+       .header-container {
+         width: 100%;
+        max-width: 1200px; /* 본문 이미지 폭과 동일하게 설정 */
+        height: 70px;      /* 헤더 높이 적절히 지정 */
+        padding: 0 24px;   /* 좌우 minimum 여백 */
+        display: flex;
+        justify-content: space-between; /* 로고는 왼쪽 끝, 텍스트는 오른쪽 끝으로 밀어냄 */
+        align-items: center;            /* 세로 방향 가운데 정렬 */
+                        }
 
-        .logo img {
-            height: 25px; /* 로고 크기 조절 */
-                  }
+    /* 로고 이미지 크기 조절 */
+    .logo img {
+      height: 25px; /* 로고 크기에 맞게 조절 */
+      display: block;
+              }
+   
+
         .site-name {
             color: #777;
             font-size: 14px;
