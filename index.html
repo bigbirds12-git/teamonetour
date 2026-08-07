@@ -23,27 +23,28 @@
             }
 
     /* 헤더 내부 컨테이너 (양끝 정렬 핵심) */
-       .header-container {
-         width: 100%;
-        max-width: 1200px; /* 본문 이미지 폭과 동일하게 설정 */
-        height: 70px;      /* 헤더 높이 적절히 지정 */
-        padding: 0 24px;   /* 좌우 minimum 여백 */
-        display: flex;
-        justify-content: space-between; /* 로고는 왼쪽 끝, 텍스트는 오른쪽 끝으로 밀어냄 */
-        align-items: center;            /* 세로 방향 가운데 정렬 */
+     .header-container {
+          width: 100%;
+          max-width: 1200px; /* 본문 이미지 폭과 동일하게 설정 */
+          height: 70px;      /* 헤더 높이 적절히 지정 */
+          padding: 0 24px;   /* 좌우 minimum 여백 */
+          display: flex;
+          justify-content: space-between; /* 로고는 왼쪽 끝, 텍스트는 오른쪽 끝으로 밀어냄 */
+          align-items: center;            /* 세로 방향 가운데 정렬 */
                         }
 
     /* 로고 이미지 크기 조절 */
-    .logo img {
-      height: 25px; /* 로고 크기에 맞게 조절 */
-      display: block;
-              }
-   
-
-        .site-name {
-            color: #777;
-            font-size: 14px;
-                   }
+     .logo img {
+          height: 25px; /* 로고 크기에 맞게 조절 */
+          display: block;
+                }
+  
+     .site-name {
+         color: #777;
+         font-size: 14px;
+         margin: 0;
+         line-height: 1; /* 글자가 상단에 바짝 붙는 현상 방지 */
+                }
 
         /* Main Section */
         .main {
@@ -89,7 +90,7 @@
         <a href="#" class="logo">
         <img src="images/logo.png" alt="Team One Tour">
         </a>
-       <span style="margin: 0; font-size: 14px;">Team One Tour</span>
+       <span class="site-name">Team One Tour</span>
     </div>
         
 </header>
