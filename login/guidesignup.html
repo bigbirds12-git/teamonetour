@@ -5,6 +5,10 @@
 <title>Guide Signup</title>
 
 <style>
+* {
+    box-sizing: border-box;
+}
+
 body {
     font-family: Arial;
     background: #f5f7fa;
@@ -12,6 +16,7 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
+    margin: 0;
 }
 
 .signup-box {
@@ -67,20 +72,22 @@ a {
 
     <input type="email" id="email" placeholder="Email">
     <input type="password" id="password" placeholder="Password">
+    <!-- 비밀번호 확인 칸 추가 -->
+    <input type="password" id="confirmPassword" placeholder="Confirm Password">
 
     <button onclick="signup()">회원가입</button>
 
-    <p id="msg" style="color:red; margin-top:10px;"></p>
+    <p id="msg" style="color:red; margin-top:10px; text-align:center; font-size:14px;"></p>
 
     <a href="indexforguide.html">이미 계정이 있으신가요? 로그인</a>
 </div>
 
 <!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 
 <script>
-   const firebaseConfig = {
+    const firebaseConfig = {
       apiKey: "AIzaSyqGsQsy_MRdq3HWdwJw8o2q6YwKz-aQPs",
       authDomain: "guidelogin-b0603.firebaseapp.com",
       projectId: "guidelogin-b0603",
@@ -94,16 +101,33 @@ a {
     const auth = firebase.auth();
 
     function signup() {
-        const email = document.getElementById("email").value;
+        const email = document.getElementById("email").value.trim();
         const password = document.getElementById("password").value;
+        const confirmPassword = document.getElementById("confirmPassword").value;
+        const msg = document.getElementById("msg");
 
+        // 안내 문구 초기화
+        msg.innerText = "";
+
+        // 입력값 검증
+        if (!email || !password || !confirmPassword) {
+            msg.innerText = "모든 항목을 입력해 주세요.";
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            msg.innerText = "비밀번호가 일치하지 않습니다.";
+            return;
+        }
+
+        // Firebase 회원가입 시도
         auth.createUserWithEmailAndPassword(email, password)
             .then(() => {
                 // 회원가입 성공 → 로그인 페이지로 이동
                 window.location.href = "indexforguide.html";
             })
             .catch(error => {
-                document.getElementById("msg").innerText = error.message;
+                msg.innerText = error.message;
             });
     }
 </script>
