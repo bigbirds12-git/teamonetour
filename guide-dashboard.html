@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>Guide Dashboard</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f5f7fa;
+}
+
+/* 전체 레이아웃 */
+.dashboard {
+    display: flex;
+    height: 100vh;
+}
+
+/* 왼쪽 사이드바 */
+.sidebar {
+    width: 240px;
+    background: #ffffff;
+    border-right: 1px solid #ddd;
+    padding: 20px;
+}
+
+.sidebar h2 {
+    font-size: 20px;
+    margin-bottom: 20px;
+}
+
+.sidebar a {
+    display: block;
+    padding: 12px;
+    margin-bottom: 10px;
+    background: #f0f0f0;
+    border-radius: 6px;
+    text-decoration: none;
+    color: #333;
+}
+
+.sidebar a:hover {
+    background: #e0e0e0;
+}
+
+/* 메인 콘텐츠 */
+.main {
+    flex: 1;
+    padding: 30px;
+}
+
+.main h1 {
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+.logout-btn {
+    padding: 10px 16px;
+    background: #ff4d4d;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.logout-btn:hover {
+    background: #d93636;
+}
+</style>
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <!-- 왼쪽 메뉴 -->
+    <div class="sidebar">
+        <h2>Guide Menu</h2>
+        <a href="#">Home</a>
+        <a href="#">My Schedule</a>
+        <a href="#">Bookings</a>
+        <a href="#">Messages</a>
+        <a href="#">Revenue</a>
+    </div>
+
+    <!-- 메인 화면 -->
+    <div class="main">
+        <h1>Guide Dashboard</h1>
+        <p id="guideEmail">로그인 정보 확인 중...</p>
+
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+
+</div>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script>
+
+<script>
+    /* 🔥 DB의 Firebase 설정값 붙여넣기 */
+    const firebaseConfig = {
+      apiKey: "AIzaSyqGsQsy_MRdq3HWdwJw8o2q6YwKz-aQPs",
+      authDomain: "guidelogin-b0603.firebaseapp.com",
+      projectId: "guidelogin-b0603",
+      storageBucket: "guidelogin-b0603.firebasestorage.app",
+      messagingSenderId: "981519805247",
+      appId: "1:981519805247:web:cc32682b177a4957cc0818a",
+      measurementId: "G-2V4T45CJNQ"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    /* 로그인 여부 확인 (미로그인 → 로그인 페이지로 이동) */
+    auth.onAuthStateChanged(user => {
+        if (!user) {
+            window.location.href = "guidelogin.html";
+        } else {
+            document.getElementById("guideEmail").innerText =
+                "로그인한 가이드: " + user.email;
+        }
+    });
+
+    /* 로그아웃 기능 */
+    function logout() {
+        auth.signOut().then(() => {
+            window.location.href = "guidelogin.html";
+        });
+    }
+</script>
+
+</body>
+</html>
