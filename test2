@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TEAM ONE TOUR - 가이드 대시보드</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome 아이콘 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-slate-50 font-sans text-slate-800 antialiased">
+
+    <div class="flex h-screen overflow-hidden">
+        
+        <!-- 🧭 사이드바 (사이드 메인 메뉴) -->
+        <aside class="w-64 bg-slate-900 text-white flex flex-col justify-between shrink-0">
+            <div>
+                <!-- 로고 영역 -->
+                <div class="p-6 flex items-center gap-3 border-b border-slate-800">
+                    <div class="bg-amber-500 text-slate-900 p-2 rounded-lg font-bold text-xl">
+                        <i class="fa-solid fa-[#compass]"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-lg leading-none">TEAM ONE TOUR</h1>
+                        <span class="text-xs text-amber-400">Guide Operating SaaS</span>
+                    </div>
+                </div>
+
+                <!-- 메인 메뉴 -->
+                <nav class="p-4 space-y-1">
+                    <a href="#" class="flex items-center gap-3 px-4 py-3 bg-amber-500 text-slate-900 font-semibold rounded-xl">
+                        <i class="fa-solid fa-house w-5"></i> 홈 (Home)
+                    </a>
+                    <a href="#" class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:bg-slate-800 hover:text-white rounded-xl transition">
+                        <i class="fa-solid fa-calendar-days w-5"></i> 스케줄 (Schedule)
+                    </a>
+                    <a href="#" class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:bg-slate-800 hover:text-white rounded-xl transition">
+                        <i class="fa-solid fa-bookmark w-5"></i> 예약 (Bookings)
+                    </a>
+                    <a href="#" class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:bg-slate-800 hover:text-white rounded-xl transition">
+                        <i class="fa-solid fa-wallet w-5"></i> 수익 (Revenue)
+                    </a>
+                    <a href="#" class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:bg-slate-800 hover:text-white rounded-xl transition">
+                        <i class="fa-solid fa-comments w-5"></i> 메시지센터 (Messages)
+                    </a>
+                    <a href="#" class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:bg-slate-800 hover:text-white rounded-xl transition">
+                        <i class="fa-solid fa-gear w-5"></i> 설정 (Settings)
+                    </a>
+                </nav>
+            </div>
+
+            <!-- 가이드 프로필 요약 -->
+            <div class="p-4 border-t border-slate-800 flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold">
+                    G
+                </div>
+                <div>
+                    <p class="text-sm font-semibold">알리 (Ali Guide)</p>
+                    <p class="text-xs text-slate-400">사막 사파리 전담</p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- 🖥️ 메인 콘텐츠 영역 -->
+        <main class="flex-1 overflow-y-auto">
+            
+            <!-- 탑 헤더 -->
+            <header class="bg-white border-b border-slate-200 px-8 py-4 flex justify-between items-center sticky top-0 z-10">
+                <div class="flex items-center gap-2">
+                    <h2 class="text-2xl font-bold">오늘의 현황</h2>
+                    <span class="bg-emerald-100 text-emerald-700 text-xs px-2.5 py-1 rounded-full font-medium">실시간 작동 중</span>
+                </div>
+                
+                <div class="flex items-center gap-3">
+                    <button class="bg-amber-500 hover:bg-amber-600 text-slate-900 font-semibold px-4 py-2 rounded-xl text-sm flex items-center gap-2 transition">
+                        <i class="fa-solid fa-plus"></i> 새 스케줄 생성
+                    </button>
+                </div>
+            </header>
+
+            <div class="p-8 space-y-6">
+
+                <!-- 🟦 (A) 홈 화면: 핵심 메트릭 & AI 알림 -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    
+                    <!-- 카운트다운 및 다음 일정 카드 -->
+                    <div class="bg-gradient-to-br from-slate-900 to-slate-800 text-white p-6 rounded-2xl shadow-sm flex flex-col justify-between">
+                        <div>
+                            <span class="text-xs text-amber-400 font-bold uppercase tracking-wider">다음 투어 카운트다운</span>
+                            <h3 class="text-3xl font-extrabold mt-2">01시간 24분 남음</h3>
+                            <p class="text-slate-300 text-sm mt-1">오후 3:00 - 사막 사파리 VIP 코스</p>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-slate-700/60 flex justify-between text-xs text-slate-400">
+                            <span>픽업: 두바이 몰 메인 입구</span>
+                            <span>인원: 4명 (예약 확정)</span>
+                        </div>
+                    </div>
+
+                    <!-- AI 실시간 추천 알림 카드 (기획안 반영) -->
+                    <div class="bg-amber-50 border border-amber-200 p-6 rounded-2xl shadow-sm flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between">
+                                <span class="bg-amber-200 text-amber-900 text-xs font-bold px-2 py-0.5 rounded-md flex items-center gap-1">
+                                    <i class="fa-solid fa-robot"></i> AI 실시간 어드바이저
+                                </span>
+                                <span class="text-xs text-amber-700">방금 전</span>
+                            </div>
+                            <div class="mt-3 space-y-2">
+                                <p class="text-sm font-semibold text-amber-950">⚠️ 3시 투어 고객 10분 지연 중</p>
+                                <p class="text-xs text-amber-800">교통 혼잡 구간(E11 도로) 감지됨. 출발 시간을 15분 앞당기거나 고객에게 자동 픽업 안내 메시지를 전송할까요?</p>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex gap-2">
+                            <button class="bg-amber-500 hover:bg-amber-600 text-slate-900 text-xs font-bold px-3 py-1.5 rounded-lg">출발 시간 변경</button>
+                            <button class="bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 text-xs font-medium px-3 py-1.5 rounded-lg">WhatsApp 메시지 전송</button>
+                        </div>
+                    </div>
+
+                    <!-- 오늘 예상 수익 -->
+                    <div class="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm flex flex-col justify-between">
+                        <div>
+                            <span class="text-xs text-slate-500 font-medium">오늘 완료/예정 수익</span>
+                            <h3 class="text-3xl font-bold text-slate-900 mt-1">$ 850 <span class="text-sm font-normal text-slate-400">AED 3,120</span></h3>
+                            <p class="text-xs text-emerald-600 mt-2 font-medium"><i class="fa-solid fa-arrow-trend-up"></i> 지난주 대비 +18% 증가</p>
+                        </div>
+                        <div class="mt-4 pt-4 border-t border-slate-100 flex justify-between text-xs text-slate-500">
+                            <span>확정 투어 3건</span>
+                            <span>대기 예약 1건</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 🟦 (B) 오늘 일정 & 지도 영역 -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    
+                    <!-- 오늘 일정 타임라인 -->
+                    <div class="lg:col-span-2 bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-bold text-slate-900">오늘의 일정 (시간순)</h3>
+                            <span class="text-xs text-slate-400">2026.08.08 (토)</span>
+                        </div>
+
+                        <div class="space-y-4">
+                            <!-- 일정 카드 1 (완료) -->
+                            <div class="flex items-start gap-4 p-4 rounded-xl bg-slate-50 border border-slate-100 opacity-60">
+                                <div class="w-16 text-center shrink-0">
+                                    <span class="text-xs font-bold text-slate-500">09:00</span>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-xs font-semibold px-2 py-0.5 bg-blue-100 text-blue-800 rounded">시티투어</span>
+                                        <h4 class="font-semibold text-sm">두바이 올드타운 문화 체험</h4>
+                                    </div>
+                                    <p class="text-xs text-slate-500 mt-1">고객: 김철수 외 2명 | 픽업: 알 파히디 역사지구</p>
+                                </div>
+                                <span class="text-xs bg-slate-200 text-slate-600 px-2 py-1 rounded font-medium">완료</span>
+                            </div>
+
+                            <!-- 일정 카드 2 (진행 예정) -->
+                            <div class="flex items-start gap-4 p-4 rounded-xl bg-amber-50/50 border border-amber-200">
+                                <div class="w-16 text-center shrink-0">
+                                    <span class="text-xs font-bold text-amber-600">15:00</span>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-xs font-semibold px-2 py-0.5 bg-amber-100 text-amber-800 rounded">사막 사파리</span>
+                                        <h4 class="font-semibold text-sm">붉은 사막 사파리 & 바비큐</h4>
+                                    </div>
+                                    <p class="text-xs text-slate-500 mt-1">고객: John Smith 외 3명 | 픽업: 다운타운 두바이 파라마운트 호텔</p>
+                                </div>
+                                <span class="text-xs bg-amber-500 text-slate-900 font-bold px-2.5 py-1 rounded">진행 예정</span>
+                            </div>
+
+                            <!-- 일정 카드 3 -->
+                            <div class="flex items-start gap-4 p-4 rounded-xl bg-slate-50 border border-slate-100">
+                                <div class="w-16 text-center shrink-0">
+                                    <span class="text-xs font-bold text-slate-700">20:00</span>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-xs font-semibold px-2 py-0.5 bg-purple-100 text-purple-800 rounded">개인 가이드</span>
+                                        <h4 class="font-semibold text-sm">야경 투어 & 폰테인 쇼</h4>
+                                    </div>
+                                    <p class="text-xs text-slate-500 mt-1">고객: Tanaka Yuko | 픽업: 버즈 칼리파 입구</p>
+                                </div>
+                                <span class="text-xs bg-emerald-100 text-emerald-800 font-medium px-2 py-1 rounded">확정</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 고객 픽업 위치 지도 미리보기 -->
+                    <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-center mb-3">
+                                <h3 class="font-bold text-slate-900">다음 픽업 동선 지도</h3>
+                                <button class="text-xs text-amber-600 font-semibold hover:underline">내비 연결</button>
+                            </div>
+                            <!-- 지도 더미 컨테이너 -->
+                            <div class="w-full h-48 bg-slate-100 rounded-xl relative overflow-hidden flex items-center justify-center border border-slate-200">
+                                <i class="fa-solid fa-map-location-dot text-slate-300 text-5xl"></i>
+                                <div class="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1.5 rounded-lg shadow-sm text-xs font-medium">
+                                    📍 픽업: 다운타운 호텔
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+                            <span>예상 이동시간: 22분</span>
+                            <span>현재 교통량: 보통</span>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>
