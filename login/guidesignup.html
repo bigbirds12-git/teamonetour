@@ -2,16 +2,16 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>Guide Signup</title>
-<!-- 파비콘 설정 코드 추가 -->
-    <link rel="icon" href="images/favicon.png" sizes="32x32" type="image/png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guide Signup - Team One Tour</title>
+
 <style>
 * {
     box-sizing: border-box;
 }
 
 body {
-    font-family: Arial;
+    font-family: Arial, sans-serif;
     background: #f5f7fa;
     display: flex;
     justify-content: center;
@@ -39,6 +39,7 @@ input {
     margin-top: 10px;
     border-radius: 6px;
     border: 1px solid #ccc;
+    font-size: 14px;
 }
 
 button {
@@ -50,6 +51,8 @@ button {
     border: none;
     border-radius: 6px;
     cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
 }
 
 button:hover {
@@ -62,6 +65,15 @@ a {
     margin-top: 15px;
     color: #0078ff;
     text-decoration: none;
+    font-size: 14px;
+}
+
+#msg {
+    color: red;
+    margin-top: 12px;
+    text-align: center;
+    font-size: 13px;
+    word-break: break-all;
 }
 </style>
 </head>
@@ -73,31 +85,32 @@ a {
 
     <input type="email" id="email" placeholder="Email">
     <input type="password" id="password" placeholder="Password">
-    <!-- 비밀번호 확인 칸 추가 -->
     <input type="password" id="confirmPassword" placeholder="Confirm Password">
 
     <button onclick="signup()">회원가입</button>
 
-    <p id="msg" style="color:red; margin-top:10px; text-align:center; font-size:14px;"></p>
+    <p id="msg"></p>
 
     <a href="indexforguide.html">이미 계정이 있으신가요? 로그인</a>
 </div>
 
-<!-- Firebase SDK -->
+<!-- Firebase Web SDK (Compat 버전) -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 
 <script>
+    // 이미지의 실제 Firebase 콘솔 정보 적용
     const firebaseConfig = {
-      apiKey: "AIzaSyqGsQsy_MRdq3HWdwJw8o2q6YwKz-aQPs",
-      authDomain: "guidelogin-b0603.firebaseapp.com",
-      projectId: "guidelogin-b0603",
-      storageBucket: "guidelogin-b0603.firebasestorage.app",
+      apiKey: "AIzaSyCgOSQsv_MRdaqrW4wJw0q2QY6wXZ-azQs",
+      authDomain: "guidelogin-b0053.firebaseapp.com",
+      projectId: "guidelogin-b0053",
+      storageBucket: "guidelogin-b0053.firebasestorage.app",
       messagingSenderId: "981519805247",
       appId: "1:981519805247:web:cc32682b177a4957cc0818a",
-      measurementId: "G-2V4T45CJNQ"
+      measurementId: "G-2VR4TS6JND"
     };
 
+    // Firebase 초기화
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
 
@@ -107,10 +120,8 @@ a {
         const confirmPassword = document.getElementById("confirmPassword").value;
         const msg = document.getElementById("msg");
 
-        // 안내 문구 초기화
         msg.innerText = "";
 
-        // 입력값 검증
         if (!email || !password || !confirmPassword) {
             msg.innerText = "모든 항목을 입력해 주세요.";
             return;
@@ -121,14 +132,22 @@ a {
             return;
         }
 
-        // Firebase 회원가입 시도
         auth.createUserWithEmailAndPassword(email, password)
-            .then(() => {
-                // 회원가입 성공 → 로그인 페이지로 이동
+            .then((userCredential) => {
+                alert("회원가입이 완료되었습니다.");
                 window.location.href = "indexforguide.html";
             })
-            .catch(error => {
-                msg.innerText = error.message;
+            .catch((error) => {
+                // 한글 에러 메시지 처리
+                if (error.code === 'auth/email-already-in-use') {
+                    msg.innerText = "이미 가입되어 있는 이메일 주소입니다.";
+                } else if (error.code === 'auth/weak-password') {
+                    msg.innerText = "비밀번호는 최소 6자리 이상이어야 합니다.";
+                } else if (error.code === 'auth/invalid-email') {
+                    msg.innerText = "올바른 이메일 형식이 아닙니다.";
+                } else {
+                    msg.innerText = error.message;
+                }
             });
     }
 </script>
