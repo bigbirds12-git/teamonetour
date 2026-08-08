@@ -89,7 +89,7 @@ button:hover {
 
         auth.signInWithEmailAndPassword(email, password)
             .then(() => {
-                window.location.href = "guide-dashboard.html"; // 로그인 성공 시 이동
+                window.location.href = "guidedata/guide-dashboard.html"; // 로그인 성공 시 이동
             })
             .catch(error => {
                 document.getElementById("msg").innerText = error.message;
