@@ -69,24 +69,28 @@ a {
     <a href="guidesignup.html">회원가입</a>
 </div>
 
-<!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script>
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
 
-<script>
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyAqsQSy_MRdq3HhdJw08o2q6yWkz-aQPs",
+  apiKey: "AIzaSyCgOSQsv_MRdaqrW4wJw0q2QY6wXZ-azQs",
   authDomain: "guidelogin-b0053.firebaseapp.com",
   projectId: "guidelogin-b0053",
-  storageBucket: "guidelogin-b0053.appspot.com",
-  messagingSenderId: "981519850247",
-  appId: "1:981519850247:web:cc23628b17704957cc8618a",
-  measurementId: "G-2V4745CJNQ"
+  storageBucket: "guidelogin-b0053.firebasestorage.app",
+  messagingSenderId: "981519805247",
+  appId: "1:981519805247:web:cc32682b177a4957c0818a",
+  measurementId: "G-2VR4TS6JND"
 };
 
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+    
 function login() {
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
