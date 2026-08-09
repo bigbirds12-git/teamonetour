@@ -116,13 +116,13 @@ body {
 
     /* 로그인 여부 확인 (미로그인 → 로그인 페이지로 이동) */
     auth.onAuthStateChanged(user => {
-        if (!user) {
-            window.location.href = "guidelogin.html";
-        } else {
-            document.getElementById("guideEmail").innerText =
-                "로그인한 가이드: " + user.email;
-        }
-    });
+    if (!user) {
+        window.location.href = "../login/guidelogin.html";
+    } else {
+        document.getElementById("guideEmail").innerText =
+            "로그인한 가이드: " + user.email;
+    }
+});
 
     /* 로그아웃 기능 */
     function logout() {
