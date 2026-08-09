@@ -1,1 +1,147 @@
- 
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>Guide Registration</title>
+
+<style>
+body {
+    font-family: Arial;
+    background: #f5f7fa;
+    padding: 40px;
+}
+
+.container {
+    max-width: 600px;
+    margin: auto;
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+input, textarea, select {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 20px;
+    background: #0078ff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #005fcc;
+}
+
+#msg {
+    margin-top: 15px;
+    color: red;
+    text-align: center;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2>Guide Information Registration</h2>
+
+    <input type="text" id="name" placeholder="Full Name">
+    <input type="text" id="phone" placeholder="Phone Number">
+    <input type="text" id="languages" placeholder="Languages (예: Korean, English, Arabic)">
+    <input type="text" id="experience" placeholder="Experience (예: 5 years)">
+    <textarea id="bio" placeholder="Introduce yourself" rows="5"></textarea>
+
+    <button onclick="saveGuideInfo()">Save Information</button>
+
+    <p id="msg"></p>
+</div>
+
+<!-- Firebase v10 SDK -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { 
+        getAuth, 
+        onAuthStateChanged 
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { 
+        getFirestore, 
+        doc, 
+        setDoc 
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCgOSQsv_MRdaqrW4wJw0q2QY6wXZ-azQs",
+      authDomain: "guidelogin-b0053.firebaseapp.com",
+      projectId: "guidelogin-b0053",
+      storageBucket: "guidelogin-b0053.firebasestorage.app",
+      messagingSenderId: "981519805247",
+      appId: "1:981519805247:web:cc32682b177a4957c0818a",
+      measurementId: "G-2VR4TS6JND"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    let currentUser = null;
+
+    /* 로그인 여부 체크 */
+    onAuthStateChanged(auth, user => {
+        if (!user) {
+            window.location.href = "../login/guidelogin.html";
+        } else {
+            currentUser = user;
+        }
+    });
+
+    /* 가이드 정보 저장 */
+    window.saveGuideInfo = async function() {
+        const name = document.getElementById("name").value;
+        const phone = document.getElementById("phone").value;
+        const languages = document.getElementById("languages").value;
+        const experience = document.getElementById("experience").value;
+        const bio = document.getElementById("bio").value;
+
+        if (!name || !phone || !languages || !experience || !bio) {
+            document.getElementById("msg").innerText = "모든 정보를 입력해주세요.";
+            return;
+        }
+
+        try {
+            await setDoc(doc(db, "guides", currentUser.uid), {
+                email: currentUser.email,
+                name: name,
+                phone: phone,
+                languages: languages,
+                experience: experience,
+                bio: bio,
+                createdAt: new Date()
+            });
+
+            alert("Guide information saved successfully!");
+            window.location.href = "guide-dashboard.html";
+
+        } catch (error) {
+            document.getElementById("msg").innerText = error.message;
+        }
+    }
+</script>
+
+</body>
+</html>
