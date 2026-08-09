@@ -40,10 +40,6 @@ body {
     flex: 1;
     padding: 30px;
 }
-.main h1 {
-    font-size: 28px;
-    margin-bottom: 10px;
-}
 .logout-btn {
     padding: 10px 16px;
     background: #ff4d4d;
@@ -81,40 +77,41 @@ body {
 
 </div>
 
-<!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script>
+<!-- Firebase v10 SDK -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } 
+        from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-<script>
-const firebaseConfig = {
-  apiKey: "AIzaSyAqsQSy_MRdq3HhdJw08o2q6yWkz-aQPs",
-  authDomain: "guidelogin-b0053.firebaseapp.com",
-  projectId: "guidelogin-b0053",
-  storageBucket: "guidelogin-b0053.appspot.com",
-  messagingSenderId: "981519850247",
-  appId: "1:981519850247:web:cc23628b17704957cc8618a",
-  measurementId: "G-2V4745CJNQ"
-};
+    const firebaseConfig = {
+      apiKey: "AIzaSyCgOSQsv_MRdaqrW4wJw0q2QY6wXZ-azQs",
+      authDomain: "guidelogin-b0053.firebaseapp.com",
+      projectId: "guidelogin-b0053",
+      storageBucket: "guidelogin-b0053.firebasestorage.app",
+      messagingSenderId: "981519805247",
+      appId: "1:981519805247:web:cc32682b177a4957c0818a",
+      measurementId: "G-2VR4TS6JND"
+    };
 
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
 
-/* 로그인 여부 체크 */
-auth.onAuthStateChanged(user => {
-    if (!user) {
-        window.location.href = "../login/guidelogin.html";
-    } else {
-        document.getElementById("guideEmail").innerText =
-            "로그인한 가이드: " + user.email;
-    }
-});
-
-/* 로그아웃 */
-function logout() {
-    auth.signOut().then(() => {
-        window.location.href = "../login/guidelogin.html";
+    /* 로그인 여부 체크 */
+    onAuthStateChanged(auth, user => {
+        if (!user) {
+            window.location.href = "../login/guidelogin.html";
+        } else {
+            document.getElementById("guideEmail").innerText =
+                "로그인한 가이드: " + user.email;
+        }
     });
-}
+
+    /* 로그아웃 */
+    window.logout = function() {
+        signOut(auth).then(() => {
+            window.location.href = "../login/guidelogin.html";
+        });
+    }
 </script>
 
 </body>
