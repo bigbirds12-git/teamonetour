@@ -70,14 +70,14 @@ button:hover {
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script>
 
 <script>
- const firebaseConfig = {
-      apiKey: "AIzaSyqGsQsy_MRdq3HWdwJw8o2q6YwKz-aQPs",
-      authDomain: "guidelogin-b0603.firebaseapp.com",
-      projectId: "guidelogin-b0603",
-      storageBucket: "guidelogin-b0603.firebasestorage.app",
-      messagingSenderId: "981519805247",
-      appId: "1:981519805247:web:cc32682b177a4957cc0818a",
-      measurementId: "G-2V4T45CJNQ"
+const firebaseConfig = {
+      apiKey: "AIzaSyAqsQSy_MRdq3HhdJw08o2q6yWkz-aQPs",
+      authDomain: "guidelogin-b0683.firebaseapp.com",
+      projectId: "guidelogin-b0683",
+      storageBucket: "guidelogin-b0683.appspot.com",
+      messagingSenderId: "981519850247",
+      appId: "1:981519850247:web:cc23628b17704957cc8618a",
+      measurementId: "G-2V4745CJNQ"
     };
 
     firebase.initializeApp(firebaseConfig);
@@ -89,7 +89,8 @@ button:hover {
 
         auth.signInWithEmailAndPassword(email, password)
             .then(() => {
-               window.location.href = "../guidedata/guide-dashboard.html"; // 로그인 성공 시 이동
+                // 🔥 로그인 성공 → 대시보드로 이동
+                window.location.href = "../guidedata/guide-dashboard.html";
             })
             .catch(error => {
                 document.getElementById("msg").innerText = error.message;
