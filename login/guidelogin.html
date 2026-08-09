@@ -13,7 +13,6 @@ body {
     align-items: center;
     height: 100vh;
 }
-
 .login-box {
     width: 360px;
     background: white;
@@ -21,12 +20,10 @@ body {
     border-radius: 12px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
-
 .login-box h2 {
     text-align: center;
     margin-bottom: 20px;
 }
-
 input {
     width: 100%;
     padding: 12px;
@@ -34,7 +31,6 @@ input {
     border-radius: 6px;
     border: 1px solid #ccc;
 }
-
 button {
     width: 100%;
     padding: 12px;
@@ -45,9 +41,15 @@ button {
     border-radius: 6px;
     cursor: pointer;
 }
-
 button:hover {
     background: #005fcc;
+}
+a {
+    display: block;
+    text-align: center;
+    margin-top: 15px;
+    color: #0078ff;
+    text-decoration: none;
 }
 </style>
 </head>
@@ -63,6 +65,8 @@ button:hover {
     <button onclick="login()">로그인</button>
 
     <p id="msg" style="color:red; margin-top:10px;"></p>
+
+    <a href="guidesignup.html">회원가입</a>
 </div>
 
 <!-- Firebase SDK -->
@@ -71,31 +75,30 @@ button:hover {
 
 <script>
 const firebaseConfig = {
-      apiKey: "AIzaSyAqsQSy_MRdq3HhdJw08o2q6yWkz-aQPs",
-      authDomain: "guidelogin-b0683.firebaseapp.com",
-      projectId: "guidelogin-b0683",
-      storageBucket: "guidelogin-b0683.appspot.com",
-      messagingSenderId: "981519850247",
-      appId: "1:981519850247:web:cc23628b17704957cc8618a",
-      measurementId: "G-2V4745CJNQ"
-    };
+  apiKey: "AIzaSyAqsQSy_MRdq3HhdJw08o2q6yWkz-aQPs",
+  authDomain: "guidelogin-b0683.firebaseapp.com",
+  projectId: "guidelogin-b0683",
+  storageBucket: "guidelogin-b0683.appspot.com",
+  messagingSenderId: "981519850247",
+  appId: "1:981519850247:web:cc23628b17704957cc8618a",
+  measurementId: "G-2V4745CJNQ"
+};
 
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
 
-    function login() {
-        const email = document.getElementById("email").value;
-        const password = document.getElementById("password").value;
+function login() {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
 
-        auth.signInWithEmailAndPassword(email, password)
-            .then(() => {
-                // 🔥 로그인 성공 → 대시보드로 이동
-                window.location.href = "../guidedata/guide-dashboard.html";
-            })
-            .catch(error => {
-                document.getElementById("msg").innerText = error.message;
-            });
-    }
+    auth.signInWithEmailAndPassword(email, password)
+        .then(() => {
+            window.location.href = "../guidedata/guide-dashboard.html";
+        })
+        .catch(error => {
+            document.getElementById("msg").innerText = error.message;
+        });
+}
 </script>
 
 </body>
