@@ -6,82 +6,106 @@
 
 <style>
 body {
-    margin: 0;
-    font-family: Arial, sans-serif;
+    font-family: Arial;
     background: #f5f7fa;
-}
-.dashboard {
+    margin: 0;
     display: flex;
-    height: 100vh;
 }
+
 .sidebar {
-    width: 240px;
-    background: #ffffff;
-    border-right: 1px solid #ddd;
+    width: 220px;
+    background: #1f2937;
+    color: white;
+    height: 100vh;
     padding: 20px;
 }
-.sidebar h2 {
-    font-size: 20px;
+.sidebar h3 {
     margin-bottom: 20px;
 }
 .sidebar a {
     display: block;
     padding: 12px;
-    margin-bottom: 10px;
-    background: #f0f0f0;
-    border-radius: 6px;
+    margin-top: 10px;
+    background: #374151;
+    color: white;
     text-decoration: none;
-    color: #333;
+    border-radius: 6px;
 }
 .sidebar a:hover {
-    background: #e0e0e0;
+    background: #4b5563;
 }
+
 .main {
     flex: 1;
     padding: 30px;
 }
+
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+
 .logout-btn {
-    padding: 10px 16px;
-    background: #ff4d4d;
+    background: #ef4444;
     color: white;
+    padding: 10px 16px;
     border: none;
     border-radius: 6px;
     cursor: pointer;
-    margin-top: 20px;
 }
 .logout-btn:hover {
-    background: #d93636;
+    background: #dc2626;
 }
 </style>
 </head>
 
 <body>
 
-<div class="dashboard">
-
-    <div class="sidebar">
-        <h2>Guide Menu</h2>
-        <a href="#">Home</a>
-        <a href="#">My Schedule</a>
-        <a href="#">Bookings</a>
-        <a href="#">Messages</a>
-        <a href="#">Revenue</a>
-    </div>
-
-    <div class="main">
-        <h1>Guide Dashboard</h1>
-        <p id="guideEmail">로그인 정보 확인 중...</p>
-
-        <button class="logout-btn" onclick="logout()">Logout</button>
-    </div>
-
+<div class="sidebar">
+    <h3>Guide Menu</h3>
+    <a href="#">Home</a>
+    <a href="#">My Schedule</a>
+    <a href="#">Bookings</a>
+    <a href="#">Messages</a>
+    <a href="#">Revenue</a>
+    <a href="guide-registration.html">Edit Profile</a>
 </div>
 
-<!-- Firebase v10 SDK -->
+<div class="main">
+    <h1>Guide Dashboard</h1>
+    <p id="guideEmail"></p>
+
+    <button class="logout-btn" onclick="logout()">Logout</button>
+
+    <div class="card">
+        <h2>내 프로필 요약</h2>
+        <p id="profileSummary">불러오는 중...</p>
+    </div>
+
+    <div class="card">
+        <h2>오늘 일정</h2>
+        <p>AI 기반 일정 추천 기능 준비 중</p>
+    </div>
+
+    <div class="card">
+        <h2>예약 요청</h2>
+        <p>AI가 여행자와 자동 매칭하는 기능 준비 중</p>
+    </div>
+
+    <div class="card">
+        <h2>AI 추천</h2>
+        <p id="aiRecommend">가이드 전문 분야 기반 추천을 분석 중...</p>
+    </div>
+</div>
+
+<!-- Firebase v10 -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut } 
-        from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCgOSQsv_MRdaqrW4wJw0q2QY6wXZ-azQs",
@@ -95,18 +119,41 @@ body {
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
+    const db = getFirestore(app);
 
-    /* 로그인 여부 체크 */
-    onAuthStateChanged(auth, user => {
+    onAuthStateChanged(auth, async user => {
         if (!user) {
             window.location.href = "../login/guidelogin.html";
-        } else {
-            document.getElementById("guideEmail").innerText =
-                "로그인한 가이드: " + user.email;
+            return;
+        }
+
+        document.getElementById("guideEmail").innerText = "로그인한 가이드: " + user.email;
+
+        const docRef = doc(db, "guides", user.uid);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+            const data = docSnap.data();
+
+            let completeness = 0;
+            const fields = ["name", "gender", "languages", "experience", "specialties", "regions", "price_hour", "price_day", "bio"];
+            fields.forEach(f => { if (data[f]) completeness += 1; });
+
+            const percent = Math.round((completeness / fields.length) * 100);
+
+            document.getElementById("profileSummary").innerHTML =
+                `<strong>이름/닉네임:</strong> ${data.name}<br>
+                 <strong>성별:</strong> ${data.gender}<br>
+                 <strong>언어:</strong> ${data.languages}<br>
+                 <strong>전문 분야:</strong> ${data.specialties.join(", ")}<br>
+                 <strong>활동 지역:</strong> ${data.regions.join(", ")}<br>
+                 <strong>프로필 완성도:</strong> ${percent}%`;
+
+            document.getElementById("aiRecommend").innerText =
+                `당신의 전문 분야(${data.specialties.join(", ")})에 맞는 새로운 예약 요청을 분석 중입니다.`;
         }
     });
 
-    /* 로그아웃 */
     window.logout = function() {
         signOut(auth).then(() => {
             window.location.href = "../login/guidelogin.html";
