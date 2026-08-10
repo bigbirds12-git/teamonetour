@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>Revenue</title>
+
+<style>
+body {
+    font-family: Arial;
+    background: #f5f7fa;
+    margin: 0;
+    display: flex;
+}
+
+.sidebar {
+    width: 220px;
+    background: #1f2937;
+    color: white;
+    height: 100vh;
+    padding: 20px;
+}
+.sidebar h3 {
+    margin-bottom: 20px;
+}
+.sidebar a {
+    display: block;
+    padding: 12px;
+    margin-top: 10px;
+    background: #374151;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+}
+.sidebar a:hover {
+    background: #4b5563;
+}
+
+.main {
+    flex: 1;
+    padding: 30px;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+
+input, select, textarea {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+button {
+    padding: 12px 20px;
+    background: #0078ff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 15px;
+}
+button:hover {
+    background: #005fcc;
+}
+
+.revenue-item {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+}
+.revenue-item:last-child {
+    border-bottom: none;
+}
+
+.total-box {
+    font-size: 22px;
+    font-weight: bold;
+    padding: 20px;
+    background: #e0f2fe;
+    border-radius: 12px;
+    margin-bottom: 20px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="sidebar">
+    <h3>Guide Menu</h3>
+    <a href="guide-dashboard.html">Home</a>
+    <a href="my-schedule.html">My Schedule</a>
+    <a href="/guidedata/bookings.html">Bookings</a>
+    <a href="/guidedata/messages.html">Messages</a>
+    <a href="/guidedata/revenue.html">Revenue</a>
+    <a href="../login/guide-registration.html">Edit Profile</a>
+</div>
+
+<div class="main">
+    <h1>Revenue</h1>
+
+    <div class="total-box">
+        총 수익: <span id="totalRevenue">0</span> AED
+    </div>
+
+    <div class="card">
+        <h2>수익 추가</h2>
+
+        <input id="revDate" type="date">
+        <input id="revAmount" type="number" placeholder="금액 (AED)">
+        
+        <label>수익 유형</label>
+        <select id="revType">
+            <option value="예약">예약</option>
+            <option value="팁">팁</option>
+            <option value="추가 서비스">추가 서비스</option>
+        </select>
+
+        <textarea id="revDesc" placeholder="설명"></textarea>
+
+        <button onclick="addRevenue()">수익 저장</button>
+        <p id="msg" style="color:red;"></p>
+    </div>
+
+    <div class="card">
+        <h2>수익 내역</h2>
+        <div id="revenueList">불러오는 중...</div>
+    </div>
+
+    <div class="card">
+        <h2>AI 수익 분석</h2>
+        <p>가이드 활동 패턴 기반 수익 예측 기능 준비 중</p>
+    </div>
+</div>
+
+<!-- Firebase v10 -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { 
+        getFirestore, collection, addDoc, query, where, getDocs 
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCgOSQsv_MRdaqrW4wJw0q2QY6wXZ-azQs",
+      authDomain: "guidelogin-b0053.firebaseapp.com",
+      projectId: "guidelogin-b0053",
+      storageBucket: "guidelogin-b0053.firebasestorage.app",
+      messagingSenderId: "981519805247",
+      appId: "1:981519805247:web:cc32682b177a4957c0818a",
+      measurementId: "G-2VR4TS6JND"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    let currentUser = null;
+
+    onAuthStateChanged(auth, async user => {
+        if (!user) {
+            window.location.href = "../login/guidelogin.html";
+            return;
+        }
+        currentUser = user;
+        loadRevenue();
+    });
+
+    async function addRevenue() {
+        if (!currentUser) return;
+
+        const data = {
+            guideUid: currentUser.uid,
+            date: document.getElementById("revDate").value,
+            amount: Number(document.getElementById("revAmount").value),
+            type: document.getElementById("revType").value,
+            description: document.getElementById("revDesc").value,
+            createdAt: new Date()
+        };
+
+        try {
+            await addDoc(collection(db, "revenue"), data);
+            document.getElementById("msg").innerText = "수익이 저장되었습니다.";
+            loadRevenue();
+        } catch (err) {
+            document.getElementById("msg").innerText = err.message;
+        }
+    }
+
+    async function loadRevenue() {
+        const revenueList = document.getElementById("revenueList");
+        const totalBox = document.getElementById("totalRevenue");
+
+        revenueList.innerHTML = "";
+        let total = 0;
+
+        const q = query(
+            collection(db, "revenue"),
+            where("guideUid", "==", currentUser.uid)
+        );
+
+        const querySnapshot = await getDocs(q);
+
+        querySnapshot.forEach(doc => {
+            const r = doc.data();
+            total += r.amount;
+
+            revenueList.innerHTML += `
+                <div class="revenue-item">
+                    <strong>${r.date}</strong><br>
+                    <strong>${r.amount} AED</strong><br>
+                    <em>${r.type}</em><br>
+                    ${r.description}
+                </div>
+            `;
+        });
+
+        totalBox.innerText = total;
+
+        if (revenueList.innerHTML === "") {
+            revenueList.innerHTML = "수익 내역이 없습니다.";
+        }
+    }
+</script>
+
+</body>
+</html>
