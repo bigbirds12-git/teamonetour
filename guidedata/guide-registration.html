@@ -59,9 +59,17 @@ button:hover {
 <div class="reg-box">
     <h2>Guide Registration</h2>
 
-    <input id="name" placeholder="이름">
+    <input id="name" placeholder="이름 또는 닉네임">
     <input id="phone" placeholder="전화번호">
     <input id="nationality" placeholder="국적">
+
+    <label style="margin-top:15px;">성별</label>
+    <select id="gender">
+        <option value="남성">남성</option>
+        <option value="여성">여성</option>
+        <option value="기타">기타</option>
+    </select>
+
     <input id="languages" placeholder="가능 언어 (예: Korean, English)">
     <input id="experience" placeholder="경력 (예: 5년)">
 
@@ -140,6 +148,7 @@ button:hover {
             name: document.getElementById("name").value,
             phone: document.getElementById("phone").value,
             nationality: document.getElementById("nationality").value,
+            gender: document.getElementById("gender").value,
             languages: document.getElementById("languages").value,
             experience: document.getElementById("experience").value,
             specialties: specialties,
