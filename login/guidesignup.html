@@ -94,7 +94,7 @@ a {
 
         createUserWithEmailAndPassword(auth, email, password)
             .then(() => {
-                window.location.href = "/..guide-registration.html";
+                window.location.href = "../guidedata/guide-registration.html";
             })
             .catch(error => {
                 document.getElementById("msg").innerText = error.message;
