@@ -1,1 +1,198 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>Bookings</title>
+
+<style>
+body {
+    font-family: Arial;
+    background: #f5f7fa;
+    margin: 0;
+    display: flex;
+}
+
+.sidebar {
+    width: 220px;
+    background: #1f2937;
+    color: white;
+    height: 100vh;
+    padding: 20px;
+}
+.sidebar h3 {
+    margin-bottom: 20px;
+}
+.sidebar a {
+    display: block;
+    padding: 12px;
+    margin-top: 10px;
+    background: #374151;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+}
+.sidebar a:hover {
+    background: #4b5563;
+}
+
+.main {
+    flex: 1;
+    padding: 30px;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+
+.booking-item {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+}
+.booking-item:last-child {
+    border-bottom: none;
+}
+.status-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    margin-top: 4px;
+}
+.status-pending {
+    background: #fbbf24;
+    color: #1f2937;
+}
+.status-accepted {
+    background: #22c55e;
+    color: white;
+}
+.status-rejected {
+    background: #ef4444;
+    color: white;
+}
+button {
+    padding: 6px 10px;
+    margin-right: 6px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+.btn-accept {
+    background: #22c55e;
+    color: white;
+}
+.btn-reject {
+    background: #ef4444;
+    color: white;
+}
+</style>
+</head>
+
+<body>
+
+<div class="sidebar">
+    <h3>Guide Menu</h3>
+    <a href="guide-dashboard.html">Home</a>
+    <a href="my-schedule.html">My Schedule</a>
+    <a href="bookings.html">Bookings</a>
+    <a href="messages.html">Messages</a>
+    <a href="revenue.html">Revenue</a>
+    <a href="../login/guide-registration.html">Edit Profile</a>
+</div>
+
+<div class="main">
+    <h1>Bookings</h1>
+
+    <div class="card">
+        <h2>예약 요청 목록</h2>
+        <div id="bookingList">불러오는 중...</div>
+    </div>
+
+    <div class="card">
+        <h2>AI 예약 분석</h2>
+        <p>가이드 전문 분야와 일정 기반 예약 추천 기능 준비 중</p>
+    </div>
+</div>
+
+<!-- Firebase v10 -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { 
+        getFirestore, collection, query, where, getDocs, doc, updateDoc 
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCgOSQsv_MRdaqrW4wJw0q2QY6wXZ-azQs",
+      authDomain: "guidelogin-b0053.firebaseapp.com",
+      projectId: "guidelogin-b0053",
+      storageBucket: "guidelogin-b0053.firebasestorage.app",
+      messagingSenderId: "981519805247",
+      appId: "1:981519805247:web:cc32682b177a4957c0818a",
+      measurementId: "G-2VR4TS6JND"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    let currentUser = null;
+
+    onAuthStateChanged(auth, async user => {
+        if (!user) {
+            window.location.href = "../login/guidelogin.html";
+            return;
+        }
+        currentUser = user;
+        loadBookings();
+    });
+
+    async function loadBookings() {
+        const bookingList = document.getElementById("bookingList");
+        bookingList.innerHTML = "";
+
+        const q = query(
+            collection(db, "bookings"),
+            where("guideUid", "==", currentUser.uid)
+        );
+
+        const querySnapshot = await getDocs(q);
+
+        querySnapshot.forEach(bdoc => {
+            const b = bdoc.data();
+            const statusClass = 
+                b.status === "accepted" ? "status-accepted" :
+                b.status === "rejected" ? "status-rejected" :
+                "status-pending";
+
+            bookingList.innerHTML += `
+                <div class="booking-item">
+                    <strong>${b.date} ${b.time}</strong><br>
+                    <strong>여행자:</strong> ${b.travelerName} (${b.travelerEmail})<br>
+                    <strong>지역/분야:</strong> ${b.region} / ${b.specialty}<br>
+                    <strong>상태:</strong> 
+                    <span class="status-badge ${statusClass}">${b.status}</span><br>
+                    <button class="btn-accept" onclick="updateStatus('${bdoc.id}', 'accepted')">수락</button>
+                    <button class="btn-reject" onclick="updateStatus('${bdoc.id}', 'rejected')">거절</button>
+                </div>
+            `;
+        });
+
+        if (bookingList.innerHTML === "") {
+            bookingList.innerHTML = "현재 예약 요청이 없습니다.";
+        }
+    }
+
+    window.updateStatus = async function(bookingId, newStatus) {
+        await updateDoc(doc(db, "bookings", bookingId), { status: newStatus });
+        loadBookings();
+    }
+</script>
+
+</body>
+</html>
 
