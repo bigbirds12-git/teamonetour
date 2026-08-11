@@ -85,6 +85,14 @@ button:hover {
     border-radius: 12px;
     margin-bottom: 20px;
 }
+
+.ai-box {
+    background: #eef6ff;
+    padding: 15px;
+    border-left: 6px solid #0078ff;
+    border-radius: 8px;
+    margin-top: 10px;
+}
 </style>
 </head>
 
@@ -92,12 +100,12 @@ button:hover {
 
 <div class="sidebar">
     <h3>Guide Menu</h3>
-    <a href="guide-dashboard.html">Home</a>
-    <a href="my-schedule.html">My Schedule</a>
+    <a href="/guidedata/guide-dashboard.html">Home</a>
+    <a href="/guidedata/my-schedule.html">My Schedule</a>
     <a href="/guidedata/bookings.html">Bookings</a>
     <a href="/guidedata/messages.html">Messages</a>
     <a href="/guidedata/revenue.html">Revenue</a>
-    <a href="../login/guide-registration.html">Edit Profile</a>
+    <a href="/guidedata/edit-profile.html">Edit Profile</a>
 </div>
 
 <div class="main">
@@ -132,8 +140,8 @@ button:hover {
     </div>
 
     <div class="card">
-        <h2>AI 수익 분석</h2>
-        <p>가이드 활동 패턴 기반 수익 예측 기능 준비 중</p>
+        <h2>AI 수익 예측</h2>
+        <div id="aiRevenuePredict" class="ai-box">AI 분석 중...</div>
     </div>
 </div>
 
@@ -197,6 +205,7 @@ button:hover {
 
         revenueList.innerHTML = "";
         let total = 0;
+        let revenueArray = [];
 
         const q = query(
             collection(db, "revenue"),
@@ -208,6 +217,7 @@ button:hover {
         querySnapshot.forEach(doc => {
             const r = doc.data();
             total += r.amount;
+            revenueArray.push(r);
 
             revenueList.innerHTML += `
                 <div class="revenue-item">
@@ -224,6 +234,33 @@ button:hover {
         if (revenueList.innerHTML === "") {
             revenueList.innerHTML = "수익 내역이 없습니다.";
         }
+
+        // AI 수익 예측 실행
+        predictRevenue(revenueArray);
+    }
+
+    // AI 수익 예측 기능
+    function predictRevenue(list) {
+        if (list.length === 0) {
+            document.getElementById("aiRevenuePredict").innerText = "데이터가 부족하여 예측할 수 없습니다.";
+            return;
+        }
+
+        let total = 0;
+        list.forEach(r => total += r.amount);
+
+        const avg = total / list.length;
+        const nextMonth = avg * 30; // 단순 예측
+
+        let trend = "증가 추세";
+        if (list.length >= 2 && list[list.length - 1].amount < list[list.length - 2].amount) {
+            trend = "감소 추세";
+        }
+
+        document.getElementById("aiRevenuePredict").innerHTML =
+            `최근 평균 수익: ${Math.round(avg)} AED<br>
+             추세: ${trend}<br>
+             다음 달 예상 수익: ${Math.round(nextMonth)} AED`;
     }
 </script>
 
