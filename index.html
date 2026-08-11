@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>Team One Tour</title>
+<title>Team One Tour – AI 여행 플랫폼</title>
 
 <style>
 body {
@@ -21,7 +21,7 @@ body {
 }
 
 .header a {
-    margin-left: 15px;
+    margin-left: 20px;
     text-decoration: none;
     color: #0078ff;
     font-weight: bold;
@@ -35,12 +35,12 @@ body {
 }
 
 .hero h1 {
-    font-size: 40px;
+    font-size: 42px;
     margin-bottom: 10px;
 }
 
 .hero p {
-    font-size: 20px;
+    font-size: 22px;
     margin-bottom: 30px;
 }
 
@@ -58,27 +58,27 @@ body {
     text-align: center;
 }
 
-.icon-grid {
+.grid {
     display: flex;
     justify-content: center;
     gap: 40px;
-    margin-top: 20px;
+    flex-wrap: wrap;
 }
 
-.icon-box {
+.box {
     background: white;
     padding: 20px;
-    width: 180px;
+    width: 220px;
     border-radius: 12px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
-.icon-box img {
-    width: 60px;
+.box img {
+    width: 70px;
     margin-bottom: 10px;
 }
 
-.icon-box a {
+.box a {
     display: block;
     margin-top: 10px;
     text-decoration: none;
@@ -102,32 +102,58 @@ body {
     <div><strong>Team One Tour</strong></div>
     <div>
         <a href="/guidedata/traveler-guides.html">Guides</a>
+        <a href="/guidedata/ai-itinerary.html">AI Itinerary</a>
+        <a href="/guidedata/ai-guide-matching.html">AI Guide Match</a>
+        <a href="/guidedata/ai-chat.html">AI Chat</a>
+        <a href="/guidedata/ai-voice-chat.html">AI Voice</a>
         <a href="/login/guidelogin.html">Guide Login</a>
-        <a href="/login/guidesignup.html">Guide Signup</a>
         <a href="/admin/admin-dashboard.html">Admin</a>
     </div>
 </div>
 
-<!-- Hero Section -->
+<!-- Hero -->
 <div class="hero">
-    <h1>팀원 투어</h1>
+    <h1>AI 기반 여행 플랫폼</h1>
     <p>정보는 AI로, 감동은 현지 전문 가이드로</p>
-    <a href="/guidedata/traveler-guides.html" class="btn">가이드 찾기</a>
+    <a href="/guidedata/ai-itinerary.html" class="btn">AI 여행 일정 생성</a>
+</div>
+
+<!-- AI Services -->
+<div class="section">
+    <h2>AI 여행 서비스</h2>
+    <div class="grid">
+        <div class="box">
+            <img src="/images/guide-icon.png">
+            <a href="/guidedata/ai-itinerary.html">AI 일정 생성</a>
+        </div>
+        <div class="box">
+            <img src="/images/calendar-icon.png">
+            <a href="/guidedata/ai-guide-matching.html">AI 가이드 추천</a>
+        </div>
+        <div class="box">
+            <img src="/images/message-icon.png">
+            <a href="/guidedata/ai-chat.html">AI 자동 상담</a>
+        </div>
+        <div class="box">
+            <img src="/images/message-icon.png">
+            <a href="/guidedata/ai-voice-chat.html">AI 음성 상담</a>
+        </div>
+    </div>
 </div>
 
 <!-- Traveler Services -->
 <div class="section">
     <h2>여행자 서비스</h2>
-    <div class="icon-grid">
-        <div class="icon-box">
+    <div class="grid">
+        <div class="box">
             <img src="/images/guide-icon.png">
             <a href="/guidedata/traveler-guides.html">가이드 찾기</a>
         </div>
-        <div class="icon-box">
+        <div class="box">
             <img src="/images/calendar-icon.png">
             <a href="/guidedata/traveler-guides.html">예약하기</a>
         </div>
-        <div class="icon-box">
+        <div class="box">
             <img src="/images/message-icon.png">
             <a href="/guidedata/traveler-guides.html">메시지 보내기</a>
         </div>
