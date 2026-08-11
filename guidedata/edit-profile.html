@@ -240,6 +240,7 @@ button:hover {
 
         const g = snap.data();
 
+        // 기본 필드 로딩
         name.value = g.name || "";
         phone.value = g.phone || "";
         nationality.value = g.nationality || "South Korea";
@@ -249,17 +250,17 @@ button:hover {
         price_day.value = g.price_day || "";
         bio.value = g.bio || "";
 
-        // languages
+        // 언어 로딩
         Array.from(languages.options).forEach(opt => {
             if (g.languages?.includes(opt.value)) opt.selected = true;
         });
 
-        // specialties
+        // 전문 분야 로딩
         Array.from(specialties.options).forEach(opt => {
             if (g.specialties?.includes(opt.value)) opt.selected = true;
         });
 
-        // regions
+        // 활동 지역 로딩
         Array.from(regions.options).forEach(opt => {
             if (g.regions?.includes(opt.value)) opt.selected = true;
         });
@@ -277,7 +278,7 @@ button:hover {
                 nationality: nationality.value,
                 gender: gender.value,
                 languages: languagesArr,
-                experience: experience.value,  // 숫자 저장
+                experience: experience.value,
                 specialties: specialtiesArr,
                 regions: regionsArr,
                 price_hour: price_hour.value,
