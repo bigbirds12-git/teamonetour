@@ -4,21 +4,28 @@
 <meta charset="UTF-8">
 <title>Team One Tour – AI 여행 플랫폼</title>
 
+<!-- 최신 트렌드 폰트 Inter -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
 <style>
 body {
-    font-family: 'Inter', Arial, sans-serif;
+    font-family: 'Inter', sans-serif;
     margin: 0;
     background: #f5f7fa;
 }
 
-/* Header */
+/* Apple-style Blur Header */
 .header {
-    background: white;
+    position: sticky;
+    top: 0;
+    backdrop-filter: blur(12px);
+    background: rgba(255,255,255,0.75);
     padding: 18px 40px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid rgba(255,255,255,0.3);
+    z-index: 100;
 }
 
 .header-left {
@@ -57,16 +64,32 @@ body {
     color: #005fcc;
 }
 
-/* Hero Section */
+/* Hero Section with gradient overlay */
 .hero {
+    position: relative;
     text-align: center;
-    padding: 120px 20px;
+    padding: 140px 20px;
     background: url('/images/dubai-bg.jpg') no-repeat center/cover;
     color: white;
 }
 
+.hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        rgba(0,0,0,0.45),
+        rgba(0,0,0,0.25)
+    );
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+}
+
 .hero h1 {
-    font-size: 48px;
+    font-size: 52px;
     margin-bottom: 10px;
     font-weight: 700;
 }
@@ -105,17 +128,19 @@ body {
     flex-wrap: wrap;
 }
 
+/* Modern Card UI */
 .box {
     background: white;
     padding: 24px;
     width: 240px;
-    border-radius: 14px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    transition: transform 0.2s;
+    border-radius: 16px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    transition: all 0.25s ease;
 }
 
 .box:hover {
-    transform: translateY(-6px);
+    transform: translateY(-8px);
+    box-shadow: 0 12px 28px rgba(0,0,0,0.12);
 }
 
 .box img {
@@ -170,9 +195,11 @@ body {
 
 <!-- Hero -->
 <div class="hero">
-    <h1>AI 기반 여행 플랫폼</h1>
-    <p>정보는 AI로, 감동은 현지 전문 가이드로</p>
-    <a href="/guidedata/ai-itinerary.html" class="btn">AI 여행 일정 생성</a>
+    <div class="hero-content">
+        <h1>AI 기반 여행 플랫폼</h1>
+        <p>정보는 AI로, 감동은 현지 전문 가이드로</p>
+        <a href="/guidedata/ai-itinerary.html" class="btn">AI 여행 일정 생성</a>
+    </div>
 </div>
 
 <!-- AI Services -->
