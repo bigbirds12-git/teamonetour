@@ -48,16 +48,25 @@ body {
     margin-bottom: 20px;
 }
 
-.logout-btn {
-    background: #ef4444;
-    color: white;
-    padding: 10px 16px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
+.section-title {
+    font-size: 22px;
+    margin-bottom: 10px;
 }
-.logout-btn:hover {
-    background: #dc2626;
+
+.item {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+.item:last-child {
+    border-bottom: none;
+}
+
+.ai-box {
+    background: #eef6ff;
+    padding: 15px;
+    border-left: 6px solid #0078ff;
+    border-radius: 8px;
+    margin-top: 10px;
 }
 </style>
 </head>
@@ -66,100 +75,21 @@ body {
 
 <div class="sidebar">
     <h3>Guide Menu</h3>
-    <a href="#">Home</a>
-    <a href="my-schedule.html">My Schedule</a>
+    <a href="/guidedata/guide-dashboard.html">Home</a>
+    <a href="/guidedata/my-schedule.html">My Schedule</a>
     <a href="/guidedata/bookings.html">Bookings</a>
-    <a href="#">Messages</a>
-    <a href="#">Revenue</a>
-    <a href="guide-registration.html">Edit Profile</a>
+    <a href="/guidedata/messages.html">Messages</a>
+    <a href="/guidedata/revenue.html">Revenue</a>
+    <a href="/guidedata/edit-profile.html">Edit Profile</a>
 </div>
 
 <div class="main">
     <h1>Guide Dashboard</h1>
-    <p id="guideEmail"></p>
 
-    <button class="logout-btn" onclick="logout()">Logout</button>
-
+    <!-- 가이드 정보 -->
     <div class="card">
-        <h2>내 프로필 요약</h2>
-        <p id="profileSummary">불러오는 중...</p>
+        <h2 class="section-title">가이드 정보</h2>
+        <p id="guideInfo">불러오는 중...</p>
     </div>
 
-    <div class="card">
-        <h2>오늘 일정</h2>
-        <p>AI 기반 일정 추천 기능 준비 중</p>
-    </div>
-
-    <div class="card">
-        <h2>예약 요청</h2>
-        <p>AI가 여행자와 자동 매칭하는 기능 준비 중</p>
-    </div>
-
-    <div class="card">
-        <h2>AI 추천</h2>
-        <p id="aiRecommend">가이드 전문 분야 기반 추천을 분석 중...</p>
-    </div>
-</div>
-
-<!-- Firebase v10 -->
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyCgOSQsv_MRdaqrW4wJw0q2QY6wXZ-azQs",
-      authDomain: "guidelogin-b0053.firebaseapp.com",
-      projectId: "guidelogin-b0053",
-      storageBucket: "guidelogin-b0053.firebasestorage.app",
-      messagingSenderId: "981519805247",
-      appId: "1:981519805247:web:cc32682b177a4957c0818a",
-      measurementId: "G-2VR4TS6JND"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-
-    onAuthStateChanged(auth, async user => {
-        if (!user) {
-            window.location.href = "../login/guidelogin.html";
-            return;
-        }
-
-        document.getElementById("guideEmail").innerText = "로그인한 가이드: " + user.email;
-
-        const docRef = doc(db, "guides", user.uid);
-        const docSnap = await getDoc(docRef);
-
-        if (docSnap.exists()) {
-            const data = docSnap.data();
-
-            let completeness = 0;
-            const fields = ["name", "gender", "languages", "experience", "specialties", "regions", "price_hour", "price_day", "bio"];
-            fields.forEach(f => { if (data[f]) completeness += 1; });
-
-            const percent = Math.round((completeness / fields.length) * 100);
-
-            document.getElementById("profileSummary").innerHTML =
-                `<strong>이름/닉네임:</strong> ${data.name}<br>
-                 <strong>성별:</strong> ${data.gender}<br>
-                 <strong>언어:</strong> ${data.languages}<br>
-                 <strong>전문 분야:</strong> ${data.specialties.join(", ")}<br>
-                 <strong>활동 지역:</strong> ${data.regions.join(", ")}<br>
-                 <strong>프로필 완성도:</strong> ${percent}%`;
-
-            document.getElementById("aiRecommend").innerText =
-                `당신의 전문 분야(${data.specialties.join(", ")})에 맞는 새로운 예약 요청을 분석 중입니다.`;
-        }
-    });
-
-    window.logout = function() {
-        signOut(auth).then(() => {
-            window.location.href = "../login/guidelogin.html";
-        });
-    }
-</script>
-
-</body>
-</html>
+    <!-- 오늘 일정 -->
