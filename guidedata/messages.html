@@ -77,6 +77,14 @@ button {
 button:hover {
     background: #005fcc;
 }
+
+.ai-box {
+    background: #eef6ff;
+    padding: 15px;
+    border-left: 6px solid #0078ff;
+    border-radius: 8px;
+    margin-top: 10px;
+}
 </style>
 </head>
 
@@ -84,12 +92,12 @@ button:hover {
 
 <div class="sidebar">
     <h3>Guide Menu</h3>
-    <a href="guide-dashboard.html">Home</a>
-    <a href="my-schedule.html">My Schedule</a>
+    <a href="/guidedata/guide-dashboard.html">Home</a>
+    <a href="/guidedata/my-schedule.html">My Schedule</a>
     <a href="/guidedata/bookings.html">Bookings</a>
     <a href="/guidedata/messages.html">Messages</a>
-    <a href="revenue.html">Revenue</a>
-    <a href="../login/guide-registration.html">Edit Profile</a>
+    <a href="/guidedata/revenue.html">Revenue</a>
+    <a href="/guidedata/edit-profile.html">Edit Profile</a>
 </div>
 
 <div class="main">
@@ -101,8 +109,8 @@ button:hover {
     </div>
 
     <div class="card">
-        <h2>AI 메시지 분석</h2>
-        <p>여행자 문의 내용을 기반으로 자동 추천 답변 기능 준비 중</p>
+        <h2>AI 자동 답변</h2>
+        <div id="aiAutoReply" class="ai-box">메시지를 선택하면 자동 답변이 표시됩니다.</div>
     </div>
 </div>
 
@@ -161,6 +169,7 @@ button:hover {
 
                     <textarea id="reply-${mdoc.id}" placeholder="답장 입력"></textarea>
                     <button onclick="sendReply('${mdoc.id}')">답장 보내기</button>
+                    <button onclick="generateAI('${mdoc.id}', \`${m.message}\`)">AI 자동 답변</button>
                 </div>
             `;
         });
@@ -170,6 +179,33 @@ button:hover {
         }
     }
 
+    // AI 자동 답변 생성
+    function autoReply(message) {
+        const msg = message.toLowerCase();
+
+        if (msg.includes("price") || msg.includes("가격"))
+            return "투어 가격은 일정과 인원에 따라 달라집니다. 자세한 일정 알려주시면 안내드릴게요.";
+
+        if (msg.includes("time") || msg.includes("시간"))
+            return "가능한 시간대를 알려주시면 일정 조율해드릴게요.";
+
+        if (msg.includes("desert") || msg.includes("사막"))
+            return "사막 투어는 오후 3시~9시가 가장 인기 있습니다.";
+
+        if (msg.includes("pickup") || msg.includes("픽업"))
+            return "두바이 시내 호텔은 무료 픽업 가능합니다.";
+
+        return "문의 감사합니다! 자세한 내용을 알려주시면 더 정확히 안내드릴게요.";
+    }
+
+    // AI 자동 답변 버튼 클릭 시
+    window.generateAI = function(id, message) {
+        const aiText = autoReply(message);
+        document.getElementById(`reply-${id}`).value = aiText;
+        document.getElementById("aiAutoReply").innerText = aiText;
+    }
+
+    // 답장 저장
     window.sendReply = async function(messageId) {
         const replyText = document.getElementById(`reply-${messageId}`).value;
 
@@ -183,4 +219,3 @@ button:hover {
 
 </body>
 </html>
-
