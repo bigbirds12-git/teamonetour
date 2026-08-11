@@ -4,77 +4,75 @@
 <meta charset="UTF-8">
 <title>Guide Dashboard</title>
 
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
 <style>
 body {
-    font-family: Arial;
-    background: #f5f7fa;
     margin: 0;
-    display: flex;
+    font-family: 'Inter', sans-serif;
+    background: #f5f7fa;
 }
 
+/* Sidebar */
 .sidebar {
-    width: 220px;
+    width: 240px;
+    height: 100vh;
     background: #1f2937;
     color: white;
-    height: 100vh;
-    padding: 20px;
-}
-.sidebar h3 {
-    margin-bottom: 20px;
-}
-.sidebar a {
-    display: block;
-    padding: 12px;
-    margin-top: 10px;
-    background: #374151;
-    color: white;
-    text-decoration: none;
-    border-radius: 6px;
-}
-.sidebar a:hover {
-    background: #4b5563;
+    position: fixed;
+    left: 0;
+    top: 0;
+    padding: 30px 20px;
 }
 
+.sidebar h2 {
+    font-size: 20px;
+    margin-bottom: 30px;
+}
+
+.sidebar a {
+    display: block;
+    color: #d1d5db;
+    text-decoration: none;
+    padding: 12px 0;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.sidebar a:hover {
+    color: #ffffff;
+}
+
+/* Main Content */
 .main {
-    flex: 1;
-    padding: 30px;
+    margin-left: 260px;
+    padding: 40px;
 }
 
 .card {
     background: white;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    padding: 24px;
+    border-radius: 14px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    margin-bottom: 30px;
+}
+
+.card h2 {
     margin-bottom: 20px;
 }
 
-.section-title {
-    font-size: 22px;
-    margin-bottom: 10px;
-}
-
-.item {
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-}
-.item:last-child {
-    border-bottom: none;
-}
-
-.ai-box {
-    background: #eef6ff;
-    padding: 15px;
-    border-left: 6px solid #0078ff;
-    border-radius: 8px;
-    margin-top: 10px;
+.info-row {
+    margin-bottom: 12px;
+    font-size: 16px;
 }
 </style>
 </head>
 
 <body>
 
+<!-- Sidebar -->
 <div class="sidebar">
-    <h3>Guide Menu</h3>
+    <h2>Guide Menu</h2>
     <a href="/guidedata/guide-dashboard.html">Home</a>
     <a href="/guidedata/my-schedule.html">My Schedule</a>
     <a href="/guidedata/bookings.html">Bookings</a>
@@ -83,13 +81,62 @@ body {
     <a href="/guidedata/edit-profile.html">Edit Profile</a>
 </div>
 
+<!-- Main Content -->
 <div class="main">
-    <h1>Guide Dashboard</h1>
-
-    <!-- 가이드 정보 -->
     <div class="card">
-        <h2 class="section-title">가이드 정보</h2>
-        <p id="guideInfo">불러오는 중...</p>
+        <h2>가이드 정보</h2>
+        <div id="guideInfo">불러오는 중...</div>
     </div>
+</div>
 
-    <!-- 오늘 일정 -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { 
+        getFirestore, doc, getDoc 
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCgOSQsv_MRdaqrW4wJw0q2QY6wXZ-azQs",
+      authDomain: "guidelogin-b0053.firebaseapp.com",
+      projectId: "guidelogin-b0053",
+      storageBucket: "guidelogin-b0053.firebasestorage.app",
+      messagingSenderId: "981519805247",
+      appId: "1:981519805247:web:cc32682b177a4957c0818a",
+      measurementId: "G-2VR4TS6JND"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    async function loadGuide() {
+        const uid = localStorage.getItem("guide_uid");
+
+        if (!uid) {
+            document.getElementById("guideInfo").innerHTML = "로그인이 필요합니다.";
+            return;
+        }
+
+        const docRef = doc(db, "guides", uid);
+        const docSnap = await getDoc(docRef);
+
+        if (!docSnap.exists()) {
+            document.getElementById("guideInfo").innerHTML = "가이드 정보를 찾을 수 없습니다.";
+            return;
+        }
+
+        const g = docSnap.data();
+
+        document.getElementById("guideInfo").innerHTML = `
+            <div class="info-row"><strong>이름:</strong> ${g.name}</div>
+            <div class="info-row"><strong>언어:</strong> ${g.languages}</div>
+            <div class="info-row"><strong>지역:</strong> ${g.regions}</div>
+            <div class="info-row"><strong>전문 분야:</strong> ${g.specialties}</div>
+            <div class="info-row"><strong>일일 비용:</strong> ${g.price_day} AED</div>
+        `;
+    }
+
+    loadGuide();
+</script>
+
+</body>
+</html>
