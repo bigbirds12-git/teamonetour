@@ -1,145 +1,144 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Team One Tour</title>
-    <link rel="icon" href="/favicon.png" sizes="32x32" type="image/png">
-    
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #ffffff;
-            color: #333;
-        }
+<meta charset="UTF-8">
+<title>Team One Tour</title>
 
-        /* header */
-        header {
-            width: 100%;
-            background-color: #ffffff;
-            display: flex;
-            justify-content: center;
-            border-bottom: 1px solid #e5e5e5;
-        }
+<style>
+body {
+    font-family: Arial;
+    margin: 0;
+    background: #f5f7fa;
+}
 
-          /* 헤더 내부 컨테이너 */
-        .header-container {
-            width: 100%;
-            max-width: 1200px;
-            height: 70px;
-            padding: 0 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+.header {
+    background: white;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+}
 
-        /* 왼쪽 로고 */
-        .logo img {
-            height: 25px;
-            display: block;
-        }
+.header a {
+    margin-left: 15px;
+    text-decoration: none;
+    color: #0078ff;
+    font-weight: bold;
+}
 
-      
+.hero {
+    text-align: center;
+    padding: 80px 20px;
+    background: url('/images/dubai-bg.jpg') no-repeat center/cover;
+    color: white;
+}
 
-        /* 오른쪽 로그인 버튼 */
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
+.hero h1 {
+    font-size: 40px;
+    margin-bottom: 10px;
+}
 
-        .login-btn {
-            padding: 8px 16px;
-            background-color: #0078ff;
-            color: white;
-            border-radius: 6px;
-            text-decoration: none;
-            font-size: 14px;
-            transition: 0.2s;
-        }
+.hero p {
+    font-size: 20px;
+    margin-bottom: 30px;
+}
 
-        .login-btn:hover {
-            background-color: #005fcc;
-        }
+.hero .btn {
+    padding: 14px 24px;
+    background: #0078ff;
+    color: white;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 18px;
+}
 
-        /* Main Section */
-        .main {
-            text-align: center;
-            padding: 40px 20px;
-        }
+.section {
+    padding: 40px 20px;
+    text-align: center;
+}
 
-        .main h1 {
-            font-size: 36px;
-            margin-bottom: 10px;
-        }
+.icon-grid {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-top: 20px;
+}
 
-        .main p.subtitle {
-            font-size: 18px;
-            margin-bottom: 30px;
-            color: #555;
-        }
+.icon-box {
+    background: white;
+    padding: 20px;
+    width: 180px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
 
-        .main img {
-            width: 90%;
-            max-width: 900px;
-            border-radius: 10px;
-            margin: 20px 0;
-        }
+.icon-box img {
+    width: 60px;
+    margin-bottom: 10px;
+}
 
-        .contact {
-            font-size: 16px;
-            margin-top: 20px;
-            color: #444;
-        }
+.icon-box a {
+    display: block;
+    margin-top: 10px;
+    text-decoration: none;
+    color: #0078ff;
+    font-weight: bold;
+}
 
-        footer {
-            margin-top: 40px;
-            padding: 20px;
-            text-align: center;
-            font-size: 14px;
-            color: #666;
-            border-top: 1px solid #ddd;
-        }
-    </style>
+.footer {
+    text-align: center;
+    padding: 30px;
+    margin-top: 40px;
+    background: #e5e7eb;
+}
+</style>
 </head>
 
 <body>
 
-<header>
-    <div class="header-container">
-
-        <!-- 왼쪽: 로고 + 사이트명 -->
-        <div style="display:flex; align-items:center;">
-            <a href="#" class="logo">
-                <img src="images/logo.png" alt="Team One Tour">
-            </a>
-           
-        </div>
-
-        <!-- 오른쪽: Guide Login 버튼 + Guide Signup 버튼 -->
-        <div class="header-right">
-            <a href="login/guidelogin.html" class="login-btn">Guide Login</a>
-            <a href="login/guidesignup.html" class="login-btn" style="background:#555;">Guide Signup</a>
-        </div>    
-    
+<div class="header">
+    <div><strong>Team One Tour</strong></div>
+    <div>
+        <a href="/guidedata/traveler-guides.html">Guides</a>
+        <a href="/login/guidelogin.html">Guide Login</a>
+        <a href="/login/guidesignup.html">Guide Signup</a>
     </div>
-</header>
+</div>
 
-<section class="main">
+<div class="hero">
     <h1>팀원 투어</h1>
-    <p class="subtitle">정보는 AI로, 감동은 현지 전문 가이드로</p>
+    <p>정보는 AI로, 감동은 현지 전문 가이드로</p>
+    <a href="/guidedata/traveler-guides.html" class="btn">가이드 찾기</a>
+</div>
 
-    <img src="images/main-photo.png" alt="Dubai Tour">
+<div class="section">
+    <h2>여행자 서비스</h2>
+    <div class="icon-grid">
+        <div class="icon-box">
+            <img src="/images/guide-icon.png">
+            <a href="/guidedata/traveler-guides.html">가이드 찾기</a>
+        </div>
+        <div class="icon-box">
+            <img src="/images/calendar-icon.png">
+            <a href="/guidedata/traveler-guides.html">예약하기</a>
+        </div>
+        <div class="icon-box">
+            <img src="/images/message-icon.png">
+            <a href="/guidedata/traveler-guides.html">메시지 보내기</a>
+        </div>
+    </div>
+</div>
 
-    <p class="contact">아랍에미레이트의 여행을 준비하신다면 이메일로 문의 주세요.</p>
-</section>
+<div class="section">
+    <h2>UAE 여행 정보</h2>
+    <a href="/dubai-info.html">두바이 여행 정보 보기 →</a>
+</div>
 
-<footer>
+<div class="footer">
     운영 : Team One Tour fz llc - United Arab Emirates<br>
     문의 : Admin@teamonetour.com
-</footer>
+</div>
 
 </body>
 </html>
-
