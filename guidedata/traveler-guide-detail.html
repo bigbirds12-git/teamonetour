@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>Guide Detail</title>
+
+<style>
+body {
+    font-family: Arial;
+    background: #f5f7fa;
+    margin: 0;
+    padding: 20px;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+
+input, textarea {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+button {
+    padding: 12px 20px;
+    background: #0078ff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 15px;
+}
+button:hover {
+    background: #005fcc;
+}
+</style>
+</head>
+
+<body>
+
+<h1>가이드 상세 정보</h1>
+
+<div class="card">
+    <h2>프로필</h2>
+    <p id="profile">불러오는 중...</p>
+</div>
+
+<div class="card">
+    <h2>예약 요청</h2>
+    <input id="date" type="date">
+    <input id="time" type="time">
+    <input id="travelerName" placeholder="여행자 이름">
+    <input id="travelerEmail" placeholder="여행자 이메일">
+    <textarea id="description" placeholder="요청 내용"></textarea>
+    <button onclick="sendBooking()">예약 요청 보내기</button>
+    <p id="bookingMsg" style="color:red;"></p>
+</div>
+
+<div class="card">
+    <h2>메시지 보내기</h2>
+    <textarea id="message" placeholder="메시지 내용"></textarea>
+    <button onclick="sendMessage()">메시지 보내기</button>
+    <p id="messageMsg" style="color:red;"></p>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { 
+        getFirestore, doc, getDoc, addDoc, collection 
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCgOSQsv_MRdaqrW4wJw0q2QY6wXZ-azQs",
+      authDomain: "guidelogin-b0053.firebaseapp.com",
+      projectId: "guidelogin-b0053",
+      storageBucket: "guidelogin-b0053.firebasestorage.app",
+      messagingSenderId: "981519805247",
+      appId: "1:981519805247:web:cc32682b177a4957c0818a",
+      measurementId: "G-2VR4TS6JND"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const params = new URLSearchParams(window.location.search);
+    const guideUid = params.get("uid");
+
+    async function loadGuide() {
+        const docRef = doc(db, "guides", guideUid);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+            const g = docSnap.data();
+            document.getElementById("profile").innerHTML = `
+                <strong>${g.name}</strong><br>
+                성별: ${g.gender}<br>
+                언어: ${g.languages}<br>
+                국적: ${g.nationality}<br>
+                경력: ${g.experience}년<br>
+                지역: ${g.regions}<br>
+                전문 분야: ${g.specialties}<br>
+                소개: ${g.bio}<br>
+                요금(일): ${g.price_day} AED<br>
+                요금(시간): ${g.price_hour} AED<br>
+            `;
+        }
+    }
+
+    async function sendBooking() {
+        const data = {
+            guideUid,
+            travelerName: document.getElementById("travelerName").value,
+            travelerEmail: document.getElementById("travelerEmail").value,
+            date: document.getElementById("date").value,
+            time: document.getElementById("time").value,
+            description: document.getElementById("description").value,
+            status: "pending",
+            createdAt: new Date()
+        };
+
+        await addDoc(collection(db, "bookings"), data);
+        document.getElementById("bookingMsg").innerText = "예약 요청이 전송되었습니다.";
+    }
+
+    async function sendMessage() {
+        const data = {
+            guideUid,
+            travelerName: document.getElementById("travelerName").value,
+            travelerEmail: document.getElementById("travelerEmail").value,
+            message: document.getElementById("message").value,
+            reply: "",
+            createdAt: new Date()
+        };
+
+        await addDoc(collection(db, "messages"), data);
+        document.getElementById("messageMsg").innerText = "메시지가 전송되었습니다.";
+    }
+
+    loadGuide();
+</script>
+
+</body>
+</html>
