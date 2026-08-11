@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>Guide Registration</title>
+<title>Edit Guide Profile</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
@@ -13,12 +13,46 @@ body {
     background: #f5f7fa;
 }
 
-/* Centered Box */
+/* Sidebar */
+.sidebar {
+    width: 240px;
+    height: 100vh;
+    background: #1f2937;
+    color: white;
+    position: fixed;
+    left: 0;
+    top: 0;
+    padding: 30px 20px;
+}
+
+.sidebar h2 {
+    font-size: 20px;
+    margin-bottom: 30px;
+}
+
+.sidebar a {
+    display: block;
+    color: #d1d5db;
+    text-decoration: none;
+    padding: 12px 0;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.sidebar a:hover {
+    color: #ffffff;
+}
+
+/* Main Content */
+.main {
+    margin-left: 260px;
+    padding: 40px;
+}
+
 .reg-box {
     width: 480px;
     background: white;
     padding: 30px;
-    margin: 40px auto;
     border-radius: 14px;
     box-shadow: 0 6px 18px rgba(0,0,0,0.08);
 }
@@ -64,87 +98,101 @@ button:hover {
 
 <body>
 
-<div class="reg-box">
-    <h2>Guide Registration</h2>
+<!-- Sidebar -->
+<div class="sidebar">
+    <h2>Guide Menu</h2>
+    <a href="/guidedata/guide-dashboard.html">Home</a>
+    <a href="/guidedata/my-schedule.html">My Schedule</a>
+    <a href="/guidedata/bookings.html">Bookings</a>
+    <a href="/guidedata/messages.html">Messages</a>
+    <a href="/guidedata/revenue.html">Revenue</a>
+    <a href="/guidedata/edit-profile.html">Edit Profile</a>
+</div>
 
-    <input id="name" placeholder="이름 또는 닉네임">
-    <input id="phone" placeholder="전화번호">
+<!-- Main Content -->
+<div class="main">
+    <div class="reg-box">
+        <h2>Edit Profile</h2>
 
-    <label style="margin-top:15px;">국적</label>
-    <select id="nationality">
-        <option value="South Korea">South Korea</option>
-        <option value="UAE">UAE</option>
-        <option value="Japan">Japan</option>
-        <option value="China">China</option>
-        <option value="India">India</option>
-        <option value="Philippines">Philippines</option>
-        <option value="Russia">Russia</option>
-        <option value="UK">UK</option>
-        <option value="USA">USA</option>
-        <option value="France">France</option>
-        <option value="Germany">Germany</option>
-        <option value="Other">Other</option>
-    </select>
+        <input id="name" placeholder="이름 또는 닉네임">
+        <input id="phone" placeholder="전화번호">
 
-    <label style="margin-top:15px;">성별</label>
-    <select id="gender">
-        <option value="남성">남성</option>
-        <option value="여성">여성</option>
-        <option value="기타">기타</option>
-    </select>
+        <label style="margin-top:15px;">국적</label>
+        <select id="nationality">
+            <option value="South Korea">South Korea</option>
+            <option value="UAE">UAE</option>
+            <option value="Japan">Japan</option>
+            <option value="China">China</option>
+            <option value="India">India</option>
+            <option value="Philippines">Philippines</option>
+            <option value="Russia">Russia</option>
+            <option value="UK">UK</option>
+            <option value="USA">USA</option>
+            <option value="France">France</option>
+            <option value="Germany">Germany</option>
+            <option value="Other">Other</option>
+        </select>
 
-    <label style="margin-top:15px;">가능 언어</label>
-    <select id="languages" multiple>
-        <option value="Korean">Korean</option>
-        <option value="English">English</option>
-        <option value="Arabic">Arabic</option>
-        <option value="Chinese">Chinese</option>
-        <option value="Japanese">Japanese</option>
-        <option value="Hindi">Hindi</option>
-        <option value="Russian">Russian</option>
-        <option value="Filipino">Filipino</option>
-        <option value="French">French</option>
-        <option value="German">German</option>
-    </select>
+        <label style="margin-top:15px;">성별</label>
+        <select id="gender">
+            <option value="남성">남성</option>
+            <option value="여성">여성</option>
+            <option value="기타">기타</option>
+        </select>
 
-    <input id="experience" placeholder="경력 (예: 5년)">
+        <label style="margin-top:15px;">가능 언어</label>
+        <select id="languages" multiple>
+            <option value="Korean">Korean</option>
+            <option value="English">English</option>
+            <option value="Arabic">Arabic</option>
+            <option value="Chinese">Chinese</option>
+            <option value="Japanese">Japanese</option>
+            <option value="Hindi">Hindi</option>
+            <option value="Russian">Russian</option>
+            <option value="Filipino">Filipino</option>
+            <option value="French">French</option>
+            <option value="German">German</option>
+        </select>
 
-    <label style="margin-top:15px;">전문 분야</label>
-    <select id="specialties" multiple>
-        <option value="문화/예술">문화/예술</option>
-        <option value="역사">역사</option>
-        <option value="사막 사파리">사막 사파리</option>
-        <option value="사진 촬영">사진 촬영</option>
-        <option value="쇼핑">쇼핑</option>
-        <option value="미식">미식</option>
-        <option value="VIP 의전">VIP 의전</option>
-        <option value="가족 여행">가족 여행</option>
-        <option value="비즈니스 출장">비즈니스 출장</option>
-    </select>
+        <input id="experience" placeholder="경력 (예: 5년)">
 
-    <label style="margin-top:15px;">활동 지역</label>
-    <select id="regions" multiple>
-        <option value="Dubai Marina">Dubai Marina</option>
-        <option value="Downtown Dubai">Downtown Dubai</option>
-        <option value="Deira">Deira</option>
-        <option value="Jumeirah">Jumeirah</option>
-        <option value="Abu Dhabi">Abu Dhabi</option>
-        <option value="Sharjah">Sharjah</option>
-    </select>
+        <label style="margin-top:15px;">전문 분야</label>
+        <select id="specialties" multiple>
+            <option value="문화/예술">문화/예술</option>
+            <option value="역사">역사</option>
+            <option value="사막 사파리">사막 사파리</option>
+            <option value="사진 촬영">사진 촬영</option>
+            <option value="쇼핑">쇼핑</option>
+            <option value="미식">미식</option>
+            <option value="VIP 의전">VIP 의전</option>
+            <option value="가족 여행">가족 여행</option>
+            <option value="비즈니스 출장">비즈니스 출장</option>
+        </select>
 
-    <input id="price_hour" placeholder="시간당 요금 (AED)">
-    <input id="price_day" placeholder="하루 요금 (AED)">
+        <label style="margin-top:15px;">활동 지역</label>
+        <select id="regions" multiple>
+            <option value="Dubai Marina">Dubai Marina</option>
+            <option value="Downtown Dubai">Downtown Dubai</option>
+            <option value="Deira">Deira</option>
+            <option value="Jumeirah">Jumeirah</option>
+            <option value="Abu Dhabi">Abu Dhabi</option>
+            <option value="Sharjah">Sharjah</option>
+        </select>
 
-    <textarea id="bio" placeholder="가이드 소개"></textarea>
+        <input id="price_hour" placeholder="시간당 요금 (AED)">
+        <input id="price_day" placeholder="하루 요금 (AED)">
 
-    <button onclick="saveGuide()">정보 저장</button>
-    <p id="msg"></p>
+        <textarea id="bio" placeholder="가이드 소개"></textarea>
+
+        <button onclick="updateGuide()">정보 수정</button>
+        <p id="msg"></p>
+    </div>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCgOSQsv_MRdaqrW4wJw0q2QY6wXZ-azQs",
@@ -160,37 +208,73 @@ button:hover {
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    onAuthStateChanged(auth, user => {
-        if (!user) window.location.href = "guidelogin.html";
+    let uid = null;
+
+    onAuthStateChanged(auth, async user => {
+        if (!user) {
+            window.location.href = "guidelogin.html";
+            return;
+        }
+        uid = user.uid;
+        loadProfile();
     });
 
-    window.saveGuide = async function() {
-        const user = auth.currentUser;
-        if (!user) return;
+    async function loadProfile() {
+        const docRef = doc(db, "guides", uid);
+        const snap = await getDoc(docRef);
 
-        const specialties = Array.from(document.getElementById("specialties").selectedOptions).map(opt => opt.value);
-        const regions = Array.from(document.getElementById("regions").selectedOptions).map(opt => opt.value);
-        const languages = Array.from(document.getElementById("languages").selectedOptions).map(opt => opt.value);
+        if (!snap.exists()) {
+            msg.innerText = "가이드 정보를 찾을 수 없습니다.";
+            return;
+        }
 
-        const guideData = {
-            uid: user.uid,
-            email: user.email,
-            name: name.value,
-            phone: phone.value,
-            nationality: nationality.value,
-            gender: gender.value,
-            languages: languages,
-            experience: experience.value,
-            specialties: specialties,
-            regions: regions,
-            price_hour: price_hour.value,
-            price_day: price_day.value,
-            bio: bio.value,
-            createdAt: new Date()
-        };
+        const g = snap.data();
+
+        name.value = g.name || "";
+        phone.value = g.phone || "";
+        nationality.value = g.nationality || "South Korea";
+        gender.value = g.gender || "남성";
+        experience.value = g.experience || "";
+        price_hour.value = g.price_hour || "";
+        price_day.value = g.price_day || "";
+        bio.value = g.bio || "";
+
+        // languages
+        Array.from(languages.options).forEach(opt => {
+            if (g.languages?.includes(opt.value)) opt.selected = true;
+        });
+
+        // specialties
+        Array.from(specialties.options).forEach(opt => {
+            if (g.specialties?.includes(opt.value)) opt.selected = true;
+        });
+
+        // regions
+        Array.from(regions.options).forEach(opt => {
+            if (g.regions?.includes(opt.value)) opt.selected = true;
+        });
+    }
+
+    window.updateGuide = async function() {
+        const specialtiesArr = Array.from(specialties.selectedOptions).map(opt => opt.value);
+        const regionsArr = Array.from(regions.selectedOptions).map(opt => opt.value);
+        const languagesArr = Array.from(languages.selectedOptions).map(opt => opt.value);
 
         try {
-            await setDoc(doc(db, "guides", user.uid), guideData);
+            await updateDoc(doc(db, "guides", uid), {
+                name: name.value,
+                phone: phone.value,
+                nationality: nationality.value,
+                gender: gender.value,
+                languages: languagesArr,
+                experience: experience.value,
+                specialties: specialtiesArr,
+                regions: regionsArr,
+                price_hour: price_hour.value,
+                price_day: price_day.value,
+                bio: bio.value
+            });
+
             window.location.href = "../guidedata/guide-dashboard.html";
         } catch (err) {
             msg.innerText = err.message;
