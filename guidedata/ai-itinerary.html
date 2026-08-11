@@ -119,7 +119,7 @@ button:hover {
 
     async function loadGuides() {
         const snapshot = await getDocs(collection(db, "guides"));
-        snapshot.forEach(doc => guides.push(doc.data()));
+        snapshot.forEach(doc => guides.push({ id: doc.id, ...doc.data() }));
     }
 
     loadGuides();
@@ -131,18 +131,12 @@ button:hover {
         const lang = document.getElementById("lang").value;
         const region = document.getElementById("region").value;
 
-        // AI 추천 가이드
-        let bestGuide = guides.find(g => 
-            g.languages.includes(lang) &&
-            g.regions.includes(region) &&
-            g.specialties.includes(interest)
-        );
-
-        if (!bestGuide) {
-            bestGuide = guides[0]; // fallback
+        if (!date || !days || days <= 0) {
+            document.getElementById("result").innerText = "여행 날짜와 기간을 정확히 입력해주세요.";
+            return;
         }
 
-        // AI 일정 생성 로직
+        // 일정 생성
         let itinerary = "";
         for (let i = 1; i <= days; i++) {
             itinerary += `
@@ -154,16 +148,49 @@ button:hover {
             `;
         }
 
-        // 결과 출력
+        // 가이드 추천
+        let bestGuide = null;
+        let bestScore = -1;
+
+        guides.forEach(g => {
+            let score = 0;
+
+            if (g.languages?.includes(lang)) score += 3;
+            if (g.regions?.includes(region)) score += 3;
+            if (g.specialties?.includes(interest)) score += 4;
+
+            if (score > bestScore) {
+                bestScore = score;
+                bestGuide = g;
+            }
+        });
+
+        let guideText = "";
+
+        if (bestGuide) {
+            const price = bestGuide.price_day ? bestGuide.price_day * days : "가격 정보 없음";
+
+            guideText = `
+                <strong>추천 가이드:</strong><br>
+                ${bestGuide.name}<br>
+                언어: ${bestGuide.languages}<br>
+                전문 분야: ${bestGuide.specialties}<br>
+                지역: ${bestGuide.regions}<br>
+                예상 비용: ${price} AED<br><br>
+            `;
+        } else {
+            guideText = "추천 가능한 가이드가 없습니다.<br><br>";
+        }
+
+        // 최종 출력
         document.getElementById("result").innerHTML = `
             <strong>여행 날짜:</strong> ${date}<br>
-            <strong>여행 기간:</strong> ${days}일<br>
-            <strong>추천 가이드:</strong> ${bestGuide.name} (${bestGuide.languages})<br><br>
+            <strong>여행 기간:</strong> ${days}일<br><br>
+
+            ${guideText}
 
             <strong>AI 추천 일정:</strong><br>
             ${itinerary}
-
-            <strong>예상 비용:</strong> 약 ${bestGuide.price_day * days} AED<br>
         `;
     }
 </script>
