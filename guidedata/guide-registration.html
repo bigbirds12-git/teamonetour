@@ -154,7 +154,17 @@ button:hover {
             <option value="German">German</option>
         </select>
 
-        <input id="experience" placeholder="경력 (예: 5년)">
+        <label style="margin-top:15px;">경력 (Years of Experience)</label>
+        <select id="experience">
+            <option value="1">1년</option>
+            <option value="2">2년</option>
+            <option value="3">3년</option>
+            <option value="5">5년</option>
+            <option value="7">7년</option>
+            <option value="10">10년</option>
+            <option value="15">15년</option>
+            <option value="20">20년</option>
+        </select>
 
         <label style="margin-top:15px;">전문 분야</label>
         <select id="specialties" multiple>
@@ -228,7 +238,7 @@ button:hover {
             nationality: nationality.value,
             gender: gender.value,
             languages: languagesArr,
-            experience: experience.value,
+            experience: experience.value,   // 숫자 저장
             specialties: specialtiesArr,
             regions: regionsArr,
             price_hour: price_hour.value,
