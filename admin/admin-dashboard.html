@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>Admin Dashboard</title>
+
+<style>
+body {
+    font-family: Arial;
+    background: #f5f7fa;
+    margin: 0;
+    display: flex;
+}
+
+.sidebar {
+    width: 240px;
+    background: #1f2937;
+    color: white;
+    height: 100vh;
+    padding: 20px;
+}
+.sidebar h3 {
+    margin-bottom: 20px;
+}
+.sidebar a {
+    display: block;
+    padding: 12px;
+    margin-top: 10px;
+    background: #374151;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+}
+.sidebar a:hover {
+    background: #4b5563;
+}
+
+.main {
+    flex: 1;
+    padding: 30px;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+
+.item {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+}
+.item:last-child {
+    border-bottom: none;
+}
+
+button {
+    padding: 8px 14px;
+    background: #ef4444;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+button:hover {
+    background: #dc2626;
+}
+</style>
+</head>
+
+<body>
+
+<div class="sidebar">
+    <h3>Admin Menu</h3>
+    <a href="#guides">전체 가이드</a>
+    <a href="#bookings">전체 예약</a>
+    <a href="#messages">전체 메시지</a>
+    <a href="#revenue">전체 수익</a>
+</div>
+
+<div class="main">
+    <h1>Admin Dashboard</h1>
+
+    <div id="guides" class="card">
+        <h2>전체 가이드</h2>
+        <div id="guideList">불러오는 중...</div>
+    </div>
+
+    <div id="bookings" class="card">
+        <h2>전체 예약</h2>
+        <div id="bookingList">불러오는 중...</div>
+    </div>
+
+    <div id="messages" class="card">
+        <h2>전체 메시지</h2>
+        <div id="messageList">불러오는 중...</div>
+    </div>
+
+    <div id="revenue" class="card">
+        <h2>전체 수익</h2>
+        <div id="revenueList">불러오는 중...</div>
+    </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { 
+        getFirestore, collection, getDocs, deleteDoc, doc 
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCgOSQsv_MRdaqrW4wJw0q2QY6wXZ-azQs",
+      authDomain: "guidelogin-b0053.firebaseapp.com",
+      projectId: "guidelogin-b0053",
+      storageBucket: "guidelogin-b0053.firebasestorage.app",
+      messagingSenderId: "981519805247",
+      appId: "1:981519805247:web:cc32682b177a4957c0818a",
+      measurementId: "G-2VR4TS6JND"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // 전체 가이드 불러오기
+    async function loadGuides() {
+        const list = document.getElementById("guideList");
+        list.innerHTML = "";
+
+        const snapshot = await getDocs(collection(db, "guides"));
+        snapshot.forEach(docSnap => {
+            const g = docSnap.data();
+            list.innerHTML += `
+                <div class="item">
+                    <strong>${g.name}</strong> (${g.languages})<br>
+                    지역: ${g.regions}<br>
+                    전문 분야: ${g.specialties}<br>
+                    <button onclick="deleteItem('guides','${docSnap.id}')">삭제</button>
+                </div>
+            `;
+        });
+    }
+
+    // 전체 예약 불러오기
+    async function loadBookings() {
+        const list = document.getElementById("bookingList");
+        list.innerHTML = "";
+
+        const snapshot = await getDocs(collection(db, "bookings"));
+        snapshot.forEach(docSnap => {
+            const b = docSnap.data();
+            list.innerHTML += `
+                <div class="item">
+                    <strong>${b.travelerName}</strong> → ${b.guideUid}<br>
+                    날짜: ${b.date} / 시간: ${b.time}<br>
+                    상태: ${b.status}<br>
+                    <button onclick="deleteItem('bookings','${docSnap.id}')">삭제</button>
+                </div>
+            `;
+        });
+    }
+
+    // 전체 메시지 불러오기
+    async function loadMessages() {
+        const list = document.getElementById("messageList");
+        list.innerHTML = "";
+
+        const snapshot = await getDocs(collection(db, "messages"));
+        snapshot.forEach(docSnap => {
+            const m = docSnap.data();
+            list.innerHTML += `
+                <div class="item">
+                    여행자: ${m.travelerName}<br>
+                    메시지: ${m.message}<br>
+                    답장: ${m.reply || "없음"}<br>
+                    <button onclick="deleteItem('messages','${docSnap.id}')">삭제</button>
+                </div>
+            `;
+        });
+    }
+
+    // 전체 수익 불러오기
+    async function loadRevenue() {
+        const list = document.getElementById("revenueList");
+        list.innerHTML = "";
+
+        const snapshot = await getDocs(collection(db, "revenue"));
+        snapshot.forEach(docSnap => {
+            const r = docSnap.data();
+            list.innerHTML += `
+                <div class="item">
+                    가이드: ${r.guideUid}<br>
+                    금액: ${r.amount} AED<br>
+                    유형: ${r.type}<br>
+                    설명: ${r.description}<br>
+                    <button onclick="deleteItem('revenue','${docSnap.id}')">삭제</button>
+                </div>
+            `;
+        });
+    }
+
+    // 삭제 기능
+    window.deleteItem = async function(collectionName, id) {
+        await deleteDoc(doc(db, collectionName, id));
+        alert("삭제되었습니다.");
+
+        loadGuides();
+        loadBookings();
+        loadMessages();
+        loadRevenue();
+    }
+
+    // 초기 로딩
+    loadGuides();
+    loadBookings();
+    loadMessages();
+    loadRevenue();
+</script>
+
+</body>
+</html>
