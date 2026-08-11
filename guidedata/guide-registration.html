@@ -4,30 +4,26 @@
 <meta charset="UTF-8">
 <title>Guide Registration</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-
 <style>
 body {
-    margin: 0;
-    font-family: 'Inter', sans-serif;
+    font-family: Arial;
     background: #f5f7fa;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 40px;
 }
-
-/* Centered Box */
 .reg-box {
-    width: 480px;
+    width: 420px;
     background: white;
     padding: 30px;
-    margin: 40px auto;
-    border-radius: 14px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
-
 .reg-box h2 {
     text-align: center;
     margin-bottom: 20px;
 }
-
 input, textarea, select {
     width: 100%;
     padding: 12px;
@@ -35,11 +31,9 @@ input, textarea, select {
     border-radius: 6px;
     border: 1px solid #ccc;
 }
-
 textarea {
     height: 100px;
 }
-
 button {
     width: 100%;
     padding: 12px;
@@ -50,11 +44,9 @@ button {
     border-radius: 6px;
     cursor: pointer;
 }
-
 button:hover {
     background: #005fcc;
 }
-
 #msg {
     color: red;
     margin-top: 10px;
@@ -69,22 +61,7 @@ button:hover {
 
     <input id="name" placeholder="이름 또는 닉네임">
     <input id="phone" placeholder="전화번호">
-
-    <label style="margin-top:15px;">국적</label>
-    <select id="nationality">
-        <option value="South Korea">South Korea</option>
-        <option value="UAE">UAE</option>
-        <option value="Japan">Japan</option>
-        <option value="China">China</option>
-        <option value="India">India</option>
-        <option value="Philippines">Philippines</option>
-        <option value="Russia">Russia</option>
-        <option value="UK">UK</option>
-        <option value="USA">USA</option>
-        <option value="France">France</option>
-        <option value="Germany">Germany</option>
-        <option value="Other">Other</option>
-    </select>
+    <input id="nationality" placeholder="국적">
 
     <label style="margin-top:15px;">성별</label>
     <select id="gender">
@@ -93,20 +70,7 @@ button:hover {
         <option value="기타">기타</option>
     </select>
 
-    <label style="margin-top:15px;">가능 언어</label>
-    <select id="languages" multiple>
-        <option value="Korean">Korean</option>
-        <option value="English">English</option>
-        <option value="Arabic">Arabic</option>
-        <option value="Chinese">Chinese</option>
-        <option value="Japanese">Japanese</option>
-        <option value="Hindi">Hindi</option>
-        <option value="Russian">Russian</option>
-        <option value="Filipino">Filipino</option>
-        <option value="French">French</option>
-        <option value="German">German</option>
-    </select>
-
+    <input id="languages" placeholder="가능 언어 (예: Korean, English)">
     <input id="experience" placeholder="경력 (예: 5년)">
 
     <label style="margin-top:15px;">전문 분야</label>
@@ -141,6 +105,7 @@ button:hover {
     <p id="msg"></p>
 </div>
 
+<!-- Firebase v10 SDK -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
@@ -160,32 +125,37 @@ button:hover {
     const auth = getAuth(app);
     const db = getFirestore(app);
 
+    // 로그인 체크
     onAuthStateChanged(auth, user => {
-        if (!user) window.location.href = "guidelogin.html";
+        if (!user) {
+            window.location.href = "guidelogin.html";
+        }
     });
 
     window.saveGuide = async function() {
         const user = auth.currentUser;
-        if (!user) return;
+        if (!user) {
+            document.getElementById("msg").innerText = "로그인이 필요합니다.";
+            return;
+        }
 
         const specialties = Array.from(document.getElementById("specialties").selectedOptions).map(opt => opt.value);
         const regions = Array.from(document.getElementById("regions").selectedOptions).map(opt => opt.value);
-        const languages = Array.from(document.getElementById("languages").selectedOptions).map(opt => opt.value);
 
         const guideData = {
             uid: user.uid,
             email: user.email,
-            name: name.value,
-            phone: phone.value,
-            nationality: nationality.value,
-            gender: gender.value,
-            languages: languages,
-            experience: experience.value,
+            name: document.getElementById("name").value,
+            phone: document.getElementById("phone").value,
+            nationality: document.getElementById("nationality").value,
+            gender: document.getElementById("gender").value,
+            languages: document.getElementById("languages").value,
+            experience: document.getElementById("experience").value,
             specialties: specialties,
             regions: regions,
-            price_hour: price_hour.value,
-            price_day: price_day.value,
-            bio: bio.value,
+            price_hour: document.getElementById("price_hour").value,
+            price_day: document.getElementById("price_day").value,
+            bio: document.getElementById("bio").value,
             createdAt: new Date()
         };
 
@@ -193,7 +163,7 @@ button:hover {
             await setDoc(doc(db, "guides", user.uid), guideData);
             window.location.href = "../guidedata/guide-dashboard.html";
         } catch (err) {
-            msg.innerText = err.message;
+            document.getElementById("msg").innerText = err.message;
         }
     }
 </script>
