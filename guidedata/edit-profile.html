@@ -4,26 +4,64 @@
 <meta charset="UTF-8">
 <title>Edit Guide Profile</title>
 
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
 <style>
 body {
-    font-family: Arial;
+    margin: 0;
+    font-family: 'Inter', sans-serif;
     background: #f5f7fa;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    padding-top: 40px;
 }
+
+/* Sidebar */
+.sidebar {
+    width: 240px;
+    height: 100vh;
+    background: #1f2937;
+    color: white;
+    position: fixed;
+    left: 0;
+    top: 0;
+    padding: 30px 20px;
+}
+
+.sidebar h2 {
+    font-size: 20px;
+    margin-bottom: 30px;
+}
+
+.sidebar a {
+    display: block;
+    color: #d1d5db;
+    text-decoration: none;
+    padding: 12px 0;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.sidebar a:hover {
+    color: #ffffff;
+}
+
+/* Main Content */
+.main {
+    margin-left: 260px;
+    padding: 40px;
+}
+
 .reg-box {
-    width: 420px;
+    width: 480px;
     background: white;
     padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    border-radius: 14px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
 }
+
 .reg-box h2 {
     text-align: center;
     margin-bottom: 20px;
 }
+
 input, textarea, select {
     width: 100%;
     padding: 12px;
@@ -31,9 +69,11 @@ input, textarea, select {
     border-radius: 6px;
     border: 1px solid #ccc;
 }
+
 textarea {
     height: 100px;
 }
+
 button {
     width: 100%;
     padding: 12px;
@@ -44,9 +84,11 @@ button {
     border-radius: 6px;
     cursor: pointer;
 }
+
 button:hover {
     background: #005fcc;
 }
+
 #msg {
     color: red;
     margin-top: 10px;
@@ -56,53 +98,67 @@ button:hover {
 
 <body>
 
-<div class="reg-box">
-    <h2>Edit Profile</h2>
+<!-- Sidebar -->
+<div class="sidebar">
+    <h2>Guide Menu</h2>
+    <a href="/guidedata/guide-dashboard.html">Home</a>
+    <a href="/guidedata/my-schedule.html">My Schedule</a>
+    <a href="/guidedata/bookings.html">Bookings</a>
+    <a href="/guidedata/messages.html">Messages</a>
+    <a href="/guidedata/revenue.html">Revenue</a>
+    <a href="/guidedata/edit-profile.html">Edit Profile</a>
+</div>
 
-    <input id="name" placeholder="이름 또는 닉네임">
-    <input id="phone" placeholder="전화번호">
-    <input id="nationality" placeholder="국적">
+<!-- Main Content -->
+<div class="main">
+    <div class="reg-box">
+        <h2>Edit Profile</h2>
 
-    <label style="margin-top:15px;">성별</label>
-    <select id="gender">
-        <option value="남성">남성</option>
-        <option value="여성">여성</option>
-        <option value="기타">기타</option>
-    </select>
+        <input id="name" placeholder="이름 또는 닉네임">
+        <input id="phone" placeholder="전화번호">
+        <input id="nationality" placeholder="국적">
 
-    <input id="languages" placeholder="가능 언어 (예: Korean, English)">
-    <input id="experience" placeholder="경력 (예: 5년)">
+        <label style="margin-top:15px;">성별</label>
+        <select id="gender">
+            <option value="남성">남성</option>
+            <option value="여성">여성</option>
+            <option value="기타">기타</option>
+        </select>
 
-    <label style="margin-top:15px;">전문 분야</label>
-    <select id="specialties" multiple>
-        <option value="문화/예술">문화/예술</option>
-        <option value="역사">역사</option>
-        <option value="사막 사파리">사막 사파리</option>
-        <option value="사진 촬영">사진 촬영</option>
-        <option value="쇼핑">쇼핑</option>
-        <option value="미식">미식</option>
-        <option value="VIP 의전">VIP 의전</option>
-        <option value="가족 여행">가족 여행</option>
-        <option value="비즈니스 출장">비즈니스 출장</option>
-    </select>
+        <input id="languages" placeholder="가능 언어 (예: Korean, English)">
+        <input id="experience" placeholder="경력 (예: 5년)">
 
-    <label style="margin-top:15px;">활동 지역</label>
-    <select id="regions" multiple>
-        <option value="Dubai Marina">Dubai Marina</option>
-        <option value="Downtown Dubai">Downtown Dubai</option>
-        <option value="Deira">Deira</option>
-        <option value="Jumeirah">Jumeirah</option>
-        <option value="Abu Dhabi">Abu Dhabi</option>
-        <option value="Sharjah">Sharjah</option>
-    </select>
+        <label style="margin-top:15px;">전문 분야</label>
+        <select id="specialties" multiple>
+            <option value="문화/예술">문화/예술</option>
+            <option value="역사">역사</option>
+            <option value="사막 사파리">사막 사파리</option>
+            <option value="사진 촬영">사진 촬영</option>
+            <option value="쇼핑">쇼핑</option>
+            <option value="미식">미식</option>
+            <option value="VIP 의전">VIP 의전</option>
+            <option value="가족 여행">가족 여행</option>
+            <option value="비즈니스 출장">비즈니스 출장</option>
+        </select>
 
-    <input id="price_hour" placeholder="시간당 요금 (AED)">
-    <input id="price_day" placeholder="하루 요금 (AED)">
+        <label style="margin-top:15px;">활동 지역</label>
+        <select id="regions" multiple>
+            <option value="Dubai Marina">Dubai Marina</option>
+            <option value="Downtown Dubai">Downtown Dubai</option>
+            <option value="Deira">Deira</option>
+            <option value="Jumeirah">Jumeirah</option>
+            <option value="Abu Dhabi">Abu Dhabi</option>
+            <option value="Sharjah">Sharjah</option>
+        </select>
 
-    <textarea id="bio" placeholder="가이드 소개"></textarea>
+        <input id="price_hour" placeholder="시간당 요금 (AED)">
+        <input id="price_day" placeholder="하루 요금 (AED)">
 
-    <button onclick="updateGuide()">정보 수정</button>
-    <p id="msg"></p>
+        <textarea id="bio" placeholder="가이드 소개"></textarea>
+
+        <button onclick="updateGuide()">정보 수정</button>
+        <p id="msg"></p>
+    </div>
 </div>
 
 <!-- Firebase v10 SDK -->
