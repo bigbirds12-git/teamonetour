@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>Guides List</title>
+<title>Guides List (AI 추천 포함)</title>
 
 <style>
 body {
@@ -39,6 +39,14 @@ button {
 button:hover {
     background: #005fcc;
 }
+
+select, input {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
 </style>
 </head>
 
@@ -46,57 +54,44 @@ button:hover {
 
 <h1>가이드 목록</h1>
 
+<!-- AI 추천 입력 영역 -->
 <div class="card">
+    <h2>AI 가이드 추천</h2>
+
+    <label>여행자 언어</label>
+    <select id="travLang">
+        <option value="">선택</option>
+        <option value="한국어">한국어</option>
+        <option value="English">English</option>
+        <option value="Arabic">Arabic</option>
+        <option value="Chinese">Chinese</option>
+    </select>
+
+    <label>여행 지역</label>
+    <select id="travRegion">
+        <option value="">선택</option>
+        <option value="Dubai">Dubai</option>
+        <option value="Abu Dhabi">Abu Dhabi</option>
+        <option value="Sharjah">Sharjah</option>
+    </select>
+
+    <label>관심 분야</label>
+    <select id="travInterest">
+        <option value="">선택</option>
+        <option value="사막">사막 투어</option>
+        <option value="도시">도시 투어</option>
+        <option value="문화">문화 체험</option>
+        <option value="쇼핑">쇼핑 투어</option>
+    </select>
+
+    <button onclick="applyAI()">AI 추천 적용</button>
+</div>
+
+<!-- 가이드 목록 -->
+<div class="card">
+    <h2>전체 가이드</h2>
     <div id="guideList">불러오는 중...</div>
 </div>
 
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { 
-        getFirestore, collection, getDocs 
-    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyCgOSQsv_MRdaqrW4wJw0q2QY6wXZ-azQs",
-      authDomain: "guidelogin-b0053.firebaseapp.com",
-      projectId: "guidelogin-b0053",
-      storageBucket: "guidelogin-b0053.firebasestorage.app",
-      messagingSenderId: "981519805247",
-      appId: "1:981519805247:web:cc32682b177a4957c0818a",
-      measurementId: "G-2VR4TS6JND"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    async function loadGuides() {
-        const guideList = document.getElementById("guideList");
-        guideList.innerHTML = "";
-
-        const querySnapshot = await getDocs(collection(db, "guides"));
-
-        querySnapshot.forEach(doc => {
-            const g = doc.data();
-
-            guideList.innerHTML += `
-                <div class="guide-item">
-                    <strong>${g.name}</strong><br>
-                    언어: ${g.languages}<br>
-                    경력: ${g.experience}년<br>
-                    지역: ${g.regions}<br>
-                    <button onclick="viewGuide('${doc.id}')">자세히 보기</button>
-                </div>
-            `;
-        });
-    }
-
-    window.viewGuide = function(uid) {
-        window.location.href = `/guidedata/traveler-guide-detail.html?uid=${uid}`;
-    }
-
-    loadGuides();
-</script>
-
-</body>
-</html>
-
+    import { initialize
