@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>AI 가이드 매칭 엔진</title>
+
+<style>
+body {
+    font-family: Arial;
+    background: #f5f7fa;
+    margin: 0;
+    padding: 20px;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+
+input, select {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+button {
+    padding: 12px 20px;
+    background: #0078ff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 15px;
+}
+button:hover {
+    background: #005fcc;
+}
+
+.ai-box {
+    background: #eef6ff;
+    padding: 15px;
+    border-left: 6px solid #0078ff;
+    border-radius: 8px;
+    margin-top: 10px;
+}
+
+.guide-item {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+}
+</style>
+</head>
+
+<body>
+
+<h1>AI 가이드 매칭 엔진</h1>
+
+<div class="card">
+    <h2>여행자 정보 입력</h2>
+
+    <label>여행 날짜</label>
+    <input id="date" type="date">
+
+    <label>여행 기간 (일)</label>
+    <input id="days" type="number">
+
+    <label>관심 분야</label>
+    <select id="interest">
+        <option value="사막">사막 투어</option>
+        <option value="도시">도시 투어</option>
+        <option value="문화">문화 체험</option>
+        <option value="쇼핑">쇼핑</option>
+        <option value="음식">음식</option>
+    </select>
+
+    <label>여행자 언어</label>
+    <select id="lang">
+        <option value="한국어">한국어</option>
+        <option value="English">English</option>
+        <option value="Arabic">Arabic</option>
+        <option value="Chinese">Chinese</option>
+    </select>
+
+    <label>여행 지역</label>
+    <select id="region">
+        <option value="Dubai">Dubai</option>
+        <option value="Abu Dhabi">Abu Dhabi</option>
+        <option value="Sharjah">Sharjah</option>
+    </select>
+
+    <button onclick="matchGuide()">AI 가이드 추천</button>
+</div>
+
+<div class="card">
+    <h2>AI 추천 가이드</h2>
+    <div id="result" class="ai-box">AI 추천 결과가 여기에 표시됩니다.</div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { 
+        getFirestore, collection, getDocs 
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCgOSQsv_MRdaqrW4wJw0q2QY6wXZ-azQs",
+      authDomain: "guidelogin-b0053.firebaseapp.com",
+      projectId: "guidelogin-b0053",
+      storageBucket: "guidelogin-b0053.firebasestorage.app",
+      messagingSenderId: "981519805247",
+      appId: "1:981519805247:web:cc32682b177a4957c0818a",
+      measurementId: "G-2VR4TS6JND"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    let guides = [];
+
+    async function loadGuides() {
+        const snapshot = await getDocs(collection(db, "guides"));
+        snapshot.forEach(doc => guides.push({ id: doc.id, ...doc.data() }));
+    }
+
+    loadGuides();
+
+    function matchGuide() {
+        const date = document.getElementById("date").value;
+        const days = Number(document.getElementById("days").value);
+        const interest = document.getElementById("interest").value;
+        const lang = document.getElementById("lang").value;
+        const region = document.getElementById("region").value;
+
+        let scoredGuides = [];
+
+        guides.forEach(g => {
+            let score = 0;
+
+            if (g.languages.includes(lang)) score += 3;
+            if (g.regions.includes(region)) score += 3;
+            if (g.specialties.includes(interest)) score += 4;
+
+            // 가격 적합성
+            if (g.price_day <= 600) score += 2;
+
+            scoredGuides.push({ guide: g, score });
+        });
+
+        scoredGuides.sort((a, b) => b.score - a.score);
+
+        const best = scoredGuides[0];
+        const second = scoredGuides[1];
+        const third = scoredGuides[2];
+
+        document.getElementById("result").innerHTML = `
+            <strong>최적 가이드:</strong><br>
+            ${best.guide.name} (${best.guide.languages})<br>
+            전문 분야: ${best.guide.specialties}<br>
+            지역: ${best.guide.regions}<br>
+            점수: ${best.score}<br>
+            <a href="/guidedata/traveler-guide-detail.html?uid=${best.guide.id}">→ 가이드 상세 보기</a><br><br>
+
+            <strong>차선 가이드:</strong><br>
+            ${second.guide.name} (${second.guide.languages})<br>
+            점수: ${second.score}<br><br>
+
+            <strong>3순위 가이드:</strong><br>
+            ${third.guide.name} (${third.guide.languages})<br>
+            점수: ${third.score}<br><br>
+
+            <strong>추천 이유:</strong><br>
+            - 언어 매칭<br>
+            - 지역 매칭<br>
+            - 전문 분야 매칭<br>
+            - 가격 적합성<br>
+        `;
+    }
+</script>
+
+</body>
+</html>
