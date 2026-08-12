@@ -135,7 +135,7 @@ body {
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { getFirestore, doc, getDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCgOSQsv_MRdaqrW4wJw0q2QY6wXZ-azQs",
@@ -176,3 +176,29 @@ body {
         const g = snap.data();
 
         guideInfo.innerHTML = `
+            <div class="info-row"><strong>이름:</strong> ${g.name}</div>
+            <div class="info-row"><strong>이메일:</strong> ${g.email}</div>
+            <div class="info-row"><strong>전화번호:</strong> ${g.phone}</div>
+            <div class="info-row"><strong>국적:</strong> ${g.nationality}</div>
+            <div class="info-row"><strong>성별:</strong> ${g.gender}</div>
+            <div class="info-row"><strong>언어:</strong> ${g.languages.join(", ")}</div>
+            <div class="info-row"><strong>경력:</strong> ${g.experience}년</div>
+            <div class="info-row"><strong>전문 분야:</strong> ${g.specialties.join(", ")}</div>
+            <div class="info-row"><strong>활동 지역:</strong> ${g.regions.join(", ")}</div>
+            <div class="info-row"><strong>시간당 요금:</strong> AED ${g.price_hour}</div>
+            <div class="info-row"><strong>하루 요금:</strong> AED ${g.price_day}</div>
+            <div class="info-row"><strong>소개:</strong> ${g.bio}</div>
+        `;
+    }
+
+    function loadTodaySchedule() {
+        todaySchedule.innerHTML = "오늘 일정이 없습니다.";
+    }
+
+    function loadRevenueSummary() {
+        revenueSummary.innerHTML = "이번 주 수익 데이터가 없습니다.";
+    }
+</script>
+
+</body>
+</html>
