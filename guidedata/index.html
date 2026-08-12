@@ -1,0 +1,54 @@
+<!-- guideindex.html 개념 구조 -->
+<div class="guide-dashboard">
+  <!-- 상단 네비게이션 -->
+  <header class="top-nav">
+    <div class="logo">TeamOneTour Guide</div>
+    <div class="user-profile">
+      <span>홍길동 가이드님 환영합니다</span>
+      <button class="status-toggle">투어 가능 상태: ON</button>
+    </div>
+  </header>
+
+  <div class="dashboard-body">
+    <!-- 좌측 메뉴 -->
+    <aside class="sidebar">
+      <button class="btn-add-schedule">+ 새 일정/휴무 등록</button>
+      <div class="stats-summary">
+        <p>이번 달 확정 투어: <strong>12건</strong></p>
+        <p>대기 중인 요청: <strong class="highlight">2건</strong></p>
+      </div>
+      <nav class="menu">
+        <a href="#" class="active">캘린더 관리</a>
+        <a href="#">예약 요청함</a>
+        <a href="#">손님 메시지</a>
+      </nav>
+    </aside>
+
+  <!-- 메인 캘린더 영역 -->
+    <main class="calendar-section">
+      <div class="calendar-controls">
+        <h2>2026년 8월</h2>
+        <div class="view-options">
+          <button>월</button>
+          <button class="active">주</button>
+          <button>일</button>
+        </div>
+      </div>
+      <!-- 구글 캘린더 라이브러리(FullCalendar 등)가 들어갈 영역 -->
+      <div id="calendar-view"></div>
+    </main>
+
+    <!-- 우측 상세 정보 사이드바 (일정 클릭 시 표시) -->
+    <aside class="detail-panel">
+      <h3>일정 상세 정보</h3>
+      <div class="event-details">
+        <span class="badge booked">투어 확정</span>
+        <h4>경복궁 야경 투어</h4>
+        <p><strong>일시:</strong> 2026-08-15 19:00</p>
+        <p><strong>고객:</strong> 김철수 외 2명</p>
+        <p><strong>요청사항:</strong> 거동이 불편하신 어르신이 계십니다.</p>
+        <button class="btn-contact">고객에게 메시지</button>
+      </div>
+    </aside>
+  </div>
+</div>
