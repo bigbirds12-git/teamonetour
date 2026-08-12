@@ -95,45 +95,75 @@ button:hover {background: #005fcc;}
     const auth = getAuth(appFirebase);
     const db = getFirestore(appFirebase);
 
-    let currentUser = null;
+let currentUser = null;
 
-    onAuthStateChanged(auth, async user => {
-        if (!user) {
-            window.location.href = "guidelogin.html";
-            return;
-        }
-        currentUser = user;
-        navigate("dashboard");
-    });
-
-    /* ---------------- SPA ROUTER ---------------- */
-    window.navigate = function(page) {
-        if (page === "dashboard") loadDashboardPage();
-        if (page === "schedule") loadSchedulePage();
-        if (page === "profile") loadProfilePage();
-
-        /* 기존 방식 */
-        if (page === "bookings") window.location.href = "/guidedata/bookings.html";
-        if (page === "messages") window.location.href = "/guidedata/messages.html";
-        if (page === "revenue") window.location.href = "/guidedata/revenue.html";
-    };
-
-    /* ---------------- CHAT COMMANDS ---------------- */
-    function sendChat() {
-        const input = chatInput.value.trim();
-        if (!input) return;
-
-        chatBox.innerHTML += `<p><strong>You:</strong> ${input}</p>`;
-        chatInput.value = "";
-
-        if (input.includes("프로필")) navigate("profile");
-        else if (input.includes("일정")) navigate("schedule");
-        else if (input.includes("홈") || input.includes("대시보드")) navigate("dashboard");
-        else chatBox.innerHTML += `<p><strong>AI:</strong> 이해했어요. 곧 더 많은 기능을 추가할게요.</p>`;
+onAuthStateChanged(auth, async user => {
+    if (!user) {
+        window.location.href = "guidelogin.html";
+        return;
     }
+    currentUser = user;
+    
+    // ✅ 처음 한 번만 네비게이트
+    if (!window._initialized) {
+        window._initialized = true;
+        navigate("dashboard");
+    }
+});
 
-    /* ---------------- DASHBOARD ---------------- */
-    async function loadDashboardPage() {
+/* ---------------- SPA ROUTER ---------------- */
+window.navigate = function(page) {
+    if (page === "dashboard") loadDashboardPage();
+    else if (page === "schedule") loadSchedulePage();
+    else if (page === "profile") loadProfilePage();
+    else if (page === "bookings") window.location.href = "/guidedata/bookings.html";
+    else if (page === "messages") window.location.href = "/guidedata/messages.html";
+    else if (page === "revenue") window.location.href = "/guidedata/revenue.html";
+};
+
+/* ---------------- CHAT COMMANDS ---------------- */
+function sendChat() {
+    // ✅ DOM 요소 가져오기
+    const chatInput = document.getElementById('chatInput');
+    const chatBox = document.getElementById('chatBox');
+    
+    if (!chatInput || !chatBox) {
+        console.error('Chat elements not found');
+        return;
+    }
+    
+    const input = chatInput.value.trim();
+    if (!input) return;
+
+    chatBox.innerHTML += `<p><strong>You:</strong> ${input}</p>`;
+    chatInput.value = "";
+    
+    // 자동 스크롤
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+    // ✅ 명령어 처리
+    const lowerInput = input.toLowerCase();
+    if (lowerInput.includes('프로필') || lowerInput.includes('profile')) {
+        navigate("profile");
+    } else if (lowerInput.includes('일정') || lowerInput.includes('schedule')) {
+        navigate("schedule");
+    } else if (lowerInput.includes('홈') || lowerInput.includes('대시보드') || lowerInput.includes('home')) {
+        navigate("dashboard");
+    } else {
+        chatBox.innerHTML += `<p><strong>AI:</strong> 이해했어요. 곧 더 많은 기능을 추가할게요.</p>`;
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+}
+
+/* ---------------- DASHBOARD ---------------- */
+async function loadDashboardPage() {
+    // ✅ currentUser 체크
+    if (!currentUser) {
+        window.location.href = "guidelogin.html";
+        return;
+    }
+    
+    try {
         const docRef = doc(db, "guides", currentUser.uid);
         const snap = await getDoc(docRef);
         const g = snap.exists() ? snap.data() : {};
@@ -164,114 +194,145 @@ button:hover {background: #005fcc;}
                 </div>
             </div>
         `;
-    }
-
-    /* ---------------- SCHEDULE ---------------- */
-    function loadSchedulePage() {
+    } catch (error) {
+        console.error('Dashboard load error:', error);
         document.getElementById("app").innerHTML = `
             <div class="card">
-                <h2>Schedule 화면 준비 중</h2>
-                <p>일정 기능은 다음 단계에서 완성해드릴게요.</p>
+                <h2>오류 발생</h2>
+                <p>데이터를 불러오는 중 문제가 발생했습니다.</p>
+                <button onclick="loadDashboardPage()">다시 시도</button>
             </div>
         `;
     }
+}
 
-    /* ---------------- PROFILE 화면 ---------------- */
-    async function loadProfilePage() {
-        document.getElementById("app").innerHTML = `
-            <div class="reg-box">
-                <h2>Edit Profile</h2>
+/* ---------------- SCHEDULE ---------------- */
+function loadSchedulePage() {
+    document.getElementById("app").innerHTML = `
+        <div class="card">
+            <h2>Schedule 화면 준비 중</h2>
+            <p>일정 기능은 다음 단계에서 완성해드릴게요.</p>
+        </div>
+    `;
+}
 
-                <input id="name" placeholder="이름 또는 닉네임">
-                <input id="phone" placeholder="전화번호">
-
-                <label>국적</label>
-                <select id="nationality">
-                    <option value="South Korea">South Korea</option>
-                    <option value="UAE">UAE</option>
-                    <option value="Japan">Japan</option>
-                    <option value="China">China</option>
-                    <option value="India">India</option>
-                    <option value="Philippines">Philippines</option>
-                    <option value="Russia">Russia</option>
-                    <option value="UK">UK</option>
-                    <option value="USA">USA</option>
-                    <option value="France">France</option>
-                    <option value="Germany">Germany</option>
-                    <option value="Other">Other</option>
-                </select>
-
-                <label>성별</label>
-                <select id="gender">
-                    <option value="남성">남성</option>
-                    <option value="여성">여성</option>
-                    <option value="기타">기타</option>
-                </select>
-
-                <label>가능 언어</label>
-                <select id="languages" multiple>
-                    <option value="Korean">Korean</option>
-                    <option value="English">English</option>
-                    <option value="Arabic">Arabic</option>
-                    <option value="Chinese">Chinese</option>
-                    <option value="Japanese">Japanese</option>
-                    <option value="Hindi">Hindi</option>
-                    <option value="Russian">Russian</option>
-                    <option value="Filipino">Filipino</option>
-                    <option value="French">French</option>
-                    <option value="German">German</option>
-                </select>
-
-                <label>경력</label>
-                <select id="experience">
-                    <option value="1">1년</option>
-                    <option value="2">2년</option>
-                    <option value="3">3년</option>
-                    <option value="5">5년</option>
-                    <option value="7">7년</option>
-                    <option value="10">10년</option>
-                    <option value="15">15년</option>
-                    <option value="20">20년</option>
-                </select>
-
-                <label>전문 분야</label>
-                <select id="specialties" multiple>
-                    <option value="문화/예술">문화/예술</option>
-                    <option value="역사">역사</option>
-                    <option value="사막 사파리">사막 사파리</option>
-                    <option value="사진 촬영">사진 촬영</option>
-                    <option value="쇼핑">쇼핑</option>
-                    <option value="미식">미식</option>
-                    <option value="VIP 의전">VIP 의전</option>
-                    <option value="가족 여행">가족 여행</option>
-                    <option value="비즈니스 출장">비즈니스 출장</option>
-                </select>
-
-                <label>활동 지역</label>
-                <select id="regions" multiple>
-                    <option value="Dubai Marina">Dubai Marina</option>
-                    <option value="Downtown Dubai">Downtown Dubai</option>
-                    <option value="Deira">Deira</option>
-                    <option value="Jumeirah">Jumeirah</option>
-                    <option value="Abu Dhabi">Abu Dhabi</option>
-                    <option value="Sharjah">Sharjah</option>
-                </select>
-
-                <input id="price_hour" placeholder="시간당 요금 (AED)">
-                <input id="price_day" placeholder="하루 요금 (AED)">
-
-                <textarea id="bio" placeholder="가이드 소개"></textarea>
-
-                <button onclick="updateGuide()">정보 수정</button>
-                <p id="msg"></p>
-            </div>
-        `;
-
-        loadProfile();
+/* ---------------- PROFILE 화면 ---------------- */
+async function loadProfilePage() {
+    // ✅ currentUser 체크
+    if (!currentUser) {
+        window.location.href = "guidelogin.html";
+        return;
     }
+    
+    document.getElementById("app").innerHTML = `
+        <div class="reg-box">
+            <h2>Edit Profile</h2>
 
-    /* ---------------- 데이터 로딩 ---------------- */
-    async function loadProfile() {
+            <input id="name" placeholder="이름 또는 닉네임">
+            <input id="phone" placeholder="전화번호">
+
+            <label>국적</label>
+            <select id="nationality">
+                <option value="South Korea">South Korea</option>
+                <option value="UAE">UAE</option>
+                <option value="Japan">Japan</option>
+                <option value="China">China</option>
+                <option value="India">India</option>
+                <option value="Philippines">Philippines</option>
+                <option value="Russia">Russia</option>
+                <option value="UK">UK</option>
+                <option value="USA">USA</option>
+                <option value="France">France</option>
+                <option value="Germany">Germany</option>
+                <option value="Other">Other</option>
+            </select>
+
+            <label>성별</label>
+            <select id="gender">
+                <option value="남성">남성</option>
+                <option value="여성">여성</option>
+                <option value="기타">기타</option>
+            </select>
+
+            <label>가능 언어</label>
+            <select id="languages" multiple>
+                <option value="Korean">Korean</option>
+                <option value="English">English</option>
+                <option value="Arabic">Arabic</option>
+                <option value="Chinese">Chinese</option>
+                <option value="Japanese">Japanese</option>
+                <option value="Hindi">Hindi</option>
+                <option value="Russian">Russian</option>
+                <option value="Filipino">Filipino</option>
+                <option value="French">French</option>
+                <option value="German">German</option>
+            </select>
+
+            <label>경력</label>
+            <select id="experience">
+                <option value="1">1년</option>
+                <option value="2">2년</option>
+                <option value="3">3년</option>
+                <option value="5">5년</option>
+                <option value="7">7년</option>
+                <option value="10">10년</option>
+                <option value="15">15년</option>
+                <option value="20">20년</option>
+            </select>
+
+            <label>전문 분야</label>
+            <select id="specialties" multiple>
+                <option value="문화/예술">문화/예술</option>
+                <option value="역사">역사</option>
+                <option value="사막 사파리">사막 사파리</option>
+                <option value="사진 촬영">사진 촬영</option>
+                <option value="쇼핑">쇼핑</option>
+                <option value="미식">미식</option>
+                <option value="VIP 의전">VIP 의전</option>
+                <option value="가족 여행">가족 여행</option>
+                <option value="비즈니스 출장">비즈니스 출장</option>
+            </select>
+
+            <label>활동 지역</label>
+            <select id="regions" multiple>
+                <option value="Dubai Marina">Dubai Marina</option>
+                <option value="Downtown Dubai">Downtown Dubai</option>
+                <option value="Deira">Deira</option>
+                <option value="Jumeirah">Jumeirah</option>
+                <option value="Abu Dhabi">Abu Dhabi</option>
+                <option value="Sharjah">Sharjah</option>
+            </select>
+
+            <input id="price_hour" placeholder="시간당 요금 (AED)">
+            <input id="price_day" placeholder="하루 요금 (AED)">
+
+            <textarea id="bio" placeholder="가이드 소개"></textarea>
+
+            <button onclick="updateGuide()">정보 수정</button>
+            <p id="msg"></p>
+        </div>
+    `;
+
+    // ✅ DOM이 완전히 렌더링된 후 프로필 로드
+    await new Promise(resolve => setTimeout(resolve, 50));
+    await loadProfile();
+}
+
+/* ---------------- 데이터 로딩 ---------------- */
+async function loadProfile() {
+    // ✅ msg 요소 가져오기
+    const msg = document.getElementById('msg');
+    if (!msg) {
+        console.error('Message element not found');
+        return;
+    }
+    
+    if (!currentUser) {
+        msg.innerText = "로그인이 필요합니다.";
+        return;
+    }
+    
+    try {
         const docRef = doc(db, "guides", currentUser.uid);
         const snap = await getDoc(docRef);
 
@@ -281,55 +342,119 @@ button:hover {background: #005fcc;}
         }
 
         const g = snap.data();
+        
+        // ✅ 각 DOM 요소를 개별적으로 가져오기
+        const name = document.getElementById('name');
+        const phone = document.getElementById('phone');
+        const nationality = document.getElementById('nationality');
+        const gender = document.getElementById('gender');
+        const experience = document.getElementById('experience');
+        const price_hour = document.getElementById('price_hour');
+        const price_day = document.getElementById('price_day');
+        const bio = document.getElementById('bio');
+        const languages = document.getElementById('languages');
+        const specialties = document.getElementById('specialties');
+        const regions = document.getElementById('regions');
 
-        name.value = g.name || "";
-        phone.value = g.phone || "";
-        nationality.value = g.nationality || "South Korea";
-        gender.value = g.gender || "남성";
-        experience.value = g.experience || "1";
-        price_hour.value = g.price_hour || "";
-        price_day.value = g.price_day || "";
-        bio.value = g.bio || "";
+        // ✅ null 체크 후 값 할당
+        if (name) name.value = g.name || "";
+        if (phone) phone.value = g.phone || "";
+        if (nationality) nationality.value = g.nationality || "South Korea";
+        if (gender) gender.value = g.gender || "남성";
+        if (experience) experience.value = g.experience || "1";
+        if (price_hour) price_hour.value = g.price_hour || "";
+        if (price_day) price_day.value = g.price_day || "";
+        if (bio) bio.value = g.bio || "";
 
-        Array.from(languages.options).forEach(opt => {
-            if (g.languages?.includes(opt.value)) opt.selected = true;
-        });
-
-        Array.from(specialties.options).forEach(opt => {
-            if (g.specialties?.includes(opt.value)) opt.selected = true;
-        });
-
-        Array.from(regions.options).forEach(opt => {
-            if (g.regions?.includes(opt.value)) opt.selected = true;
-        });
-    }
-   /* ---------------- 데이터 업데이트 ---------------- */
-    window.updateGuide = async function() {
-        const specialtiesArr = Array.from(specialties.selectedOptions).map(opt => opt.value);
-        const regionsArr = Array.from(regions.selectedOptions).map(opt => opt.value);
-        const languagesArr = Array.from(languages.selectedOptions).map(opt => opt.value);
-
-        try {
-            await updateDoc(doc(db, "guides", currentUser.uid), {
-                name: name.value,
-                phone: phone.value,
-                nationality: nationality.value,
-                gender: gender.value,
-                languages: languagesArr,
-                experience: experience.value,
-                specialties: specialtiesArr,
-                regions: regionsArr,
-                price_hour: price_hour.value,
-                price_day: price_day.value,
-                bio: bio.value
+        if (languages && g.languages) {
+            Array.from(languages.options).forEach(opt => {
+                opt.selected = g.languages.includes(opt.value);
             });
-
-            navigate("dashboard");
-        } catch (err) {
-            msg.innerText = err.message;
         }
-    };
-</script>
 
-</body>
-</html>
+        if (specialties && g.specialties) {
+            Array.from(specialties.options).forEach(opt => {
+                opt.selected = g.specialties.includes(opt.value);
+            });
+        }
+
+        if (regions && g.regions) {
+            Array.from(regions.options).forEach(opt => {
+                opt.selected = g.regions.includes(opt.value);
+            });
+        }
+        
+        msg.innerText = ""; // 성공 시 메시지 초기화
+        
+    } catch (error) {
+        console.error('Profile load error:', error);
+        msg.innerText = "데이터 로딩 중 오류가 발생했습니다.";
+    }
+}
+
+/* ---------------- 데이터 업데이트 ---------------- */
+window.updateGuide = async function() {
+    // ✅ msg 요소 가져오기
+    const msg = document.getElementById('msg');
+    if (!msg) {
+        console.error('Message element not found');
+        return;
+    }
+    
+    if (!currentUser) {
+        msg.innerText = "로그인이 필요합니다.";
+        return;
+    }
+    
+    // ✅ DOM 요소 가져오기
+    const name = document.getElementById('name');
+    const phone = document.getElementById('phone');
+    const nationality = document.getElementById('nationality');
+    const gender = document.getElementById('gender');
+    const experience = document.getElementById('experience');
+    const price_hour = document.getElementById('price_hour');
+    const price_day = document.getElementById('price_day');
+    const bio = document.getElementById('bio');
+    const languages = document.getElementById('languages');
+    const specialties = document.getElementById('specialties');
+    const regions = document.getElementById('regions');
+
+    // ✅ null 체크
+    if (!languages || !specialties || !regions) {
+        msg.innerText = "필수 입력 항목이 없습니다.";
+        return;
+    }
+
+    const specialtiesArr = Array.from(specialties.selectedOptions).map(opt => opt.value);
+    const regionsArr = Array.from(regions.selectedOptions).map(opt => opt.value);
+    const languagesArr = Array.from(languages.selectedOptions).map(opt => opt.value);
+
+    try {
+        await updateDoc(doc(db, "guides", currentUser.uid), {
+            name: name ? name.value : "",
+            phone: phone ? phone.value : "",
+            nationality: nationality ? nationality.value : "",
+            gender: gender ? gender.value : "",
+            languages: languagesArr,
+            experience: experience ? experience.value : "",
+            specialties: specialtiesArr,
+            regions: regionsArr,
+            price_hour: price_hour ? price_hour.value : "",
+            price_day: price_day ? price_day.value : "",
+            bio: bio ? bio.value : ""
+        });
+
+        msg.innerText = "✅ 정보가 성공적으로 수정되었습니다.";
+        msg.style.color = "green";
+        
+        // ✅ 1.5초 후 대시보드로 이동
+        setTimeout(() => {
+            navigate("dashboard");
+        }, 1500);
+        
+    } catch (err) {
+        console.error('Update error:', err);
+        msg.innerText = "❌ 오류: " + err.message;
+        msg.style.color = "red";
+    }
+};
