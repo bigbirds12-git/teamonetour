@@ -119,6 +119,24 @@ button:hover {
 .schedule-item:last-child {
     border-bottom: none;
 }
+
+/* Registration */
+.reg-box {
+    width: 480px;
+    background: white;
+    padding: 30px;
+    border-radius: 14px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+}
+.reg-box h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+#msg {
+    color: red;
+    margin-top: 10px;
+    text-align: center;
+}
 </style>
 </head>
 
@@ -129,6 +147,7 @@ button:hover {
     <h2>Guide Menu</h2>
     <a onclick="navigate('dashboard')">Home</a>
     <a onclick="navigate('schedule')">My Schedule</a>
+    <a onclick="navigate('registration')">Registration</a>
 </div>
 
 <!-- Main SPA Container -->
@@ -140,7 +159,7 @@ button:hover {
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { getFirestore, doc, getDoc, collection, addDoc, getDocs } 
+    import { getFirestore, doc, getDoc, setDoc, collection, addDoc, getDocs } 
         from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -161,7 +180,7 @@ button:hover {
 
     onAuthStateChanged(auth, async user => {
         if (!user) {
-            window.location.href = "guidelogin.html";
+            window.location.href = "/login/guidelogin.html";
             return;
         }
         currentUser = user;
@@ -172,6 +191,7 @@ button:hover {
     function navigate(page) {
         if (page === "dashboard") loadDashboard();
         if (page === "schedule") loadSchedulePage();
+        if (page === "registration") loadRegistrationPage();
     }
 
     /* ---------------- DASHBOARD 화면 ---------------- */
@@ -191,6 +211,7 @@ button:hover {
                 <h2>빠른 이동</h2>
                 <div class="quick-links">
                     <a onclick="navigate('schedule')">일정 관리</a>
+                    <a onclick="navigate('registration')">프로필 등록</a>
                 </div>
             </div>
         `;
@@ -307,6 +328,128 @@ button:hover {
 
         if (scheduleList.innerHTML === "") {
             scheduleList.innerHTML = "등록된 일정이 없습니다.";
+        }
+    }
+
+    /* ---------------- REGISTRATION 화면 ---------------- */
+    function loadRegistrationPage() {
+        document.getElementById("app").innerHTML = `
+            <div class="reg-box">
+                <h2>Guide Registration</h2>
+
+                <input id="name" placeholder="이름 또는 닉네임">
+                <input id="phone" placeholder="전화번호">
+
+                <label style="margin-top:15px;">국적</label>
+                <select id="nationality">
+                    <option value="South Korea">South Korea</option>
+                    <option value="UAE">UAE</option>
+                    <option value="Japan">Japan</option>
+                    <option value="China">China</option>
+                    <option value="India">India</option>
+                    <option value="Philippines">Philippines</option>
+                    <option value="Russia">Russia</option>
+                    <option value="UK">UK</option>
+                    <option value="USA">USA</option>
+                    <option value="France">France</option>
+                    <option value="Germany">Germany</option>
+                    <option value="Other">Other</option>
+                </select>
+
+                <label style="margin-top:15px;">성별</label>
+                <select id="gender">
+                    <option value="남성">남성</option>
+                    <option value="여성">여성</option>
+                    <option value="기타">기타</option>
+                </select>
+
+                <label style="margin-top:15px;">가능 언어</label>
+                <select id="languages" multiple>
+                    <option value="Korean">Korean</option>
+                    <option value="English">English</option>
+                    <option value="Arabic">Arabic</option>
+                    <option value="Chinese">Chinese</option>
+                    <option value="Japanese">Japanese</option>
+                    <option value="Hindi">Hindi</option>
+                    <option value="Russian">Russian</option>
+                    <option value="Filipino">Filipino</option>
+                    <option value="French">French</option>
+                    <option value="German">German</option>
+                </select>
+
+                <label style="margin-top:15px;">경력</label>
+                <select id="experience">
+                    <option value="1">1년</option>
+                    <option value="2">2년</option>
+                    <option value="3">3년</option>
+                    <option value="5">5년</option>
+                    <option value="7">7년</option>
+                    <option value="10">10년</option>
+                    <option value="15">15년</option>
+                    <option value="20">20년</option>
+                </select>
+
+                <label style="margin-top:15px;">전문 분야</label>
+                <select id="specialties" multiple>
+                    <option value="문화/예술">문화/예술</option>
+                    <option value="역사">역사</option>
+                    <option value="사막 사파리">사막 사파리</option>
+                    <option value="사진 촬영">사진 촬영</option>
+                    <option value="쇼핑">쇼핑</option>
+                    <option value="미식">미식</option>
+                    <option value="VIP 의전">VIP 의전</option>
+                    <option value="가족 여행">가족 여행</option>
+                    <option value="비즈니스 출장">비즈니스 출장</option>
+                </select>
+
+                <label style="margin-top:15px;">활동 지역</label>
+                <select id="regions" multiple>
+                    <option value="Dubai Marina">Dubai Marina</option>
+                    <option value="Downtown Dubai">Downtown Dubai</option>
+                    <option value="Deira">Deira</option>
+                    <option value="Jumeirah">Jumeirah</option>
+                    <option value="Abu Dhabi">Abu Dhabi</option>
+                    <option value="Sharjah">Sharjah</option>
+                </select>
+
+                <input id="price_hour" placeholder="시간당 요금 (AED)">
+                <input id="price_day" placeholder="하루 요금 (AED)">
+
+                <textarea id="bio" placeholder="가이드 소개"></textarea>
+
+                <button onclick="saveGuide()">정보 저장</button>
+                <p id="msg"></p>
+            </div>
+        `;
+    }
+
+    window.saveGuide = async function() {
+        const specialtiesArr = Array.from(document.getElementById("specialties").selectedOptions).map(opt => opt.value);
+        const regionsArr = Array.from(document.getElementById("regions").selectedOptions).map(opt => opt.value);
+        const languagesArr = Array.from(document.getElementById("languages").selectedOptions).map(opt => opt.value);
+
+        const guideData = {
+            uid: currentUser.uid,
+            email: currentUser.email,
+            name: name.value,
+            phone: phone.value,
+            nationality: nationality.value,
+            gender: gender.value,
+            languages: languagesArr,
+            experience: experience.value,
+            specialties: specialtiesArr,
+            regions: regionsArr,
+            price_hour: price_hour.value,
+            price_day: price_day.value,
+            bio: bio.value,
+            createdAt: new Date()
+        };
+
+        try {
+            await setDoc(doc(db, "guides", currentUser.uid), guideData);
+            navigate("dashboard");
+        } catch (err) {
+            msg.innerText = err.message;
         }
     }
 </script>
