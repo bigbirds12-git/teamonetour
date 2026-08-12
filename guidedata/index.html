@@ -1,54 +1,305 @@
-<!-- guideindex.html 개념 구조 -->
-<div class="guide-dashboard">
-  <!-- 상단 네비게이션 -->
-  <header class="top-nav">
-    <div class="logo">TeamOneTour Guide</div>
-    <div class="user-profile">
-      <span>홍길동 가이드님 환영합니다</span>
-      <button class="status-toggle">투어 가능 상태: ON</button>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>Guide Platform – Conversational Dashboard</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background: #f5f7fa;
+}
+
+/* HERO TOP NAV */
+.hero-nav {
+    width: 100%;
+    background: #ffffff;
+    padding: 18px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e5e7eb;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 10;
+}
+
+.hero-left a {
+    margin-right: 24px;
+    font-size: 18px;
+    font-weight: 600;
+    color: #374151;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.hero-left a:hover {
+    color: #0078ff;
+}
+
+.hero-right {
+    font-size: 18px;
+    font-weight: 600;
+    color: #0078ff;
+}
+
+/* MAIN LAYOUT */
+.layout {
+    display: flex;
+    margin-top: 80px;
+    padding: 40px;
+}
+
+/* DASHBOARD CENTER */
+.dashboard {
+    flex: 1;
+    padding-right: 40px;
+}
+
+.dashboard h1 {
+    font-size: 28px;
+    margin-bottom: 20px;
+}
+
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+.card {
+    background: white;
+    padding: 24px;
+    border-radius: 16px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    text-align: center;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 24px rgba(0,0,0,0.12);
+}
+
+.card h3 {
+    margin-bottom: 10px;
+    font-size: 20px;
+}
+
+/* AI CHAT PANEL */
+.chat-panel {
+    width: 380px;
+    background: #ffffff;
+    border-left: 1px solid #ddd;
+    padding: 20px;
+    height: calc(100vh - 80px);
+    position: fixed;
+    right: 0;
+    top: 80px;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-panel h2 {
+    margin-bottom: 15px;
+}
+
+.chat-box {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.chat-input {
+    display: flex;
+    margin-top: 15px;
+}
+
+.chat-input input {
+    flex: 1;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+.chat-input button {
+    margin-left: 10px;
+    padding: 12px 18px;
+    background: #0078ff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<!-- HERO TOP NAV -->
+<div class="hero-nav">
+    <div class="hero-left">
+        <a onclick="navigate('dashboard')">Home</a>
+        <a onclick="navigate('chat')">AI Chat</a>
+        <a onclick="navigate('settings')">Settings</a>
     </div>
-  </header>
-
-  <div class="dashboard-body">
-    <!-- 좌측 메뉴 -->
-    <aside class="sidebar">
-      <button class="btn-add-schedule">+ 새 일정/휴무 등록</button>
-      <div class="stats-summary">
-        <p>이번 달 확정 투어: <strong>12건</strong></p>
-        <p>대기 중인 요청: <strong class="highlight">2건</strong></p>
-      </div>
-      <nav class="menu">
-        <a href="#" class="active">캘린더 관리</a>
-        <a href="#">예약 요청함</a>
-        <a href="#">손님 메시지</a>
-      </nav>
-    </aside>
-
-  <!-- 메인 캘린더 영역 -->
-    <main class="calendar-section">
-      <div class="calendar-controls">
-        <h2>2026년 8월</h2>
-        <div class="view-options">
-          <button>월</button>
-          <button class="active">주</button>
-          <button>일</button>
-        </div>
-      </div>
-      <!-- 구글 캘린더 라이브러리(FullCalendar 등)가 들어갈 영역 -->
-      <div id="calendar-view"></div>
-    </main>
-
-    <!-- 우측 상세 정보 사이드바 (일정 클릭 시 표시) -->
-    <aside class="detail-panel">
-      <h3>일정 상세 정보</h3>
-      <div class="event-details">
-        <span class="badge booked">투어 확정</span>
-        <h4>경복궁 야경 투어</h4>
-        <p><strong>일시:</strong> 2026-08-15 19:00</p>
-        <p><strong>고객:</strong> 김철수 외 2명</p>
-        <p><strong>요청사항:</strong> 거동이 불편하신 어르신이 계십니다.</p>
-        <button class="btn-contact">고객에게 메시지</button>
-      </div>
-    </aside>
-  </div>
+    <div class="hero-right">Guide Platform</div>
 </div>
+
+<!-- MAIN LAYOUT -->
+<div class="layout">
+
+    <!-- DASHBOARD CENTER -->
+    <div class="dashboard" id="app">
+        <!-- SPA 화면이 여기에 로드됨 -->
+    </div>
+
+    <!-- AI CHAT PANEL -->
+    <div class="chat-panel">
+        <h2>AI Assistant</h2>
+        <div class="chat-box" id="chatBox"></div>
+
+        <div class="chat-input">
+            <input id="chatInput" placeholder="예: 내 프로필 보여줘">
+            <button onclick="sendChat()">Send</button>
+        </div>
+    </div>
+
+</div>
+
+<!-- Firebase + SPA Router -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCgOSQsv_MRdaqrW4wJw0q2QY6wXZ-azQs",
+      authDomain: "guidelogin-b0053.firebaseapp.com",
+      projectId: "guidelogin-b0053",
+      storageBucket: "guidelogin-b0053.firebasestorage.app",
+      messagingSenderId: "981519805247",
+      appId: "1:981519805247:web:cc32682b177a4957c0818a",
+      measurementId: "G-2VR4TS6JND"
+    };
+
+    const appFirebase = initializeApp(firebaseConfig);
+    const auth = getAuth(appFirebase);
+    const db = getFirestore(appFirebase);
+
+    let currentUser = null;
+
+    onAuthStateChanged(auth, async user => {
+        if (!user) {
+            window.location.href = "/login/guidelogin.html";
+            return;
+        }
+        currentUser = user;
+        navigate("dashboard");
+    });
+
+    /* ---------------- SPA ROUTER ---------------- */
+    window.navigate = function(page) {
+        if (page === "dashboard") loadDashboard();
+        if (page === "chat") loadChatIntro();
+        if (page === "settings") loadSettings();
+        if (page === "schedule") loadSchedule();
+        if (page === "profile") loadProfile();
+
+        /* 기존 방식 */
+        if (page === "bookings") window.location.href = "/guidedata/bookings.html";
+        if (page === "messages") window.location.href = "/guidedata/messages.html";
+        if (page === "revenue") window.location.href = "/guidedata/revenue.html";
+    };
+
+    /* ---------------- DASHBOARD ---------------- */
+    async function loadDashboard() {
+        document.getElementById("app").innerHTML = `
+            <h1>Dashboard</h1>
+
+            <div class="card-grid">
+                <div class="card" onclick="navigate('schedule')">
+                    <h3>My Schedule</h3>
+                    <p>일정을 확인하고 관리합니다.</p>
+                </div>
+
+                <div class="card" onclick="navigate('bookings')">
+                    <h3>Bookings</h3>
+                    <p>예약 목록을 확인합니다.</p>
+                </div>
+
+                <div class="card" onclick="navigate('messages')">
+                    <h3>Messages</h3>
+                    <p>고객 메시지를 확인합니다.</p>
+                </div>
+
+                <div class="card" onclick="navigate('profile')">
+                    <h3>Edit Profile</h3>
+                    <p>가이드 정보를 수정합니다.</p>
+                </div>
+
+                <div class="card" onclick="navigate('revenue')">
+                    <h3>Revenue</h3>
+                    <p>수익 정보를 확인합니다.</p>
+                </div>
+            </div>
+        `;
+    }
+
+    /* ---------------- CHAT INTRO ---------------- */
+    function loadChatIntro() {
+        document.getElementById("app").innerHTML = `
+            <h1>AI Chat</h1>
+            <p>오른쪽 대화창에서 AI에게 명령을 내릴 수 있습니다.</p>
+        `;
+    }
+
+    /* ---------------- SETTINGS ---------------- */
+    function loadSettings() {
+        document.getElementById("app").innerHTML = `
+            <h1>Settings</h1>
+            <p>설정 기능은 다음 단계에서 추가됩니다.</p>
+        `;
+    }
+
+    /* ---------------- SCHEDULE ---------------- */
+    function loadSchedule() {
+        document.getElementById("app").innerHTML = `
+            <h1>My Schedule</h1>
+            <p>일정 기능은 다음 단계에서 완성됩니다.</p>
+        `;
+    }
+
+    /* ---------------- PROFILE ---------------- */
+    function loadProfile() {
+        document.getElementById("app").innerHTML = `
+            <h1>Edit Profile</h1>
+            <p>프로필 수정 화면은 다음 단계에서 완성됩니다.</p>
+        `;
+    }
+
+    /* ---------------- AI CHAT COMMANDS ---------------- */
+    function sendChat() {
+        const input = chatInput.value.trim();
+        if (!input) return;
+
+        chatBox.innerHTML += `<p><strong>You:</strong> ${input}</p>`;
+        chatInput.value = "";
+
+        if (input.includes("프로필")) navigate("profile");
+        else if (input.includes("일정")) navigate("schedule");
+        else if (input.includes("예약")) navigate("bookings");
+        else if (input.includes("메시지")) navigate("messages");
+        else if (input.includes("수익")) navigate("revenue");
+        else if (input.includes("홈") || input.includes("대시보드")) navigate("dashboard");
+        else chatBox.innerHTML += `<p><strong>AI:</strong> 이해했어요. 곧 더 많은 기능을 추가할게요.</p>`;
+    }
+</script>
+
+</body>
+</html>
