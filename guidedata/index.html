@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>Guide Platform SPA</title>
+<title>Guide Dashboard (SPA)</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
@@ -45,29 +45,64 @@ body {
     color: #ffffff;
 }
 
-/* Main */
+/* Main Content */
 .main {
     margin-left: 260px;
     padding: 40px;
-    width: 100%;
+    width: calc(100% - 260px);
 }
 
-/* Cards */
+/* Dashboard Cards */
 .card {
     background: white;
-    padding: 24px;
-    border-radius: 14px;
+    padding: 30px;
+    border-radius: 16px;
     box-shadow: 0 6px 18px rgba(0,0,0,0.08);
     margin-bottom: 30px;
 }
 
 .card h2 {
     margin-bottom: 20px;
+    font-size: 22px;
 }
 
-.info-row {
-    margin-bottom: 10px;
+/* Profile Box */
+.reg-box {
+    width: 900px;
+    max-width: 100%;
+    background: white;
+    padding: 40px;
+    border-radius: 14px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+}
+
+input, textarea, select {
+    width: 100%;
+    padding: 14px;
+    margin-top: 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
     font-size: 16px;
+}
+
+textarea {
+    height: 120px;
+}
+
+button {
+    width: 100%;
+    padding: 14px;
+    margin-top: 25px;
+    background: #0078ff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+button:hover {
+    background: #005fcc;
 }
 
 .quick-links a {
@@ -85,38 +120,9 @@ body {
     background: #005fcc;
 }
 
-input, textarea, select {
-    width: 100%;
-    padding: 12px;
-    margin-top: 10px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-}
-
-textarea {
-    height: 80px;
-}
-
-button {
-    padding: 12px 20px;
-    background: #0078ff;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    margin-top: 15px;
-}
-
-button:hover {
-    background: #005fcc;
-}
-
-.schedule-item {
-    padding: 12px;
-    border-bottom: 1px solid #ddd;
-}
-.schedule-item:last-child {
-    border-bottom: none;
+.info-row {
+    margin-bottom: 10px;
+    font-size: 16px;
 }
 
 #msg {
@@ -135,7 +141,8 @@ button:hover {
     <a onclick="navigate('schedule')">My Schedule</a>
     <a href="/guidedata/bookings.html">Bookings</a>
     <a href="/guidedata/messages.html">Messages</a>
-    <a onclick="navigate('edit-profile')">Edit Profile</a>
+    <a href="/guidedata/revenue.html">Revenue</a>
+    <a onclick="navigate('profile')">Edit Profile</a>
 </div>
 
 <!-- Main SPA Container -->
@@ -145,8 +152,7 @@ button:hover {
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { getFirestore, doc, getDoc, updateDoc, collection, addDoc, getDocs } 
-        from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCgOSQsv_MRdaqrW4wJw0q2QY6wXZ-azQs",
@@ -166,7 +172,7 @@ button:hover {
 
     onAuthStateChanged(auth, async user => {
         if (!user) {
-            window.location.href = "/login/guidelogin.html";
+            window.location.href = "guidelogin.html";
             return;
         }
         currentUser = user;
@@ -175,162 +181,68 @@ button:hover {
 
     /* ---------------- SPA ROUTER ---------------- */
     window.navigate = function(page) {
-        if (page === "dashboard") loadDashboard();
+        if (page === "dashboard") loadDashboardPage();
         if (page === "schedule") loadSchedulePage();
-        if (page === "edit-profile") loadEditProfilePage();
+        if (page === "profile") loadProfilePage();
+
+        /* 기존 방식 */
+        if (page === "bookings") window.location.href = "/guidedata/bookings.html";
+        if (page === "messages") window.location.href = "/guidedata/messages.html";
+        if (page === "revenue") window.location.href = "/guidedata/revenue.html";
     };
 
     /* ---------------- DASHBOARD ---------------- */
-    async function loadDashboard() {
-        document.getElementById("app").innerHTML = `
-            <div class="card">
-                <h2>가이드 정보</h2>
-                <div id="guideInfo">불러오는 중...</div>
-            </div>
-
-            <div class="card">
-                <h2>오늘 일정</h2>
-                <div id="todaySchedule">불러오는 중...</div>
-            </div>
-
-            <div class="card">
-                <h2>빠른 이동</h2>
-                <div class="quick-links">
-                    <a onclick="navigate('schedule')">일정 관리</a>
-                    <a href="/guidedata/bookings.html">예약 관리</a>
-                    <a href="/guidedata/messages.html">메시지</a>
-                    <a onclick="navigate('edit-profile')">프로필 수정</a>
-                </div>
-            </div>
-        `;
-
-        loadGuideInfo();
-        loadTodaySchedule();
-    }
-
-    async function loadGuideInfo() {
-        const docRef = doc(db, "guides", currentUser.uid);
-        const snap = await getDoc(docRef);
-
-        if (!snap.exists()) {
-            guideInfo.innerHTML = "가이드 정보를 찾을 수 없습니다.";
-            return;
-        }
-
-        const g = snap.data();
-
-        guideInfo.innerHTML = `
-            <div class="info-row"><strong>이름:</strong> ${g.name}</div>
-            <div class="info-row"><strong>전화번호:</strong> ${g.phone}</div>
-            <div class="info-row"><strong>국적:</strong> ${g.nationality}</div>
-            <div class="info-row"><strong>성별:</strong> ${g.gender}</div>
-            <div class="info-row"><strong>언어:</strong> ${g.languages.join(", ")}</div>
-            <div class="info-row"><strong>전문 분야:</strong> ${g.specialties.join(", ")}</div>
-            <div class="info-row"><strong>활동 지역:</strong> ${g.regions.join(", ")}</div>
-        `;
-    }
-
-    function loadTodaySchedule() {
-        todaySchedule.innerHTML = "오늘 일정이 없습니다.";
-    }
-
-    /* ---------------- SCHEDULE ---------------- */
-    function loadSchedulePage() {
-        document.getElementById("app").innerHTML = `
-            <h1>My Schedule</h1>
-
-            <div class="card">
-                <h2>일정 추가</h2>
-
-                <input id="date" type="date">
-                <input id="time" type="time">
-                <input id="title" placeholder="일정 제목">
-                <textarea id="description" placeholder="일정 설명"></textarea>
-
-                <label>활동 지역</label>
-                <select id="region">
-                    <option value="Dubai Marina">Dubai Marina</option>
-                    <option value="Downtown Dubai">Downtown Dubai</option>
-                    <option value="Deira">Deira</option>
-                    <option value="Jumeirah">Jumeirah</option>
-                    <option value="Abu Dhabi">Abu Dhabi</option>
-                    <option value="Sharjah">Sharjah</option>
-                </select>
-
-                <label>전문 분야</label>
-                <select id="specialty">
-                    <option value="문화/예술">문화/예술</option>
-                    <option value="역사">역사</option>
-                    <option value="사막 사파리">사막 사파리</option>
-                    <option value="사진 촬영">사진 촬영</option>
-                    <option value="쇼핑">쇼핑</option>
-                    <option value="미식">미식</option>
-                </select>
-
-                <button onclick="addSchedule()">일정 저장</button>
-                <p id="msg"></p>
-            </div>
-
-            <div class="card">
-                <h2>등록된 일정</h2>
-                <div id="scheduleList">불러오는 중...</div>
-            </div>
-        `;
-
-        loadSchedule();
-    }
-
-    async function addSchedule() {
-        const scheduleData = {
-            date: date.value,
-            time: time.value,
-            title: title.value,
-            description: description.value,
-            region: region.value,
-            specialty: specialty.value,
-            createdAt: new Date()
-        };
-
-        await addDoc(collection(db, "guides", currentUser.uid, "schedule"), scheduleData);
-        msg.innerText = "일정이 저장되었습니다.";
-        loadSchedule();
-    }
-
-    async function loadSchedule() {
-        const scheduleList = document.getElementById("scheduleList");
-        scheduleList.innerHTML = "";
-
-        const querySnapshot = await getDocs(collection(db, "guides", currentUser.uid, "schedule"));
-
-        querySnapshot.forEach(doc => {
-            const s = doc.data();
-            scheduleList.innerHTML += `
-                <div class="schedule-item">
-                    <strong>${s.date} ${s.time}</strong><br>
-                    ${s.title}<br>
-                    <em>${s.region} / ${s.specialty}</em><br>
-                    ${s.description}
-                </div>
-            `;
-        });
-
-        if (scheduleList.innerHTML === "") {
-            scheduleList.innerHTML = "등록된 일정이 없습니다.";
-        }
-    }
-
-    /* ---------------- EDIT PROFILE ---------------- */
-    async function loadEditProfilePage() {
+    async function loadDashboardPage() {
         const docRef = doc(db, "guides", currentUser.uid);
         const snap = await getDoc(docRef);
         const g = snap.exists() ? snap.data() : {};
 
         document.getElementById("app").innerHTML = `
             <div class="card">
+                <h2>Guide Information</h2>
+                <div class="info-row"><strong>Name:</strong> ${g.name || ""}</div>
+                <div class="info-row"><strong>Phone:</strong> ${g.phone || ""}</div>
+                <div class="info-row"><strong>Nationality:</strong> ${g.nationality || ""}</div>
+                <div class="info-row"><strong>Gender:</strong> ${g.gender || ""}</div>
+                <div class="info-row"><strong>Languages:</strong> ${(g.languages || []).join(", ")}</div>
+                <div class="info-row"><strong>Specialties:</strong> ${(g.specialties || []).join(", ")}</div>
+                <div class="info-row"><strong>Regions:</strong> ${(g.regions || []).join(", ")}</div>
+            </div>
+
+            <div class="card">
+                <h2>Today's Schedule</h2>
+                <p>오늘 일정이 없습니다.</p>
+            </div>
+
+            <div class="card">
+                <h2>Quick Actions</h2>
+                <div class="quick-links">
+                    <a onclick="navigate('schedule')">일정 관리</a>
+                    <a onclick="navigate('profile')">프로필 수정</a>
+                    <a href="/guidedata/bookings.html">예약 관리</a>
+                </div>
+            </div>
+        `;
+    }
+
+    /* ---------------- SCHEDULE ---------------- */
+    function loadSchedulePage() {
+        document.getElementById("app").innerHTML = `
+            <div class="card">
+                <h2>Schedule 화면 준비 중</h2>
+                <p>일정 기능은 다음 단계에서 완성해드릴게요.</p>
+            </div>
+        `;
+    }
+
+    /* ---------------- PROFILE 화면 ---------------- */
+    async function loadProfilePage() {
+        document.getElementById("app").innerHTML = `
+            <div class="reg-box">
                 <h2>Edit Profile</h2>
 
-                <input id="name" placeholder="이름" value="${g.name || ""}">
-                <input id="phone" placeholder="전화번호" value="${g.phone || ""}">
+                <input id="name" placeholder="이름 또는 닉네임">
+                <input id="phone" placeholder="전화번호">
 
                 <label>국적</label>
                 <select id="nationality">
@@ -369,6 +281,18 @@ button:hover {
                     <option value="German">German</option>
                 </select>
 
+                <label>경력</label>
+                <select id="experience">
+                    <option value="1">1년</option>
+                    <option value="2">2년</option>
+                    <option value="3">3년</option>
+                    <option value="5">5년</option>
+                    <option value="7">7년</option>
+                    <option value="10">10년</option>
+                    <option value="15">15년</option>
+                    <option value="20">20년</option>
+                </select>
+
                 <label>전문 분야</label>
                 <select id="specialties" multiple>
                     <option value="문화/예술">문화/예술</option>
@@ -392,35 +316,55 @@ button:hover {
                     <option value="Sharjah">Sharjah</option>
                 </select>
 
-                <input id="price_hour" placeholder="시간당 요금" value="${g.price_hour || ""}">
-                <input id="price_day" placeholder="하루 요금" value="${g.price_day || ""}">
+                <input id="price_hour" placeholder="시간당 요금 (AED)">
+                <input id="price_day" placeholder="하루 요금 (AED)">
 
-                <textarea id="bio" placeholder="소개">${g.bio || ""}</textarea>
+                <textarea id="bio" placeholder="가이드 소개"></textarea>
 
-                <button onclick="saveProfile()">저장</button>
+                <button onclick="updateGuide()">정보 수정</button>
                 <p id="msg"></p>
             </div>
         `;
 
-        setTimeout(() => {
-            nationality.value = g.nationality || "South Korea";
-            gender.value = g.gender || "남성";
-
-            Array.from(languages.options).forEach(opt => {
-                if (g.languages?.includes(opt.value)) opt.selected = true;
-            });
-
-            Array.from(specialties.options).forEach(opt => {
-                if (g.specialties?.includes(opt.value)) opt.selected = true;
-            });
-
-            Array.from(regions.options).forEach(opt => {
-                if (g.regions?.includes(opt.value)) opt.selected = true;
-            });
-        }, 50);
+        loadProfile();
     }
 
-    window.saveProfile = async function() {
+    /* ---------------- 데이터 로딩 ---------------- */
+    async function loadProfile() {
+        const docRef = doc(db, "guides", currentUser.uid);
+        const snap = await getDoc(docRef);
+
+        if (!snap.exists()) {
+            msg.innerText = "가이드 정보를 찾을 수 없습니다.";
+            return;
+        }
+
+        const g = snap.data();
+
+        name.value = g.name || "";
+        phone.value = g.phone || "";
+        nationality.value = g.nationality || "South Korea";
+        gender.value = g.gender || "남성";
+        experience.value = g.experience || "1";
+        price_hour.value = g.price_hour || "";
+        price_day.value = g.price_day || "";
+        bio.value = g.bio || "";
+
+        Array.from(languages.options).forEach(opt => {
+            if (g.languages?.includes(opt.value)) opt.selected = true;
+        });
+
+        Array.from(specialties.options).forEach(opt => {
+            if (g.specialties?.includes(opt.value)) opt.selected = true;
+        });
+
+        Array.from(regions.options).forEach(opt => {
+            if (g.regions?.includes(opt.value)) opt.selected = true;
+        });
+    }
+
+    /* ---------------- 데이터 업데이트 ---------------- */
+    window.updateGuide = async function() {
         const specialtiesArr = Array.from(specialties.selectedOptions).map(opt => opt.value);
         const regionsArr = Array.from(regions.selectedOptions).map(opt => opt.value);
         const languagesArr = Array.from(languages.selectedOptions).map(opt => opt.value);
@@ -432,6 +376,7 @@ button:hover {
                 nationality: nationality.value,
                 gender: gender.value,
                 languages: languagesArr,
+                experience: experience.value,
                 specialties: specialtiesArr,
                 regions: regionsArr,
                 price_hour: price_hour.value,
@@ -439,8 +384,7 @@ button:hover {
                 bio: bio.value
             });
 
-            msg.innerText = "수정되었습니다.";
-            setTimeout(() => navigate("dashboard"), 800);
+            navigate("dashboard");
         } catch (err) {
             msg.innerText = err.message;
         }
