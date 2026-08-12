@@ -187,12 +187,12 @@ button:hover {
         navigate("dashboard"); // 기본 화면
     });
 
-    /* ---------------- SPA ROUTER ---------------- */
-    function navigate(page) {
+    /* ---------------- SPA ROUTER (전역 등록) ---------------- */
+    window.navigate = function(page) {
         if (page === "dashboard") loadDashboard();
         if (page === "schedule") loadSchedulePage();
         if (page === "registration") loadRegistrationPage();
-    }
+    };
 
     /* ---------------- DASHBOARD 화면 ---------------- */
     async function loadDashboard() {
