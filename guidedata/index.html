@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>Guide Dashboard (SPA)</title>
+<title>Guide Dashboard (Conversational UI)</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
@@ -49,7 +49,53 @@ body {
 .main {
     margin-left: 260px;
     padding: 40px;
-    width: calc(100% - 260px);
+    width: calc(100% - 260px - 350px);
+}
+
+/* Chat Panel */
+.chat-panel {
+    width: 350px;
+    height: 100vh;
+    background: #ffffff;
+    border-left: 1px solid #ddd;
+    position: fixed;
+    right: 0;
+    top: 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-panel h3 {
+    margin-bottom: 15px;
+}
+
+.chat-box {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.chat-input {
+    display: flex;
+    margin-top: 15px;
+}
+
+.chat-input input {
+    flex: 1;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+.chat-input button {
+    margin-left: 10px;
+    padding: 12px 18px;
+    background: #0078ff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
 }
 
 /* Dashboard Cards */
@@ -64,6 +110,11 @@ body {
 .card h2 {
     margin-bottom: 20px;
     font-size: 22px;
+}
+
+.info-row {
+    margin-bottom: 10px;
+    font-size: 16px;
 }
 
 /* Profile Box */
@@ -120,11 +171,6 @@ button:hover {
     background: #005fcc;
 }
 
-.info-row {
-    margin-bottom: 10px;
-    font-size: 16px;
-}
-
 #msg {
     color: red;
     margin-top: 10px;
@@ -147,6 +193,17 @@ button:hover {
 
 <!-- Main SPA Container -->
 <div class="main" id="app"></div>
+
+<!-- Chat Panel -->
+<div class="chat-panel">
+    <h3>AI Assistant</h3>
+    <div class="chat-box" id="chatBox"></div>
+
+    <div class="chat-input">
+        <input id="chatInput" placeholder="예: 내 프로필 보여줘">
+        <button onclick="sendChat()">Send</button>
+    </div>
+</div>
 
 <!-- Firebase -->
 <script type="module">
@@ -190,6 +247,20 @@ button:hover {
         if (page === "messages") window.location.href = "/guidedata/messages.html";
         if (page === "revenue") window.location.href = "/guidedata/revenue.html";
     };
+
+    /* ---------------- CHAT COMMANDS ---------------- */
+    function sendChat() {
+        const input = chatInput.value.trim();
+        if (!input) return;
+
+        chatBox.innerHTML += `<p><strong>You:</strong> ${input}</p>`;
+        chatInput.value = "";
+
+        if (input.includes("프로필")) navigate("profile");
+        else if (input.includes("일정")) navigate("schedule");
+        else if (input.includes("홈") || input.includes("대시보드")) navigate("dashboard");
+        else chatBox.innerHTML += `<p><strong>AI:</strong> 이해했어요. 곧 더 많은 기능을 추가할게요.</p>`;
+    }
 
     /* ---------------- DASHBOARD ---------------- */
     async function loadDashboardPage() {
@@ -381,15 +452,3 @@ button:hover {
                 regions: regionsArr,
                 price_hour: price_hour.value,
                 price_day: price_day.value,
-                bio: bio.value
-            });
-
-            navigate("dashboard");
-        } catch (err) {
-            msg.innerText = err.message;
-        }
-    };
-</script>
-
-</body>
-</html>
