@@ -111,12 +111,13 @@ button:hover {
     background: #005fcc;
 }
 
-.schedule-item, .booking-item {
+.schedule-item, .booking-item, .message-item {
     padding: 12px;
     border-bottom: 1px solid #ddd;
 }
 .schedule-item:last-child,
-.booking-item:last-child {
+.booking-item:last-child,
+.message-item:last-child {
     border-bottom: none;
 }
 
@@ -135,6 +136,7 @@ button:hover {
     <a onclick="navigate('dashboard')">Home</a>
     <a onclick="navigate('schedule')">My Schedule</a>
     <a onclick="navigate('bookings')">Bookings</a>
+    <a onclick="navigate('messages')">Messages</a>
     <a onclick="navigate('edit-profile')">Edit Profile</a>
 </div>
 
@@ -178,6 +180,7 @@ button:hover {
         if (page === "dashboard") loadDashboard();
         if (page === "schedule") loadSchedulePage();
         if (page === "bookings") loadBookingsPage();
+        if (page === "messages") loadMessagesPage();
         if (page === "edit-profile") loadEditProfilePage();
     };
 
@@ -199,6 +202,7 @@ button:hover {
                 <div class="quick-links">
                     <a onclick="navigate('schedule')">일정 관리</a>
                     <a onclick="navigate('bookings')">예약 관리</a>
+                    <a onclick="navigate('messages')">메시지</a>
                     <a onclick="navigate('edit-profile')">프로필 수정</a>
                 </div>
             </div>
@@ -357,6 +361,43 @@ button:hover {
         }
     }
 
+    /* ---------------- MESSAGES ---------------- */
+    async function loadMessagesPage() {
+        document.getElementById("app").innerHTML = `
+            <h1>Messages</h1>
+
+            <div class="card">
+                <h2>메시지 목록</h2>
+                <div id="messageList">불러오는 중...</div>
+            </div>
+        `;
+
+        loadMessages();
+    }
+
+    async function loadMessages() {
+        const messageList = document.getElementById("messageList");
+        messageList.innerHTML = "";
+
+        const querySnapshot = await getDocs(collection(db, "guides", currentUser.uid, "messages"));
+
+        querySnapshot.forEach(doc => {
+            const m = doc.data();
+            messageList.innerHTML += `
+                <div class="message-item">
+                    <strong>${m.date} ${m.time}</strong><br>
+                    고객: ${m.customerName}<br>
+                    메시지: ${m.message}<br>
+                    상태: ${m.status || "읽지 않음"}
+                </div>
+            `;
+        });
+
+        if (messageList.innerHTML === "") {
+            messageList.innerHTML = "메시지가 없습니다.";
+        }
+    }
+
     /* ---------------- EDIT PROFILE ---------------- */
     async function loadEditProfilePage() {
         const docRef = doc(db, "guides", currentUser.uid);
@@ -461,29 +502,4 @@ button:hover {
     window.saveProfile = async function() {
         const specialtiesArr = Array.from(specialties.selectedOptions).map(opt => opt.value);
         const regionsArr = Array.from(regions.selectedOptions).map(opt => opt.value);
-        const languagesArr = Array.from(languages.selectedOptions).map(opt => opt.value);
-
-        try {
-            await updateDoc(doc(db, "guides", currentUser.uid), {
-                name: name.value,
-                phone: phone.value,
-                nationality: nationality.value,
-                gender: gender.value,
-                languages: languagesArr,
-                specialties: specialtiesArr,
-                regions: regionsArr,
-                price_hour: price_hour.value,
-                price_day: price_day.value,
-                bio: bio.value
-            });
-
-            msg.innerText = "수정되었습니다.";
-            setTimeout(() => navigate("dashboard"), 800);
-        } catch (err) {
-            msg.innerText = err.message;
-        }
-    };
-</script>
-
-</body>
-</html>
+        const languagesArr =
