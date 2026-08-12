@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>Guide Platform SPA</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background: #f5f7fa;
+    display: flex;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 240px;
+    height: 100vh;
+    background: #1f2937;
+    color: white;
+    padding: 30px 20px;
+    position: fixed;
+    left: 0;
+    top: 0;
+}
+
+.sidebar h2 {
+    font-size: 20px;
+    margin-bottom: 30px;
+}
+
+.sidebar a {
+    display: block;
+    color: #d1d5db;
+    text-decoration: none;
+    padding: 12px 0;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.sidebar a:hover {
+    color: #ffffff;
+}
+
+/* Main */
+.main {
+    margin-left: 260px;
+    padding: 40px;
+    width: 100%;
+}
+
+/* Cards */
+.card {
+    background: white;
+    padding: 24px;
+    border-radius: 14px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    margin-bottom: 30px;
+}
+
+.card h2 {
+    margin-bottom: 20px;
+}
+
+.info-row {
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.quick-links a {
+    display: inline-block;
+    margin-right: 12px;
+    padding: 10px 16px;
+    background: #0078ff;
+    color: white;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.quick-links a:hover {
+    background: #005fcc;
+}
+
+/* Schedule */
+input, textarea, select {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+textarea {
+    height: 80px;
+}
+
+button {
+    padding: 12px 20px;
+    background: #0078ff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 15px;
+}
+
+button:hover {
+    background: #005fcc;
+}
+
+.schedule-item {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+}
+.schedule-item:last-child {
+    border-bottom: none;
+}
+</style>
+</head>
+
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <h2>Guide Menu</h2>
+    <a onclick="navigate('dashboard')">Home</a>
+    <a onclick="navigate('schedule')">My Schedule</a>
+</div>
+
+<!-- Main SPA Container -->
+<div class="main" id="app">
+    <!-- SPA 화면이 여기에 로드됨 -->
+</div>
+
+<!-- Firebase -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getFirestore, doc, getDoc, collection, addDoc, getDocs } 
+        from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCgOSQsv_MRdaqrW4wJw0q2QY6wXZ-azQs",
+      authDomain: "guidelogin-b0053.firebaseapp.com",
+      projectId: "guidelogin-b0053",
+      storageBucket: "guidelogin-b0053.firebasestorage.app",
+      messagingSenderId: "981519805247",
+      appId: "1:981519805247:web:cc32682b177a4957c0818a",
+      measurementId: "G-2VR4TS6JND"
+    };
+
+    const appFirebase = initializeApp(firebaseConfig);
+    const auth = getAuth(appFirebase);
+    const db = getFirestore(appFirebase);
+
+    let currentUser = null;
+
+    onAuthStateChanged(auth, async user => {
+        if (!user) {
+            window.location.href = "guidelogin.html";
+            return;
+        }
+        currentUser = user;
+        navigate("dashboard"); // 기본 화면
+    });
+
+    /* ---------------- SPA ROUTER ---------------- */
+    function navigate(page) {
+        if (page === "dashboard") loadDashboard();
+        if (page === "schedule") loadSchedulePage();
+    }
+
+    /* ---------------- DASHBOARD 화면 ---------------- */
+    async function loadDashboard() {
+        document.getElementById("app").innerHTML = `
+            <div class="card">
+                <h2>가이드 정보</h2>
+                <div id="guideInfo">불러오는 중...</div>
+            </div>
+
+            <div class="card">
+                <h2>오늘 일정</h2>
+                <div id="todaySchedule">불러오는 중...</div>
+            </div>
+
+            <div class="card">
+                <h2>빠른 이동</h2>
+                <div class="quick-links">
+                    <a onclick="navigate('schedule')">일정 관리</a>
+                </div>
+            </div>
+        `;
+
+        loadGuideInfo();
+        loadTodaySchedule();
+    }
+
+    async function loadGuideInfo() {
+        const docRef = doc(db, "guides", currentUser.uid);
+        const snap = await getDoc(docRef);
+
+        if (!snap.exists()) {
+            guideInfo.innerHTML = "가이드 정보를 찾을 수 없습니다.";
+            return;
+        }
+
+        const g = snap.data();
+
+        guideInfo.innerHTML = `
+            <div class="info-row"><strong>이름:</strong> ${g.name}</div>
+            <div class="info-row"><strong>전화번호:</strong> ${g.phone}</div>
+            <div class="info-row"><strong>국적:</strong> ${g.nationality}</div>
+            <div class="info-row"><strong>성별:</strong> ${g.gender}</div>
+            <div class="info-row"><strong>언어:</strong> ${g.languages.join(", ")}</div>
+            <div class="info-row"><strong>전문 분야:</strong> ${g.specialties.join(", ")}</div>
+            <div class="info-row"><strong>활동 지역:</strong> ${g.regions.join(", ")}</div>
+        `;
+    }
+
+    function loadTodaySchedule() {
+        todaySchedule.innerHTML = "오늘 일정이 없습니다.";
+    }
+
+    /* ---------------- SCHEDULE 화면 ---------------- */
+    function loadSchedulePage() {
+        document.getElementById("app").innerHTML = `
+            <h1>My Schedule</h1>
+
+            <div class="card">
+                <h2>일정 추가</h2>
+
+                <input id="date" type="date">
+                <input id="time" type="time">
+                <input id="title" placeholder="일정 제목">
+                <textarea id="description" placeholder="일정 설명"></textarea>
+
+                <label>활동 지역</label>
+                <select id="region">
+                    <option value="Dubai Marina">Dubai Marina</option>
+                    <option value="Downtown Dubai">Downtown Dubai</option>
+                    <option value="Deira">Deira</option>
+                    <option value="Jumeirah">Jumeirah</option>
+                    <option value="Abu Dhabi">Abu Dhabi</option>
+                    <option value="Sharjah">Sharjah</option>
+                </select>
+
+                <label>전문 분야</label>
+                <select id="specialty">
+                    <option value="문화/예술">문화/예술</option>
+                    <option value="역사">역사</option>
+                    <option value="사막 사파리">사막 사파리</option>
+                    <option value="사진 촬영">사진 촬영</option>
+                    <option value="쇼핑">쇼핑</option>
+                    <option value="미식">미식</option>
+                </select>
+
+                <button onclick="addSchedule()">일정 저장</button>
+                <p id="msg" style="color:red;"></p>
+            </div>
+
+            <div class="card">
+                <h2>등록된 일정</h2>
+                <div id="scheduleList">불러오는 중...</div>
+            </div>
+        `;
+
+        loadSchedule();
+    }
+
+    async function addSchedule() {
+        const scheduleData = {
+            date: date.value,
+            time: time.value,
+            title: title.value,
+            description: description.value,
+            region: region.value,
+            specialty: specialty.value,
+            createdAt: new Date()
+        };
+
+        await addDoc(collection(db, "guides", currentUser.uid, "schedule"), scheduleData);
+        msg.innerText = "일정이 저장되었습니다.";
+        loadSchedule();
+    }
+
+    async function loadSchedule() {
+        const scheduleList = document.getElementById("scheduleList");
+        scheduleList.innerHTML = "";
+
+        const querySnapshot = await getDocs(collection(db, "guides", currentUser.uid, "schedule"));
+
+        querySnapshot.forEach(doc => {
+            const s = doc.data();
+            scheduleList.innerHTML += `
+                <div class="schedule-item">
+                    <strong>${s.date} ${s.time}</strong><br>
+                    ${s.title}<br>
+                    <em>${s.region} / ${s.specialty}</em><br>
+                    ${s.description}
+                </div>
+            `;
+        });
+
+        if (scheduleList.innerHTML === "") {
+            scheduleList.innerHTML = "등록된 일정이 없습니다.";
+        }
+    }
+</script>
+
+</body>
+</html>
