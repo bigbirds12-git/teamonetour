@@ -226,24 +226,24 @@ button:hover {
         const user = auth.currentUser;
         if (!user) return;
 
-        const specialtiesArr = Array.from(specialties.selectedOptions).map(opt => opt.value);
-        const regionsArr = Array.from(regions.selectedOptions).map(opt => opt.value);
-        const languagesArr = Array.from(languages.selectedOptions).map(opt => opt.value);
+        const specialtiesArr = Array.from(document.getElementById("specialties").selectedOptions).map(opt => opt.value);
+        const regionsArr = Array.from(document.getElementById("regions").selectedOptions).map(opt => opt.value);
+        const languagesArr = Array.from(document.getElementById("languages").selectedOptions).map(opt => opt.value);
 
         const guideData = {
             uid: user.uid,
             email: user.email,
-            name: name.value,
-            phone: phone.value,
-            nationality: nationality.value,
-            gender: gender.value,
+            name: document.getElementById("name").value,
+            phone: document.getElementById("phone").value,
+            nationality: document.getElementById("nationality").value,
+            gender: document.getElementById("gender").value,
             languages: languagesArr,
-            experience: experience.value,   // 숫자 저장
+            experience: document.getElementById("experience").value,
             specialties: specialtiesArr,
             regions: regionsArr,
-            price_hour: price_hour.value,
-            price_day: price_day.value,
-            bio: bio.value,
+            price_hour: document.getElementById("price_hour").value,
+            price_day: document.getElementById("price_day").value,
+            bio: document.getElementById("bio").value,
             createdAt: new Date()
         };
 
@@ -251,7 +251,7 @@ button:hover {
             await setDoc(doc(db, "guides", user.uid), guideData);
             window.location.href = "../guidedata/guide-dashboard.html";
         } catch (err) {
-            msg.innerText = err.message;
+            document.getElementById("msg").innerText = err.message;
         }
     }
 </script>
