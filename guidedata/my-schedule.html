@@ -147,7 +147,7 @@ button:hover {
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { getFirestore, collection, addDoc, doc, getDocs } 
+    import { getFirestore, collection, addDoc, getDocs } 
         from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -176,7 +176,10 @@ button:hover {
     });
 
     async function addSchedule() {
-        if (!currentUser) return;
+        if (!currentUser) {
+            document.getElementById("msg").innerText = "로그인 정보를 불러오는 중입니다.";
+            return;
+        }
 
         const scheduleData = {
             date: document.getElementById("date").value,
@@ -199,6 +202,12 @@ button:hover {
 
     async function loadSchedule() {
         const scheduleList = document.getElementById("scheduleList");
+
+        if (!currentUser) {
+            scheduleList.innerHTML = "로그인 정보를 불러오는 중입니다...";
+            return;
+        }
+
         scheduleList.innerHTML = "";
 
         const querySnapshot = await getDocs(collection(db, "guides", currentUser.uid, "schedule"));
