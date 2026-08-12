@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>My Schedule</title>
+<title>My Schedule (SPA)</title>
 
 <style>
 body {
@@ -86,61 +86,16 @@ button:hover {
 
 <div class="sidebar">
     <h3>Guide Menu</h3>
-    <a href="guide-dashboard.html">Home</a>
-    <a href="my-schedule.html">My Schedule</a>
-    <a href="/guidedata/bookings.html">Bookings</a>
-    <a href="messages.html">Messages</a>
-    <a href="revenue.html">Revenue</a>
-    <a href="../login/guide-registration.html">Edit Profile</a>
+    <a href="#" onclick="navigate('dashboard')">Home</a>
+    <a href="#" onclick="navigate('schedule')">My Schedule</a>
+    <a href="#" onclick="navigate('bookings')">Bookings</a>
+    <a href="#" onclick="navigate('messages')">Messages</a>
+    <a href="#" onclick="navigate('revenue')">Revenue</a>
+    <a href="#" onclick="navigate('profile')">Edit Profile</a>
 </div>
 
-<div class="main">
-    <h1>My Schedule</h1>
-
-    <div class="card">
-        <h2>일정 추가</h2>
-
-        <input id="date" type="date">
-        <input id="time" type="time">
-        <input id="title" placeholder="일정 제목">
-        <textarea id="description" placeholder="일정 설명"></textarea>
-
-        <label>활동 지역</label>
-        <select id="region">
-            <option value="Dubai Marina">Dubai Marina</option>
-            <option value="Downtown Dubai">Downtown Dubai</option>
-            <option value="Deira">Deira</option>
-            <option value="Jumeirah">Jumeirah</option>
-            <option value="Abu Dhabi">Abu Dhabi</option>
-            <option value="Sharjah">Sharjah</option>
-        </select>
-
-        <label>전문 분야</label>
-        <select id="specialty">
-            <option value="문화/예술">문화/예술</option>
-            <option value="역사">역사</option>
-            <option value="사막 사파리">사막 사파리</option>
-            <option value="사진 촬영">사진 촬영</option>
-            <option value="쇼핑">쇼핑</option>
-            <option value="미식">미식</option>
-            <option value="VIP 의전">VIP 의전</option>
-            <option value="가족 여행">가족 여행</option>
-            <option value="비즈니스 출장">비즈니스 출장</option>
-        </select>
-
-        <button onclick="addSchedule()">일정 저장</button>
-        <p id="msg" style="color:red;"></p>
-    </div>
-
-    <div class="card">
-        <h2>등록된 일정</h2>
-        <div id="scheduleList">불러오는 중...</div>
-    </div>
-
-    <div class="card">
-        <h2>AI 추천 일정</h2>
-        <p>가이드 전문 분야와 활동 지역 기반 추천 기능 준비 중</p>
-    </div>
+<div class="main" id="app">
+    <!-- SPA 화면이 여기에 로드됨 -->
 </div>
 
 <!-- Firebase v10 -->
@@ -160,9 +115,9 @@ button:hover {
       measurementId: "G-2VR4TS6JND"
     };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+    const appFirebase = initializeApp(firebaseConfig);
+    const auth = getAuth(appFirebase);
+    const db = getFirestore(appFirebase);
 
     let currentUser = null;
 
@@ -172,8 +127,68 @@ button:hover {
             return;
         }
         currentUser = user;
-        loadSchedule();
+        navigate("schedule"); // 기본 화면
     });
+
+    // SPA 화면 전환
+    function navigate(page) {
+        if (page === "schedule") loadSchedulePage();
+        else document.getElementById("app").innerHTML = `<h2>${page} 화면 준비 중</h2>`;
+    }
+
+    // 일정 화면 로드
+    function loadSchedulePage() {
+        document.getElementById("app").innerHTML = `
+            <h1>My Schedule</h1>
+
+            <div class="card">
+                <h2>일정 추가</h2>
+
+                <input id="date" type="date">
+                <input id="time" type="time">
+                <input id="title" placeholder="일정 제목">
+                <textarea id="description" placeholder="일정 설명"></textarea>
+
+                <label>활동 지역</label>
+                <select id="region">
+                    <option value="Dubai Marina">Dubai Marina</option>
+                    <option value="Downtown Dubai">Downtown Dubai</option>
+                    <option value="Deira">Deira</option>
+                    <option value="Jumeirah">Jumeirah</option>
+                    <option value="Abu Dhabi">Abu Dhabi</option>
+                    <option value="Sharjah">Sharjah</option>
+                </select>
+
+                <label>전문 분야</label>
+                <select id="specialty">
+                    <option value="문화/예술">문화/예술</option>
+                    <option value="역사">역사</option>
+                    <option value="사막 사파리">사막 사파리</option>
+                    <option value="사진 촬영">사진 촬영</option>
+                    <option value="쇼핑">쇼핑</option>
+                    <option value="미식">미식</option>
+                    <option value="VIP 의전">VIP 의전</option>
+                    <option value="가족 여행">가족 여행</option>
+                    <option value="비즈니스 출장">비즈니스 출장</option>
+                </select>
+
+                <button onclick="addSchedule()">일정 저장</button>
+                <p id="msg" style="color:red;"></p>
+            </div>
+
+            <div class="card">
+                <h2>등록된 일정</h2>
+                <div id="scheduleList">불러오는 중...</div>
+            </div>
+
+            <div class="card">
+                <h2>AI 추천 일정</h2>
+                <p>가이드 전문 분야와 활동 지역 기반 추천 기능 준비 중</p>
+            </div>
+        `;
+
+        loadSchedule();
+    }
 
     async function addSchedule() {
         if (!currentUser) {
@@ -194,7 +209,7 @@ button:hover {
         try {
             await addDoc(collection(db, "guides", currentUser.uid, "schedule"), scheduleData);
             document.getElementById("msg").innerText = "일정이 저장되었습니다.";
-            loadSchedule();
+            loadSchedule(); // 즉시 반영
         } catch (err) {
             document.getElementById("msg").innerText = err.message;
         }
