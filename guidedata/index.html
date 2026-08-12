@@ -111,13 +111,11 @@ button:hover {
     background: #005fcc;
 }
 
-.schedule-item, .booking-item, .message-item {
+.schedule-item {
     padding: 12px;
     border-bottom: 1px solid #ddd;
 }
-.schedule-item:last-child,
-.booking-item:last-child,
-.message-item:last-child {
+.schedule-item:last-child {
     border-bottom: none;
 }
 
@@ -135,8 +133,8 @@ button:hover {
     <h2>Guide Menu</h2>
     <a onclick="navigate('dashboard')">Home</a>
     <a onclick="navigate('schedule')">My Schedule</a>
-    <a onclick="navigate('bookings')">Bookings</a>
-    <a onclick="navigate('messages')">Messages</a>
+    <a href="/guidedata/bookings.html">Bookings</a>
+    <a href="/guidedata/messages.html">Messages</a>
     <a onclick="navigate('edit-profile')">Edit Profile</a>
 </div>
 
@@ -179,8 +177,6 @@ button:hover {
     window.navigate = function(page) {
         if (page === "dashboard") loadDashboard();
         if (page === "schedule") loadSchedulePage();
-        if (page === "bookings") loadBookingsPage();
-        if (page === "messages") loadMessagesPage();
         if (page === "edit-profile") loadEditProfilePage();
     };
 
@@ -201,8 +197,8 @@ button:hover {
                 <h2>빠른 이동</h2>
                 <div class="quick-links">
                     <a onclick="navigate('schedule')">일정 관리</a>
-                    <a onclick="navigate('bookings')">예약 관리</a>
-                    <a onclick="navigate('messages')">메시지</a>
+                    <a href="/guidedata/bookings.html">예약 관리</a>
+                    <a href="/guidedata/messages.html">메시지</a>
                     <a onclick="navigate('edit-profile')">프로필 수정</a>
                 </div>
             </div>
@@ -323,81 +319,6 @@ button:hover {
         }
     }
 
-    /* ---------------- BOOKINGS ---------------- */
-    async function loadBookingsPage() {
-        document.getElementById("app").innerHTML = `
-            <h1>Bookings</h1>
-
-            <div class="card">
-                <h2>예약 목록</h2>
-                <div id="bookingList">불러오는 중...</div>
-            </div>
-        `;
-
-        loadBookings();
-    }
-
-    async function loadBookings() {
-        const bookingList = document.getElementById("bookingList");
-        bookingList.innerHTML = "";
-
-        const querySnapshot = await getDocs(collection(db, "guides", currentUser.uid, "bookings"));
-
-        querySnapshot.forEach(doc => {
-            const b = doc.data();
-            bookingList.innerHTML += `
-                <div class="booking-item">
-                    <strong>${b.date} ${b.time}</strong><br>
-                    고객: ${b.customerName}<br>
-                    지역: ${b.region}<br>
-                    상태: ${b.status}<br>
-                    요청사항: ${b.request || ""}
-                </div>
-            `;
-        });
-
-        if (bookingList.innerHTML === "") {
-            bookingList.innerHTML = "예약이 없습니다.";
-        }
-    }
-
-    /* ---------------- MESSAGES ---------------- */
-    async function loadMessagesPage() {
-        document.getElementById("app").innerHTML = `
-            <h1>Messages</h1>
-
-            <div class="card">
-                <h2>메시지 목록</h2>
-                <div id="messageList">불러오는 중...</div>
-            </div>
-        `;
-
-        loadMessages();
-    }
-
-    async function loadMessages() {
-        const messageList = document.getElementById("messageList");
-        messageList.innerHTML = "";
-
-        const querySnapshot = await getDocs(collection(db, "guides", currentUser.uid, "messages"));
-
-        querySnapshot.forEach(doc => {
-            const m = doc.data();
-            messageList.innerHTML += `
-                <div class="message-item">
-                    <strong>${m.date} ${m.time}</strong><br>
-                    고객: ${m.customerName}<br>
-                    메시지: ${m.message}<br>
-                    상태: ${m.status || "읽지 않음"}
-                </div>
-            `;
-        });
-
-        if (messageList.innerHTML === "") {
-            messageList.innerHTML = "메시지가 없습니다.";
-        }
-    }
-
     /* ---------------- EDIT PROFILE ---------------- */
     async function loadEditProfilePage() {
         const docRef = doc(db, "guides", currentUser.uid);
@@ -502,4 +423,29 @@ button:hover {
     window.saveProfile = async function() {
         const specialtiesArr = Array.from(specialties.selectedOptions).map(opt => opt.value);
         const regionsArr = Array.from(regions.selectedOptions).map(opt => opt.value);
-        const languagesArr =
+        const languagesArr = Array.from(languages.selectedOptions).map(opt => opt.value);
+
+        try {
+            await updateDoc(doc(db, "guides", currentUser.uid), {
+                name: name.value,
+                phone: phone.value,
+                nationality: nationality.value,
+                gender: gender.value,
+                languages: languagesArr,
+                specialties: specialtiesArr,
+                regions: regionsArr,
+                price_hour: price_hour.value,
+                price_day: price_day.value,
+                bio: bio.value
+            });
+
+            msg.innerText = "수정되었습니다.";
+            setTimeout(() => navigate("dashboard"), 800);
+        } catch (err) {
+            msg.innerText = err.message;
+        }
+    };
+</script>
+
+</body>
+</html>
