@@ -7,174 +7,44 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
 <style>
-body {
-    margin: 0;
-    font-family: 'Inter', sans-serif;
-    background: #f5f7fa;
-    display: flex;
-}
+body {margin: 0; font-family: 'Inter', sans-serif; background: #f5f7fa; display: flex;}
 
 /* Sidebar */
-.sidebar {
-    width: 240px;
-    height: 100vh;
-    background: #1f2937;
-    color: white;
-    padding: 30px 20px;
-    position: fixed;
-    left: 0;
-    top: 0;
-}
-
-.sidebar h2 {
-    font-size: 20px;
-    margin-bottom: 30px;
-}
-
-.sidebar a {
-    display: block;
-    color: #d1d5db;
-    text-decoration: none;
-    padding: 12px 0;
-    font-size: 16px;
-    font-weight: 500;
-    cursor: pointer;
-}
-
-.sidebar a:hover {
-    color: #ffffff;
-}
+.sidebar {width: 240px; height: 100vh; background: #1f2937; color: white; padding: 30px 20px; position: fixed; left: 0; top: 0;}
+.sidebar h2 {font-size: 20px; margin-bottom: 30px;}
+.sidebar a {display: block; color: #d1d5db; text-decoration: none; padding: 12px 0; font-size: 16px; font-weight: 500; cursor: pointer;}
+.sidebar a:hover {color: #ffffff;}
 
 /* Main Content */
-.main {
-    margin-left: 260px;
-    padding: 40px;
-    width: calc(100% - 260px - 350px);
-}
+.main {margin-left: 260px; padding: 40px; width: calc(100% - 260px - 350px);}
 
 /* Chat Panel */
-.chat-panel {
-    width: 350px;
-    height: 100vh;
-    background: #ffffff;
-    border-left: 1px solid #ddd;
-    position: fixed;
-    right: 0;
-    top: 0;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-}
-
-.chat-panel h3 {
-    margin-bottom: 15px;
-}
-
-.chat-box {
-    flex: 1;
-    overflow-y: auto;
-    padding-right: 10px;
-}
-
-.chat-input {
-    display: flex;
-    margin-top: 15px;
-}
-
-.chat-input input {
-    flex: 1;
-    padding: 12px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-}
-
-.chat-input button {
-    margin-left: 10px;
-    padding: 12px 18px;
-    background: #0078ff;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-}
+.chat-panel {width: 350px; height: 100vh; background: #ffffff; border-left: 1px solid #ddd; position: fixed; right: 0; top: 0; padding: 20px; display: flex; flex-direction: column;}
+.chat-panel h3 {margin-bottom: 15px;}
+.chat-box {flex: 1; overflow-y: auto; padding-right: 10px;}
+.chat-input {display: flex; margin-top: 15px;}
+.chat-input input {flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #ccc;}
+.chat-input button {margin-left: 10px; padding: 12px 18px; background: #0078ff; color: white; border: none; border-radius: 8px; cursor: pointer;}
 
 /* Dashboard Cards */
-.card {
-    background: white;
-    padding: 30px;
-    border-radius: 16px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-    margin-bottom: 30px;
-}
+.card {background: white; padding: 30px; border-radius: 16px; box-shadow: 0 6px 18px rgba(0,0,0,0.08); margin-bottom: 30px;}
+.card h2 {margin-bottom: 20px; font-size: 22px;}
 
-.card h2 {
-    margin-bottom: 20px;
-    font-size: 22px;
-}
-
-.info-row {
-    margin-bottom: 10px;
-    font-size: 16px;
-}
-
+.info-row {margin-bottom: 10px; font-size: 16px;}
+    
 /* Profile Box */
-.reg-box {
-    width: 900px;
-    max-width: 100%;
-    background: white;
-    padding: 40px;
-    border-radius: 14px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-}
+.reg-box {width: 900px; max-width: 100%; background: white; padding: 40px; border-radius: 14px; box-shadow: 0 6px 18px rgba(0,0,0,0.08);}
 
-input, textarea, select {
-    width: 100%;
-    padding: 14px;
-    margin-top: 12px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    font-size: 16px;
-}
+input, textarea, select {width: 100%; padding: 14px; margin-top: 12px; border-radius: 8px; border: 1px solid #ccc; font-size: 16px;}
+textarea {height: 120px;}
+button { width: 100%; padding: 14px; margin-top: 25px; background: #0078ff; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 18px;}
+button:hover {background: #005fcc;}
 
-textarea {
-    height: 120px;
-}
+.quick-links a {display: inline-block; margin-right: 12px; padding: 10px 16px; background: #0078ff; color: white; border-radius: 8px; text-decoration: none; font-size: 14px;}
+.quick-links a:hover {background: #005fcc;}
 
-button {
-    width: 100%;
-    padding: 14px;
-    margin-top: 25px;
-    background: #0078ff;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 18px;
-}
-
-button:hover {
-    background: #005fcc;
-}
-
-.quick-links a {
-    display: inline-block;
-    margin-right: 12px;
-    padding: 10px 16px;
-    background: #0078ff;
-    color: white;
-    border-radius: 8px;
-    text-decoration: none;
-    font-size: 14px;
-}
-
-.quick-links a:hover {
-    background: #005fcc;
-}
-
-#msg {
-    color: red;
-    margin-top: 10px;
-}
+#msg {color: red; margin-top: 10px;}
+    
 </style>
 </head>
 
@@ -433,8 +303,7 @@ button:hover {
             if (g.regions?.includes(opt.value)) opt.selected = true;
         });
     }
-
-    /* ---------------- 데이터 업데이트 ---------------- */
+   /* ---------------- 데이터 업데이트 ---------------- */
     window.updateGuide = async function() {
         const specialtiesArr = Array.from(specialties.selectedOptions).map(opt => opt.value);
         const regionsArr = Array.from(regions.selectedOptions).map(opt => opt.value);
@@ -452,3 +321,15 @@ button:hover {
                 regions: regionsArr,
                 price_hour: price_hour.value,
                 price_day: price_day.value,
+                bio: bio.value
+            });
+
+            navigate("dashboard");
+        } catch (err) {
+            msg.innerText = err.message;
+        }
+    };
+</script>
+
+</body>
+</html>
