@@ -85,7 +85,7 @@ body {
     background: #005fcc;
 }
 
-/* Schedule */
+/* Inputs */
 input, textarea, select {
     width: 100%;
     padding: 12px;
@@ -120,22 +120,9 @@ button:hover {
     border-bottom: none;
 }
 
-/* Registration */
-.reg-box {
-    width: 480px;
-    background: white;
-    padding: 30px;
-    border-radius: 14px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-}
-.reg-box h2 {
-    text-align: center;
-    margin-bottom: 20px;
-}
 #msg {
     color: red;
     margin-top: 10px;
-    text-align: center;
 }
 </style>
 </head>
@@ -147,19 +134,17 @@ button:hover {
     <h2>Guide Menu</h2>
     <a onclick="navigate('dashboard')">Home</a>
     <a onclick="navigate('schedule')">My Schedule</a>
-    <a onclick="navigate('registration')">Registration</a>
+    <a onclick="navigate('edit-profile')">Edit Profile</a>
 </div>
 
 <!-- Main SPA Container -->
-<div class="main" id="app">
-    <!-- SPA 화면이 여기에 로드됨 -->
-</div>
+<div class="main" id="app"></div>
 
 <!-- Firebase -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { getFirestore, doc, getDoc, setDoc, collection, addDoc, getDocs } 
+    import { getFirestore, doc, getDoc, updateDoc, collection, addDoc, getDocs } 
         from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -184,17 +169,17 @@ button:hover {
             return;
         }
         currentUser = user;
-        navigate("dashboard"); // 기본 화면
+        navigate("dashboard");
     });
 
-    /* ---------------- SPA ROUTER (전역 등록) ---------------- */
+    /* ---------------- SPA ROUTER ---------------- */
     window.navigate = function(page) {
         if (page === "dashboard") loadDashboard();
         if (page === "schedule") loadSchedulePage();
-        if (page === "registration") loadRegistrationPage();
+        if (page === "edit-profile") loadEditProfilePage();
     };
 
-    /* ---------------- DASHBOARD 화면 ---------------- */
+    /* ---------------- DASHBOARD ---------------- */
     async function loadDashboard() {
         document.getElementById("app").innerHTML = `
             <div class="card">
@@ -211,7 +196,7 @@ button:hover {
                 <h2>빠른 이동</h2>
                 <div class="quick-links">
                     <a onclick="navigate('schedule')">일정 관리</a>
-                    <a onclick="navigate('registration')">프로필 등록</a>
+                    <a onclick="navigate('edit-profile')">프로필 수정</a>
                 </div>
             </div>
         `;
@@ -246,7 +231,7 @@ button:hover {
         todaySchedule.innerHTML = "오늘 일정이 없습니다.";
     }
 
-    /* ---------------- SCHEDULE 화면 ---------------- */
+    /* ---------------- SCHEDULE ---------------- */
     function loadSchedulePage() {
         document.getElementById("app").innerHTML = `
             <h1>My Schedule</h1>
@@ -280,7 +265,7 @@ button:hover {
                 </select>
 
                 <button onclick="addSchedule()">일정 저장</button>
-                <p id="msg" style="color:red;"></p>
+                <p id="msg"></p>
             </div>
 
             <div class="card">
@@ -331,16 +316,20 @@ button:hover {
         }
     }
 
-    /* ---------------- REGISTRATION 화면 ---------------- */
-    function loadRegistrationPage() {
+    /* ---------------- EDIT PROFILE ---------------- */
+    async function loadEditProfilePage() {
+        const docRef = doc(db, "guides", currentUser.uid);
+        const snap = await getDoc(docRef);
+        const g = snap.exists() ? snap.data() : {};
+
         document.getElementById("app").innerHTML = `
-            <div class="reg-box">
-                <h2>Guide Registration</h2>
+            <div class="card">
+                <h2>Edit Profile</h2>
 
-                <input id="name" placeholder="이름 또는 닉네임">
-                <input id="phone" placeholder="전화번호">
+                <input id="name" placeholder="이름" value="${g.name || ""}">
+                <input id="phone" placeholder="전화번호" value="${g.phone || ""}">
 
-                <label style="margin-top:15px;">국적</label>
+                <label>국적</label>
                 <select id="nationality">
                     <option value="South Korea">South Korea</option>
                     <option value="UAE">UAE</option>
@@ -356,14 +345,14 @@ button:hover {
                     <option value="Other">Other</option>
                 </select>
 
-                <label style="margin-top:15px;">성별</label>
+                <label>성별</label>
                 <select id="gender">
                     <option value="남성">남성</option>
                     <option value="여성">여성</option>
                     <option value="기타">기타</option>
                 </select>
 
-                <label style="margin-top:15px;">가능 언어</label>
+                <label>가능 언어</label>
                 <select id="languages" multiple>
                     <option value="Korean">Korean</option>
                     <option value="English">English</option>
@@ -377,19 +366,7 @@ button:hover {
                     <option value="German">German</option>
                 </select>
 
-                <label style="margin-top:15px;">경력</label>
-                <select id="experience">
-                    <option value="1">1년</option>
-                    <option value="2">2년</option>
-                    <option value="3">3년</option>
-                    <option value="5">5년</option>
-                    <option value="7">7년</option>
-                    <option value="10">10년</option>
-                    <option value="15">15년</option>
-                    <option value="20">20년</option>
-                </select>
-
-                <label style="margin-top:15px;">전문 분야</label>
+                <label>전문 분야</label>
                 <select id="specialties" multiple>
                     <option value="문화/예술">문화/예술</option>
                     <option value="역사">역사</option>
@@ -402,7 +379,7 @@ button:hover {
                     <option value="비즈니스 출장">비즈니스 출장</option>
                 </select>
 
-                <label style="margin-top:15px;">활동 지역</label>
+                <label>활동 지역</label>
                 <select id="regions" multiple>
                     <option value="Dubai Marina">Dubai Marina</option>
                     <option value="Downtown Dubai">Downtown Dubai</option>
@@ -412,46 +389,60 @@ button:hover {
                     <option value="Sharjah">Sharjah</option>
                 </select>
 
-                <input id="price_hour" placeholder="시간당 요금 (AED)">
-                <input id="price_day" placeholder="하루 요금 (AED)">
+                <input id="price_hour" placeholder="시간당 요금" value="${g.price_hour || ""}">
+                <input id="price_day" placeholder="하루 요금" value="${g.price_day || ""}">
 
-                <textarea id="bio" placeholder="가이드 소개"></textarea>
+                <textarea id="bio" placeholder="소개">${g.bio || ""}</textarea>
 
-                <button onclick="saveGuide()">정보 저장</button>
+                <button onclick="saveProfile()">저장</button>
                 <p id="msg"></p>
             </div>
         `;
+
+        /* 선택값 적용 */
+        setTimeout(() => {
+            nationality.value = g.nationality || "South Korea";
+            gender.value = g.gender || "남성";
+
+            Array.from(languages.options).forEach(opt => {
+                if (g.languages?.includes(opt.value)) opt.selected = true;
+            });
+
+            Array.from(specialties.options).forEach(opt => {
+                if (g.specialties?.includes(opt.value)) opt.selected = true;
+            });
+
+            Array.from(regions.options).forEach(opt => {
+                if (g.regions?.includes(opt.value)) opt.selected = true;
+            });
+        }, 50);
     }
 
-    window.saveGuide = async function() {
-        const specialtiesArr = Array.from(document.getElementById("specialties").selectedOptions).map(opt => opt.value);
-        const regionsArr = Array.from(document.getElementById("regions").selectedOptions).map(opt => opt.value);
-        const languagesArr = Array.from(document.getElementById("languages").selectedOptions).map(opt => opt.value);
-
-        const guideData = {
-            uid: currentUser.uid,
-            email: currentUser.email,
-            name: name.value,
-            phone: phone.value,
-            nationality: nationality.value,
-            gender: gender.value,
-            languages: languagesArr,
-            experience: experience.value,
-            specialties: specialtiesArr,
-            regions: regionsArr,
-            price_hour: price_hour.value,
-            price_day: price_day.value,
-            bio: bio.value,
-            createdAt: new Date()
-        };
+    window.saveProfile = async function() {
+        const specialtiesArr = Array.from(specialties.selectedOptions).map(opt => opt.value);
+        const regionsArr = Array.from(regions.selectedOptions).map(opt => opt.value);
+        const languagesArr = Array.from(languages.selectedOptions).map(opt => opt.value);
 
         try {
-            await setDoc(doc(db, "guides", currentUser.uid), guideData);
-            navigate("dashboard");
+            await updateDoc(doc(db, "guides", currentUser.uid), {
+                name: name.value,
+                phone: phone.value,
+                nationality: nationality.value,
+                gender: gender.value,
+                languages: languagesArr,
+                specialties: specialtiesArr,
+                regions: regionsArr,
+                price_hour: price_hour.value,
+                price_day: price_day.value,
+                bio: bio.value
+            });
+
+            msg.innerText = "수정되었습니다.";
+            setTimeout(() => navigate("dashboard"), 800);
         } catch (err) {
             msg.innerText = err.message;
         }
-    }
+    };
 </script>
 
 </body>
