@@ -88,7 +88,7 @@ button:hover {
         <option value="Sharjah">Sharjah</option>
     </select>
 
-    <button id="generateBtn" disabled>⏳ 가이드 데이터 로딩 중...</button>
+<button id="generateBtn" onclick="generateItinerary()">AI 일정 생성</button>
 
 </div>
 
@@ -117,27 +117,31 @@ button:hover {
     const db = getFirestore(app);
 
 let guides = [];
+let guidesLoaded = false;
 
+// 가이드 데이터 로딩
 async function loadGuides() {
-    const btn = document.getElementById("generateBtn");
-
-    // 로딩 상태 표시
-    btn.disabled = true;
-    btn.classList.add("loading");
-    btn.innerText = "⏳ 가이드 데이터 로딩 중...";
-
     const snapshot = await getDocs(collection(db, "guides"));
     snapshot.forEach(doc => guides.push({ id: doc.id, ...doc.data() }));
-
-    // 로딩 완료 → 버튼 활성화
-    btn.disabled = false;
-    btn.classList.remove("loading");
-    btn.innerText = "AI 일정 생성";
+    guidesLoaded = true;
 }
 
+// 페이지 로딩 후 가이드 데이터 미리 로드
 loadGuides();
 
-function generateItinerary() {
+async function generateItinerary() {
+    const btn = document.getElementById("generateBtn");
+
+    // 버튼 로딩 상태 표시
+    btn.disabled = true;
+    btn.innerText = "⏳ 일정 생성 중...";
+
+    // 가이드 데이터가 아직 로딩 중이면 기다림
+    while (!guidesLoaded) {
+        await new Promise(resolve => setTimeout(resolve, 200));
+    }
+
+    // 입력값 가져오기
     const date = document.getElementById("date").value;
     const days = Number(document.getElementById("days").value);
     const interest = document.getElementById("interest").value;
@@ -146,6 +150,8 @@ function generateItinerary() {
 
     if (!date || !days || days <= 0) {
         document.getElementById("result").innerText = "여행 날짜와 기간을 정확히 입력해주세요.";
+        btn.disabled = false;
+        btn.innerText = "AI 일정 생성";
         return;
     }
 
@@ -207,7 +213,12 @@ function generateItinerary() {
         <strong>AI 추천 일정:</strong><br>
         ${itinerary}
     `;
+
+    // 버튼 원상복구
+    btn.disabled = false;
+    btn.innerText = "AI 일정 생성";
 }
+
 </script>
 
 </body>
