@@ -115,84 +115,89 @@ button:hover {
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    let guides = [];
+let guides = [];
 
-    async function loadGuides() {
-        const snapshot = await getDocs(collection(db, "guides"));
-        snapshot.forEach(doc => guides.push({ id: doc.id, ...doc.data() }));
+async function loadGuides() {
+    const snapshot = await getDocs(collection(db, "guides"));
+    snapshot.forEach(doc => guides.push({ id: doc.id, ...doc.data() }));
+
+    // 데이터 로딩 완료 후 버튼 활성화
+    document.querySelector("button").disabled = false;
+}
+
+loadGuides();
+
+function generateItinerary() {
+    const date = document.getElementById("date").value;
+    const days = Number(document.getElementById("days").value);
+    const interest = document.getElementById("interest").value;
+    const lang = document.getElementById("lang").value;
+    const region = document.getElementById("region").value;
+
+    if (!date || !days || days <= 0) {
+        document.getElementById("result").innerText = "여행 날짜와 기간을 정확히 입력해주세요.";
+        return;
     }
 
-    loadGuides();
-
-    function generateItinerary() {
-        const date = document.getElementById("date").value;
-        const days = Number(document.getElementById("days").value);
-        const interest = document.getElementById("interest").value;
-        const lang = document.getElementById("lang").value;
-        const region = document.getElementById("region").value;
-
-        if (!date || !days || days <= 0) {
-            document.getElementById("result").innerText = "여행 날짜와 기간을 정확히 입력해주세요.";
-            return;
-        }
-
-        // 일정 생성
-        let itinerary = "";
-        for (let i = 1; i <= days; i++) {
-            itinerary += `
+    // 일정 생성
+    let itinerary = "";
+    for (let i = 1; i <= days; i++) {
+        itinerary += `
+            <div>
                 <strong>Day ${i}</strong><br>
                 - 오전: ${interest} 관련 추천 장소 방문<br>
                 - 점심: 지역 맛집 추천<br>
                 - 오후: ${region} 주요 관광지 투어<br>
                 - 저녁: 자유 시간 또는 쇼핑<br><br>
-            `;
-        }
-
-        // 가이드 추천
-        let bestGuide = null;
-        let bestScore = -1;
-
-        guides.forEach(g => {
-            let score = 0;
-
-            if (g.languages?.includes(lang)) score += 3;
-            if (g.regions?.includes(region)) score += 3;
-            if (g.specialties?.includes(interest)) score += 4;
-
-            if (score > bestScore) {
-                bestScore = score;
-                bestGuide = g;
-            }
-        });
-
-        let guideText = "";
-
-        if (bestGuide) {
-            const price = bestGuide.price_day ? bestGuide.price_day * days : "가격 정보 없음";
-
-            guideText = `
-                <strong>추천 가이드:</strong><br>
-                ${bestGuide.name}<br>
-                언어: ${bestGuide.languages}<br>
-                전문 분야: ${bestGuide.specialties}<br>
-                지역: ${bestGuide.regions}<br>
-                예상 비용: ${price} AED<br><br>
-            `;
-        } else {
-            guideText = "추천 가능한 가이드가 없습니다.<br><br>";
-        }
-
-        // 최종 출력
-        document.getElementById("result").innerHTML = `
-            <strong>여행 날짜:</strong> ${date}<br>
-            <strong>여행 기간:</strong> ${days}일<br><br>
-
-            ${guideText}
-
-            <strong>AI 추천 일정:</strong><br>
-            ${itinerary}
+            </div>
         `;
     }
+
+    // 가이드 추천
+    let bestGuide = null;
+    let bestScore = -1;
+
+    guides.forEach(g => {
+        let score = 0;
+
+        if (g.languages?.includes(lang)) score += 3;
+        if (g.regions?.includes(region)) score += 3;
+        if (g.specialties?.includes(interest)) score += 4;
+
+        if (score > bestScore) {
+            bestScore = score;
+            bestGuide = g;
+        }
+    });
+
+    let guideText = "";
+
+    if (bestGuide) {
+        const price = bestGuide.price_day ? bestGuide.price_day * days : "가격 정보 없음";
+
+        guideText = `
+            <strong>추천 가이드:</strong><br>
+            ${bestGuide.name}<br>
+            언어: ${bestGuide.languages}<br>
+            전문 분야: ${bestGuide.specialties}<br>
+            지역: ${bestGuide.regions}<br>
+            예상 비용: ${price} AED<br><br>
+        `;
+    } else {
+        guideText = "추천 가능한 가이드가 없습니다.<br><br>";
+    }
+
+    // 최종 출력
+    document.getElementById("result").innerHTML = `
+        <strong>여행 날짜:</strong> ${date}<br>
+        <strong>여행 기간:</strong> ${days}일<br><br>
+
+        ${guideText}
+
+        <strong>AI 추천 일정:</strong><br>
+        ${itinerary}
+    `;
+}
 </script>
 
 </body>
