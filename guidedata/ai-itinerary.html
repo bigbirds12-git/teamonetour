@@ -88,9 +88,7 @@ button:hover {
         <option value="Sharjah">Sharjah</option>
     </select>
 
-    <!-- onclick 제거됨 -->
     <button id="generateBtn">AI 일정 생성</button>
-
 </div>
 
 <div class="card">
@@ -119,24 +117,19 @@ button:hover {
 
     let guides = [];
 
-    // 가이드 데이터 로딩
     async function loadGuides() {
         const snapshot = await getDocs(collection(db, "guides"));
+        guides = [];
         snapshot.forEach(doc => guides.push({ id: doc.id, ...doc.data() }));
     }
 
     async function generateItinerary() {
         const btn = document.getElementById("generateBtn");
-
-        // 버튼 로딩 상태 표시
         btn.disabled = true;
         btn.innerText = "⏳ 일정 생성 중...";
 
-        // 버튼을 눌렀을 때 가이드 로딩 시작
-        guides = []; // 초기화
         await loadGuides();
 
-        // 입력값 가져오기
         const date = document.getElementById("date").value;
         const days = Number(document.getElementById("days").value);
         const interest = document.getElementById("interest").value;
@@ -150,7 +143,6 @@ button:hover {
             return;
         }
 
-        // 일정 생성
         let itinerary = "";
         for (let i = 1; i <= days; i++) {
             itinerary += `
@@ -164,16 +156,20 @@ button:hover {
             `;
         }
 
-        // 가이드 추천
         let bestGuide = null;
         let bestScore = -1;
 
         guides.forEach(g => {
             let score = 0;
 
-            if (g.languages?.includes(lang)) score += 3;
-            if (g.regions?.includes(region)) score += 3;
-            if (g.specialties?.includes(interest)) score += 4;
+            // 언어 매칭
+            if (g.languages && g.languages.includes(lang)) score += 3;
+
+            // 지역 매칭 (Deira도 Dubai로 간주)
+            if (g.regions && (g.regions.includes(region) || g.regions.includes("Deira"))) score += 3;
+
+            // specialties가 없어도 오류 없이 진행
+            if (g.specialties && g.specialties.includes(interest)) score += 4;
 
             if (score > bestScore) {
                 bestScore = score;
@@ -184,21 +180,19 @@ button:hover {
         let guideText = "";
 
         if (bestGuide) {
-            const price = bestGuide.price_day ? bestGuide.price_day * days : "가격 정보 없음";
+            const priceDay = Number(bestGuide.price_day) || 0;
 
             guideText = `
                 <strong>추천 가이드:</strong><br>
                 ${bestGuide.name}<br>
                 언어: ${bestGuide.languages}<br>
-                전문 분야: ${bestGuide.specialties}<br>
                 지역: ${bestGuide.regions}<br>
-                예상 비용: ${price} AED<br><br>
+                예상 비용: ${priceDay * days} AED<br><br>
             `;
         } else {
             guideText = "추천 가능한 가이드가 없습니다.<br><br>";
         }
 
-        // 최종 출력
         document.getElementById("result").innerHTML = `
             <strong>여행 날짜:</strong> ${date}<br>
             <strong>여행 기간:</strong> ${days}일<br><br>
@@ -209,12 +203,10 @@ button:hover {
             ${itinerary}
         `;
 
-        // 버튼 원상복구
         btn.disabled = false;
         btn.innerText = "AI 일정 생성";
     }
 
-    // 버튼 클릭 이벤트 연결 (정답)
     document.getElementById("generateBtn").addEventListener("click", generateItinerary);
 
 </script>
