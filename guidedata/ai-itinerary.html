@@ -125,9 +125,8 @@ async function loadGuides() {
     snapshot.forEach(doc => guides.push({ id: doc.id, ...doc.data() }));
     guidesLoaded = true;
 }
-
-// 페이지 로딩 후 가이드 데이터 미리 로드
-loadGuides();
+// HTML에서 호출할 수 있도록 전역 등록
+window.generateItinerary = generateItinerary;
 
 async function generateItinerary() {
     const btn = document.getElementById("generateBtn");
@@ -136,10 +135,8 @@ async function generateItinerary() {
     btn.disabled = true;
     btn.innerText = "⏳ 일정 생성 중...";
 
-    // 가이드 데이터가 아직 로딩 중이면 기다림
-    while (!guidesLoaded) {
-        await new Promise(resolve => setTimeout(resolve, 200));
-    }
+    // 버튼을 눌렀을 때 가이드 로딩 시작
+    await loadGuides();   // 🔥 여기서 로딩됨
 
     // 입력값 가져오기
     const date = document.getElementById("date").value;
@@ -218,6 +215,9 @@ async function generateItinerary() {
     btn.disabled = false;
     btn.innerText = "AI 일정 생성";
 }
+
+// HTML에서 호출할 수 있도록 전역 등록
+window.generateItinerary = generateItinerary;
 
 </script>
 
