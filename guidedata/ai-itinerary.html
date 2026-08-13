@@ -88,7 +88,7 @@ button:hover {
         <option value="Sharjah">Sharjah</option>
     </select>
 
-<button id="generateBtn" onclick="generateItinerary()">AI 일정 생성</button>
+<button id="generateBtn">AI 일정 생성</button>
 
 </div>
 
@@ -214,9 +214,11 @@ async function generateItinerary() {
     btn.innerText = "AI 일정 생성";
 }
 
-// HTML에서 호출할 수 있도록 전역 등록
-window.generateItinerary = generateItinerary;
+// 버튼 클릭 이벤트 연결
+document.getElementById("generateBtn").addEventListener("click", generateItinerary);
 
+
+    
 </script>
 
 </body>
