@@ -27,16 +27,13 @@
             color: #0a0a0a;
             line-height: 1.6;
             -webkit-font-smoothing: antialiased;
+            padding-top: 72px;
+            /* 헤더 높이만큼 패딩 */;
         }
 
         a {
             text-decoration: none;
             color: inherit;
-        }
-
-        img {
-            max-width: 100%;
-            display: block;
         }
 
         .container {
@@ -46,91 +43,35 @@
         }
 
         /* ============================================================
-                   BUTTONS
-                   ============================================================ */
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 24px;
-            border-radius: 100px;
-            font-size: 14px;
-            font-weight: 600;
-            transition: all 0.25s ease;
-            border: none;
-            cursor: pointer;
-        }
-
-        .btn-white {
-            background: #fff;
-            color: #0078ff;
-        }
-
-        .btn-white:hover {
-            background: #f0f7ff;
-            transform: translateY(-1px);
-        }
-
-        .btn-primary {
-            background: #0078ff;
-            color: #fff;
-            box-shadow: 0 4px 16px rgba(0, 120, 255, 0.3);
-        }
-
-        .btn-primary:hover {
-            background: #0066dd;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(0, 120, 255, 0.4);
-        }
-
-        .btn-outline {
-            background: transparent;
-            color: #0078ff;
-            border: 1.5px solid rgba(0, 120, 255, 0.25);
-        }
-
-        .btn-outline:hover {
-            background: rgba(0, 120, 255, 0.06);
-            border-color: #0078ff;
-        }
-
-        .btn-large {
-            padding: 14px 36px;
-            font-size: 16px;
-        }
-
-        .btn-dark {
-            background: #1a1a1a;
-            color: #fff;
-        }
-
-        .btn-dark:hover {
-            background: #333;
-            transform: translateY(-2px);
-        }
-
-        /* ============================================================
-                   HEADER (Glassmorphism)
+                   HEADER (개선된 버전)
                    ============================================================ */
         .header {
-            position: sticky;
+            position: fixed;
             top: 0;
+            left: 0;
+            right: 0;
             z-index: 1000;
-            background: rgba(255, 255, 255, 0.78);
+            background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(20px) saturate(180%);
             -webkit-backdrop-filter: blur(20px) saturate(180%);
             border-bottom: 1px solid rgba(0, 0, 0, 0.04);
             padding: 12px 0;
+            transition: all 0.3s ease;
+        }
+
+        .header.scrolled {
+            padding: 8px 0;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
         }
 
         .header-inner {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
-            gap: 12px;
         }
 
+        /* ---- 로고 ---- */
         .logo {
             font-size: 22px;
             font-weight: 800;
@@ -140,20 +81,27 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
             flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        /* 네비게이션 */
+        .logo i {
+            -webkit-text-fill-color: #0078ff;
+            font-size: 20px;
+        }
+
+        /* ---- 네비게이션 (데스크탑) ---- */
         .nav {
             display: flex;
             align-items: center;
             gap: 4px;
-            flex-wrap: wrap;
         }
 
         .nav a {
-            padding: 6px 14px;
+            padding: 8px 16px;
             border-radius: 100px;
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 500;
             color: #444;
             transition: all 0.2s ease;
@@ -161,8 +109,8 @@
         }
 
         .nav a i {
-            margin-right: 5px;
-            font-size: 12px;
+            margin-right: 6px;
+            font-size: 13px;
         }
 
         .nav a:hover {
@@ -170,772 +118,353 @@
             color: #0078ff;
         }
 
-        /* 헤더 우측 액션 (회원/가이드) */
-        .header-actions {
+        /* 드롭다운 메뉴 */
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-toggle {
             display: flex;
             align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
+            gap: 4px;
+            cursor: pointer;
         }
 
-        .header-actions .divider {
-            width: 1px;
-            height: 28px;
-            background: #e0e0e0;
-            margin: 0 4px;
-        }
-
-        .header-actions .guide-link {
-            font-size: 12px;
+        .dropdown-toggle .chevron {
+            font-size: 10px;
+            transition: transform 0.25s ease;
             color: #999;
-            transition: color 0.2s ease;
         }
 
-        .header-actions .guide-link:hover {
+        .dropdown:hover .chevron {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 50%;
+            transform: translateX(-50%) translateY(4px);
+            background: #fff;
+            border-radius: 16px;
+            padding: 8px;
+            min-width: 200px;
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.12);
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .dropdown:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .dropdown-menu a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+            white-space: nowrap;
+        }
+
+        .dropdown-menu a:hover {
+            background: rgba(0, 120, 255, 0.06);
             color: #0078ff;
         }
 
-        .header-actions .guide-register {
-            font-size: 12px;
+        .dropdown-menu a i {
+            width: 20px;
+            text-align: center;
+            color: #0078ff;
+            font-size: 14px;
+        }
+
+        .dropdown-menu .divider {
+            height: 1px;
+            background: #f0f0f0;
+            margin: 4px 12px;
+        }
+
+        /* ---- 우측 액션 영역 (회원) ---- */
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 20px;
+            border-radius: 100px;
+            font-size: 13px;
             font-weight: 600;
+            transition: all 0.25s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #444;
+            border: 1px solid #e0e0e0;
+        }
+
+        .btn-outline:hover {
+            background: #f5f7fa;
+            border-color: #ccc;
+        }
+
+        .btn-primary {
+            background: #0078ff;
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(0, 120, 255, 0.25);
+        }
+
+        .btn-primary:hover {
+            background: #0066dd;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(0, 120, 255, 0.35);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: #0078ff;
+        }
+
+        .btn-ghost:hover {
+            background: rgba(0, 120, 255, 0.06);
+        }
+
+        /* ---- 가이드 전용 버튼 (우측 더 작게) ---- */
+        .guide-badge {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+            color: #999;
+            padding: 4px 12px;
+            border-radius: 100px;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+        }
+
+        .guide-badge:hover {
+            background: rgba(0, 120, 255, 0.04);
+            color: #0078ff;
+            border-color: rgba(0, 120, 255, 0.1);
+        }
+
+        .guide-badge i {
+            font-size: 12px;
+        }
+
+        .guide-badge .sep {
+            color: #e0e0e0;
+            margin: 0 2px;
+        }
+
+        /* ---- 햄버거 (모바일) ---- */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            cursor: pointer;
+            padding: 4px;
+            background: none;
+            border: none;
+        }
+
+        .hamburger span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: #333;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(4px, 4px);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(4px, -4px);
+        }
+
+        /* 모바일 메뉴 오버레이 */
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 72px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            padding: 24px;
+            flex-direction: column;
+            gap: 4px;
+            overflow-y: auto;
+            z-index: 999;
+            border-top: 1px solid rgba(0, 0, 0, 0.04);
+        }
+
+        .mobile-menu.open {
+            display: flex;
+        }
+
+        .mobile-menu a {
+            padding: 14px 16px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 500;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .mobile-menu a:hover {
+            background: rgba(0, 120, 255, 0.06);
+            color: #0078ff;
+        }
+
+        .mobile-menu a i {
+            width: 24px;
+            text-align: center;
+            color: #0078ff;
+        }
+
+        .mobile-menu .mobile-divider {
+            height: 1px;
+            background: #f0f0f0;
+            margin: 8px 0;
+        }
+
+        .mobile-menu .mobile-guide {
+            font-size: 14px;
+            color: #999;
+            padding: 12px 16px;
+        }
+
+        .mobile-menu .mobile-guide a {
+            display: inline;
+            padding: 0;
+            font-size: 14px;
             color: #0078ff;
         }
 
         /* ============================================================
-                   HERO
+                   HERO (데모용)
                    ============================================================ */
         .hero {
-            padding: 80px 0 100px;
+            padding: 60px 0 80px;
             background: linear-gradient(160deg, #eff6ff 0%, #ffffff 100%);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero::after {
-            content: '';
-            position: absolute;
-            right: -5%;
-            top: -30%;
-            width: 700px;
-            height: 700px;
-            background: radial-gradient(circle, rgba(0, 120, 255, 0.05) 0%, transparent 70%);
-            border-radius: 50%;
-            pointer-events: none;
-        }
-
-        .hero-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 60px;
+            min-height: 60vh;
+            display: flex;
             align-items: center;
-            position: relative;
-            z-index: 2;
         }
 
-        .hero-badge {
-            display: inline-block;
-            font-size: 12px;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            color: #0078ff;
-            background: rgba(0, 120, 255, 0.08);
-            padding: 4px 16px;
-            border-radius: 100px;
+        .hero h1 {
+            font-size: 48px;
+            font-weight: 800;
+            letter-spacing: -2px;
             margin-bottom: 16px;
         }
 
-        .hero-text h1 {
-            font-size: 52px;
-            font-weight: 800;
-            line-height: 1.08;
-            letter-spacing: -2px;
-            margin-bottom: 20px;
-        }
-
-        .hero-text h1 .gradient-text {
+        .hero h1 span {
             background: linear-gradient(135deg, #0078ff, #00c6fb);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
 
-        .hero-text p {
-            font-size: 19px;
-            color: #555;
-            max-width: 480px;
-            margin-bottom: 32px;
+        .hero p {
+            font-size: 18px;
+            color: #666;
+            max-width: 500px;
             line-height: 1.7;
-        }
-
-        .hero-buttons {
-            display: flex;
-            gap: 14px;
-            flex-wrap: wrap;
-        }
-
-        .hero-stats {
-            display: flex;
-            gap: 40px;
-            margin-top: 48px;
-            padding-top: 32px;
-            border-top: 1px solid rgba(0, 0, 0, 0.06);
-        }
-
-        .hero-stats .stat {
-            text-align: left;
-        }
-
-        .hero-stats .stat-number {
-            font-size: 28px;
-            font-weight: 800;
-            color: #0a0a0a;
-        }
-
-        .hero-stats .stat-label {
-            font-size: 14px;
-            color: #888;
-        }
-
-        /* Hero 우측 일러스트 */
-        .hero-visual {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .hero-illustration {
-            width: 100%;
-            max-width: 480px;
-            aspect-ratio: 1 / 0.85;
-            background: linear-gradient(135deg, #0078ff, #00c6fb);
-            border-radius: 32px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            box-shadow: 0 24px 64px rgba(0, 120, 255, 0.25);
-            position: relative;
-            overflow: hidden;
-            padding: 40px;
-            text-align: center;
-        }
-
-        .hero-illustration .emoji-big {
-            font-size: 80px;
-            margin-bottom: 16px;
-            filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.1));
-        }
-
-        .hero-illustration .ill-text {
-            font-size: 18px;
-            font-weight: 500;
-            opacity: 0.9;
-        }
-
-        .hero-illustration .ill-sub {
-            font-size: 14px;
-            opacity: 0.7;
-            margin-top: 4px;
-        }
-
-        /* ============================================================
-                   SECTION 공통
-                   ============================================================ */
-        .section {
-            padding: 80px 0;
-        }
-
-        .section-header {
-            text-align: center;
-            margin-bottom: 48px;
-        }
-
-        .section-tag {
-            display: inline-block;
-            font-size: 12px;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            color: #0078ff;
-            background: rgba(0, 120, 255, 0.08);
-            padding: 4px 16px;
-            border-radius: 100px;
-            margin-bottom: 12px;
-        }
-
-        .section-title {
-            font-size: 36px;
-            font-weight: 700;
-            letter-spacing: -1px;
-            margin-bottom: 12px;
-        }
-
-        .section-desc {
-            font-size: 18px;
-            color: #666;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        /* ============================================================
-                   FILTER / SEARCH BAR
-                   ============================================================ */
-        .filter-bar {
-            background: #fff;
-            border-radius: 20px;
-            padding: 20px 28px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
-            border: 1px solid rgba(0, 0, 0, 0.04);
-            display: flex;
-            flex-wrap: wrap;
-            gap: 16px 24px;
-            align-items: flex-end;
-            margin-bottom: 48px;
-        }
-
-        .filter-group {
-            flex: 1;
-            min-width: 140px;
-        }
-
-        .filter-group label {
-            display: block;
-            font-size: 12px;
-            font-weight: 600;
-            color: #888;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-            margin-bottom: 4px;
-        }
-
-        .filter-group select,
-        .filter-group input {
-            width: 100%;
-            padding: 8px 12px;
-            border: 1px solid #e5e7eb;
-            border-radius: 10px;
-            font-size: 14px;
-            font-family: inherit;
-            background: #fafafa;
-            transition: border-color 0.2s ease;
-            color: #1a1a1a;
-        }
-
-        .filter-group select:focus,
-        .filter-group input:focus {
-            outline: none;
-            border-color: #0078ff;
-            background: #fff;
-        }
-
-        .filter-bar .btn {
-            flex-shrink: 0;
-            padding: 10px 32px;
-        }
-
-        /* ============================================================
-                   CARD GRID
-                   ============================================================ */
-        .card-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
-            gap: 28px;
-        }
-
-        /* ============================================================
-                   SERVICE CARD (AI 서비스용)
-                   ============================================================ */
-        .service-card {
-            background: #fff;
-            border-radius: 20px;
-            padding: 32px 28px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-            border: 1px solid rgba(0, 0, 0, 0.04);
-            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            text-align: left;
-        }
-
-        .service-card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 20px 48px rgba(0, 0, 0, 0.08);
-            border-color: rgba(0, 120, 255, 0.1);
-        }
-
-        .service-card .icon-wrap {
-            width: 52px;
-            height: 52px;
-            border-radius: 14px;
-            background: rgba(0, 120, 255, 0.08);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            color: #0078ff;
-            margin-bottom: 18px;
-        }
-
-        .service-card h3 {
-            font-size: 19px;
-            font-weight: 700;
-            margin-bottom: 8px;
-            letter-spacing: -0.3px;
-        }
-
-        .service-card p {
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 20px;
-            line-height: 1.6;
-        }
-
-        .service-card .card-link {
-            font-size: 14px;
-            font-weight: 600;
-            color: #0078ff;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            transition: gap 0.2s ease;
-        }
-
-        .service-card .card-link:hover {
-            gap: 12px;
-        }
-
-        /* ============================================================
-                   GUIDE CARD (가이드 프로필)
-                   ============================================================ */
-        .guide-card {
-            background: #fff;
-            border-radius: 20px;
-            padding: 24px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-            border: 1px solid rgba(0, 0, 0, 0.04);
-            transition: all 0.3s ease;
-        }
-
-        .guide-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.08);
-        }
-
-        .guide-card .guide-top {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            margin-bottom: 14px;
-        }
-
-        .guide-card .guide-avatar {
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            object-fit: cover;
-            background: #e5e7eb;
-            flex-shrink: 0;
-        }
-
-        .guide-card .guide-name {
-            font-size: 17px;
-            font-weight: 700;
-        }
-
-        .guide-card .guide-location {
-            font-size: 13px;
-            color: #888;
-        }
-
-        .guide-card .guide-badge {
-            display: inline-block;
-            font-size: 11px;
-            font-weight: 600;
-            color: #0078ff;
-            background: rgba(0, 120, 255, 0.06);
-            padding: 2px 12px;
-            border-radius: 100px;
-            margin-top: 2px;
-        }
-
-        .guide-card .guide-info {
-            font-size: 14px;
-            color: #555;
-            margin-bottom: 12px;
-            line-height: 1.6;
-        }
-
-        .guide-card .guide-info i {
-            width: 18px;
-            color: #999;
-        }
-
-        .guide-card .guide-rating {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 14px;
-            font-size: 14px;
-        }
-
-        .guide-card .guide-rating .stars {
-            color: #f5a623;
-            letter-spacing: 1px;
-        }
-
-        .guide-card .guide-rating .count {
-            color: #999;
-        }
-
-        .guide-card .guide-bottom {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-top: 1px solid #f0f0f0;
-            padding-top: 14px;
-        }
-
-        .guide-card .guide-price {
-            font-size: 20px;
-            font-weight: 700;
-            color: #0078ff;
-        }
-
-        .guide-card .guide-price span {
-            font-size: 13px;
-            font-weight: 400;
-            color: #999;
-        }
-
-        .guide-card .btn-sm {
-            padding: 8px 20px;
-            font-size: 13px;
-            border-radius: 100px;
-            font-weight: 600;
-        }
-
-        /* ============================================================
-                   REVIEW CARD
-                   ============================================================ */
-        .review-card {
-            background: #fff;
-            border-radius: 16px;
-            padding: 24px;
-            border: 1px solid rgba(0, 0, 0, 0.04);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
-        }
-
-        .review-card .review-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 10px;
-        }
-
-        .review-card .review-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: #e5e7eb;
-            flex-shrink: 0;
-        }
-
-        .review-card .review-name {
-            font-weight: 600;
-            font-size: 14px;
-        }
-
-        .review-card .review-date {
-            font-size: 12px;
-            color: #999;
-        }
-
-        .review-card .review-stars {
-            color: #f5a623;
-            font-size: 13px;
-            margin-left: auto;
-        }
-
-        .review-card .review-text {
-            font-size: 14px;
-            color: #555;
-            line-height: 1.6;
-        }
-
-        /* ============================================================
-                   DESTINATION CARD
-                   ============================================================ */
-        .dest-card {
-            border-radius: 20px;
-            overflow: hidden;
-            background: #fff;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-            border: 1px solid rgba(0, 0, 0, 0.04);
-            transition: all 0.3s ease;
-        }
-
-        .dest-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.08);
-        }
-
-        .dest-card .dest-img {
-            height: 180px;
-            background: #d0d8e8;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 48px;
-            color: #fff;
-        }
-
-        .dest-card .dest-body {
-            padding: 20px 24px 24px;
-        }
-
-        .dest-card .dest-body h4 {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 4px;
-        }
-
-        .dest-card .dest-body p {
-            font-size: 14px;
-            color: #666;
-        }
-
-        .dest-card .dest-body .dest-tag {
-            display: inline-block;
-            font-size: 12px;
-            background: rgba(0, 120, 255, 0.06);
-            color: #0078ff;
-            padding: 2px 12px;
-            border-radius: 100px;
-            margin-top: 8px;
-        }
-
-        /* ============================================================
-                   CTA BANNER
-                   ============================================================ */
-        .cta-banner {
-            background: linear-gradient(135deg, #0078ff, #00c6fb);
-            border-radius: 32px;
-            padding: 60px 48px;
-            color: #fff;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 24px;
-        }
-
-        .cta-banner h2 {
-            font-size: 32px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-        }
-
-        .cta-banner p {
-            font-size: 17px;
-            opacity: 0.85;
-            max-width: 480px;
-        }
-
-        .cta-banner .btn-white {
-            font-size: 16px;
-            padding: 14px 36px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-        }
-
-        .cta-banner .btn-white:hover {
-            transform: translateY(-2px) scale(1.02);
-        }
-
-        /* ============================================================
-                   FOOTER
-                   ============================================================ */
-        .footer {
-            background: #0f1117;
-            color: rgba(255, 255, 255, 0.6);
-            padding: 56px 0 32px;
-            margin-top: 40px;
-        }
-
-        .footer-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr;
-            gap: 40px;
-            margin-bottom: 40px;
-        }
-
-        .footer-brand .logo {
-            font-size: 20px;
-            display: inline-block;
-            margin-bottom: 12px;
-        }
-
-        .footer-brand p {
-            font-size: 14px;
-            line-height: 1.7;
-            max-width: 320px;
-        }
-
-        .footer-brand .social {
-            display: flex;
-            gap: 12px;
-            margin-top: 16px;
-        }
-
-        .footer-brand .social a {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.06);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.2s ease;
-            font-size: 14px;
-        }
-
-        .footer-brand .social a:hover {
-            background: rgba(255, 255, 255, 0.12);
-            color: #fff;
-        }
-
-        .footer-col h4 {
-            color: #fff;
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 12px;
-        }
-
-        .footer-col a {
-            display: block;
-            font-size: 14px;
-            padding: 4px 0;
-            transition: color 0.2s ease;
-        }
-
-        .footer-col a:hover {
-            color: #fff;
-        }
-
-        .footer-bottom {
-            border-top: 1px solid rgba(255, 255, 255, 0.06);
-            padding-top: 24px;
-            font-size: 13px;
-            text-align: center;
         }
 
         /* ============================================================
                    RESPONSIVE
                    ============================================================ */
         @media (max-width: 1024px) {
-            .footer-grid {
-                grid-template-columns: 1fr 1fr;
+            .nav a {
+                font-size: 13px;
+                padding: 6px 12px;
+            }
+            .btn {
+                font-size: 12px;
+                padding: 6px 16px;
+            }
+            .guide-badge {
+                font-size: 11px;
+                padding: 4px 8px;
             }
         }
 
-        @media (max-width: 900px) {
-            .hero-grid {
-                grid-template-columns: 1fr;
-                text-align: center;
-            }
-            .hero-text p {
-                margin-left: auto;
-                margin-right: auto;
-            }
-            .hero-buttons {
-                justify-content: center;
-            }
-            .hero-stats {
-                justify-content: center;
-            }
-            .hero-stats .stat {
-                text-align: center;
-            }
-            .hero-text h1 {
-                font-size: 38px;
-            }
-            .hero-illustration {
-                max-width: 340px;
-                margin: 0 auto;
-                padding: 30px;
-            }
-            .hero-illustration .emoji-big {
-                font-size: 56px;
-            }
-            .section-title {
-                font-size: 28px;
-            }
-            .header-inner {
-                flex-direction: column;
-                align-items: stretch;
-            }
+        @media (max-width: 860px) {
+            /* 데스크탑 네비게이션 숨김 */
             .nav {
-                justify-content: center;
+                display: none;
             }
-            .header-actions {
-                justify-content: center;
+
+            .hamburger {
+                display: flex;
             }
-            .filter-bar {
-                flex-direction: column;
-                align-items: stretch;
+
+            .header-actions .btn-outline {
+                display: none;
             }
-            .filter-bar .btn {
-                align-self: center;
-                width: 100%;
-                justify-content: center;
+
+            .guide-badge {
+                display: none;
             }
-            .cta-banner {
-                flex-direction: column;
-                text-align: center;
-                padding: 40px 24px;
+
+            .header-actions .btn-primary {
+                padding: 8px 16px;
+                font-size: 13px;
             }
-            .cta-banner h2 {
-                font-size: 26px;
+
+            .logo {
+                font-size: 18px;
+            }
+
+            .hero h1 {
+                font-size: 32px;
             }
         }
 
-        @media (max-width: 600px) {
-            .hero {
-                padding: 48px 0 60px;
+        @media (max-width: 480px) {
+            .header-actions .btn-primary {
+                padding: 6px 14px;
+                font-size: 12px;
             }
-            .hero-text h1 {
-                font-size: 28px;
-            }
-            .hero-stats {
-                flex-direction: column;
-                gap: 16px;
-                align-items: center;
-            }
-            .card-grid {
-                grid-template-columns: 1fr;
-            }
-            .footer-grid {
-                grid-template-columns: 1fr;
-                text-align: center;
-            }
-            .footer-brand p {
-                margin: 0 auto;
-            }
-            .footer-brand .social {
-                justify-content: center;
-            }
-            .filter-group {
-                min-width: 100%;
-            }
-            .guide-card .guide-bottom {
-                flex-direction: column;
-                gap: 12px;
-                align-items: stretch;
-            }
-            .guide-card .guide-bottom .btn {
-                justify-content: center;
-            }
-            .header-actions .divider {
+            .header-actions .btn-primary span {
                 display: none;
+            }
+            .logo {
+                font-size: 16px;
+            }
+            .hero h1 {
+                font-size: 26px;
             }
         }
     </style>
@@ -944,515 +473,154 @@
 <body>
 
     <!-- ============================================================
-    HEADER
+    HEADER (개선 버전)
     ============================================================ -->
-    <header class="header">
+    <header class="header" id="header">
         <div class="container header-inner">
 
-            <a href="#" class="logo">Team One Tour</a>
+            <!-- 로고 -->
+            <a href="#" class="logo">
+                <i class="fas fa-compass"></i> Team One Tour
+            </a>
 
+            <!-- 데스크탑 네비게이션 -->
             <nav class="nav">
-                <a href="#ai-services"><i class="fas fa-robot"></i> AI 일정</a>
-                <a href="#ai-services"><i class="fas fa-user-check"></i> AI 가이드</a>
-                <a href="#ai-services"><i class="fas fa-comment-dots"></i> AI 상담</a>
-                <a href="#guides"><i class="fas fa-users"></i> 가이드 찾기</a>
-                <a href="#destinations"><i class="fas fa-info-circle"></i> UAE 정보</a>
+                <!-- AI 서비스 드롭다운 -->
+                <div class="dropdown">
+                    <a href="#" class="dropdown-toggle">
+                        <i class="fas fa-robot"></i> AI 서비스
+                        <span class="chevron"><i class="fas fa-chevron-down"></i></span>
+                    </a>
+                    <div class="dropdown-menu">
+                        <a href="#"><i class="fas fa-route"></i> AI 일정 생성</a>
+                        <a href="#"><i class="fas fa-user-check"></i> AI 가이드 추천</a>
+                        <a href="#"><i class="fas fa-comment-dots"></i> AI 텍스트 상담</a>
+                        <a href="#"><i class="fas fa-microphone"></i> AI 음성 상담</a>
+                    </div>
+                </div>
+
+                <a href="#"><i class="fas fa-users"></i> 가이드 찾기</a>
+                <a href="#"><i class="fas fa-info-circle"></i> UAE 정보</a>
             </nav>
 
+            <!-- 우측 액션 영역 -->
             <div class="header-actions">
-                <!-- 여행자용 -->
-                <a href="#" class="btn btn-outline" style="padding:6px 16px; font-size:13px;">
+                <!-- 가이드 전용 (작게) -->
+                <a href="#" class="guide-badge">
+                    <i class="fas fa-id-badge"></i>
+                    <span class="sep">|</span>
+                    가이드 로그인
+                    <span class="sep">·</span>
+                    <span style="color:#0078ff; font-weight:600;">등록</span>
+                </a>
+
+                <!-- 여행자 로그인/회원가입 -->
+                <a href="#" class="btn btn-outline">
                     <i class="fas fa-user"></i> 로그인
                 </a>
-                <a href="#" class="btn btn-primary" style="padding:6px 18px; font-size:13px;">
-                    <i class="fas fa-user-plus"></i> 회원가입
+                <a href="#" class="btn btn-primary">
+                    <i class="fas fa-user-plus"></i> <span>회원가입</span>
                 </a>
 
-                <span class="divider"></span>
-
-                <!-- 가이드용 -->
-                <a href="#" class="guide-link"><i class="fas fa-id-badge"></i> 가이드 로그인</a>
-                <a href="#" class="guide-register">가이드 등록</a>
+                <!-- 햄버거 버튼 (모바일) -->
+                <button class="hamburger" id="hamburger" aria-label="메뉴 열기">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
             </div>
 
         </div>
     </header>
 
     <!-- ============================================================
-    HERO
+    모바일 메뉴
+    ============================================================ -->
+    <div class="mobile-menu" id="mobileMenu">
+        <!-- AI 서비스 (드롭다운 형태로) -->
+        <a href="#" style="font-weight:700; color:#0078ff;"><i class="fas fa-robot"></i> AI 서비스</a>
+        <a href="#" style="padding-left:44px; font-size:15px;"><i class="fas fa-route"></i> AI 일정 생성</a>
+        <a href="#" style="padding-left:44px; font-size:15px;"><i class="fas fa-user-check"></i> AI 가이드 추천</a>
+        <a href="#" style="padding-left:44px; font-size:15px;"><i class="fas fa-comment-dots"></i> AI 텍스트 상담</a>
+        <a href="#" style="padding-left:44px; font-size:15px;"><i class="fas fa-microphone"></i> AI 음성 상담</a>
+
+        <div class="mobile-divider"></div>
+
+        <a href="#"><i class="fas fa-users"></i> 가이드 찾기</a>
+        <a href="#"><i class="fas fa-info-circle"></i> UAE 여행 정보</a>
+
+        <div class="mobile-divider"></div>
+
+        <!-- 모바일에서의 회원/가이드 영역 -->
+        <a href="#"><i class="fas fa-user"></i> 로그인 (여행자)</a>
+        <a href="#"><i class="fas fa-user-plus"></i> 회원가입</a>
+
+        <div class="mobile-divider"></div>
+
+        <div class="mobile-guide">
+            <i class="fas fa-id-badge" style="color:#0078ff;"></i>
+            <a href="#">가이드 로그인</a> · <a href="#">가이드 등록</a>
+        </div>
+    </div>
+
+    <!-- ============================================================
+    HERO (데모)
     ============================================================ -->
     <section class="hero">
-        <div class="container hero-grid">
-
-            <div class="hero-text">
-                <div class="hero-badge">🚀 2026 AI 여행 혁명</div>
-                <h1>
-                    정보는 <span class="gradient-text">AI</span>로,<br />
-                    감동은 <span class="gradient-text">현지 가이드</span>로
-                </h1>
-                <p>
-                    Team One Tour는 인공지능이 여행 계획을 최적화하고,
-                    검증된 현지 전문 가이드가 당신만의 특별한 경험을 만듭니다.
-                    두바이부터 전 세계까지.
-                </p>
-                <div class="hero-buttons">
-                    <a href="#" class="btn btn-primary btn-large">
-                        <i class="fas fa-sparkles"></i> AI 일정 생성
-                    </a>
-                    <a href="#guides" class="btn btn-outline btn-large">
-                        <i class="fas fa-compass"></i> 가이드 둘러보기
-                    </a>
-                </div>
-                <div class="hero-stats">
-                    <div class="stat">
-                        <div class="stat-number">1,200+</div>
-                        <div class="stat-label">검증된 가이드</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-number">4.9</div>
-                        <div class="stat-label">평균 평점</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-number">15,000+</div>
-                        <div class="stat-label">여행자 후기</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="hero-visual">
-                <div class="hero-illustration">
-                    <div class="emoji-big">🌍</div>
-                    <div class="ill-text">두바이 · 아부다비 · 샤르자</div>
-                    <div class="ill-sub">AI가 추천하는 맞춤형 UAE 여행</div>
-                </div>
-            </div>
-
-        </div>
-    </section>
-
-    <!-- ============================================================
-    AI SERVICES
-    ============================================================ -->
-    <section class="section" id="ai-services">
         <div class="container">
-
-            <div class="section-header">
-                <div class="section-tag">✨ AI 서비스</div>
-                <h2 class="section-title">똑똑한 여행, AI가 시작합니다</h2>
-                <p class="section-desc">
-                    복잡한 여행 준비는 AI에게 맡기고, 당신은 오직 즐거움에 집중하세요.
-                </p>
-            </div>
-
-            <div class="card-grid">
-                <div class="service-card">
-                    <div class="icon-wrap"><i class="fas fa-route"></i></div>
-                    <h3>AI 일정 생성</h3>
-                    <p>취향, 예산, 일정에 맞춰 최적의 여행 루트를 자동으로 구성해 드려요.</p>
-                    <a href="#" class="card-link">일정 만들기 →</a>
-                </div>
-
-                <div class="service-card">
-                    <div class="icon-wrap"><i class="fas fa-user-tie"></i></div>
-                    <h3>AI 가이드 추천</h3>
-                    <p>여행 스타일과 언어에 맞는 최적의 현지 가이드를 매칭해 드려요.</p>
-                    <a href="#" class="card-link">가이드 추천받기 →</a>
-                </div>
-
-                <div class="service-card">
-                    <div class="icon-wrap"><i class="fas fa-comment-dots"></i></div>
-                    <h3>AI 자동 상담</h3>
-                    <p>24시간 언제든지 여행 관련 질문에 실시간으로 답변해 드려요.</p>
-                    <a href="#" class="card-link">상담 시작하기 →</a>
-                </div>
-
-                <div class="service-card">
-                    <div class="icon-wrap"><i class="fas fa-microphone"></i></div>
-                    <h3>AI 음성 상담</h3>
-                    <p>말로만 해도 AI가 알아듣고 바로 답변해주는 음성 챗봇 서비스예요.</p>
-                    <a href="#" class="card-link">음성 상담 →</a>
-                </div>
-            </div>
-
-        </div>
-    </section>
-
-    <!-- ============================================================
-    FILTER + GUIDE LIST
-    ============================================================ -->
-    <section class="section" id="guides" style="background:#f5f8ff; border-radius:48px 48px 0 0; margin-top:-20px; padding-top:60px;">
-        <div class="container">
-
-            <div class="section-header">
-                <div class="section-tag">🧳 현지 가이드</div>
-                <h2 class="section-title">당신만의 여행 파트너</h2>
-                <p class="section-desc">
-                    AI가 추천한 검증된 현지 가이드와 함께 특별한 여행을 만드세요.
-                </p>
-            </div>
-
-            <!-- 필터 바 -->
-            <div class="filter-bar">
-                <div class="filter-group">
-                    <label><i class="fas fa-map-pin"></i> 목적지</label>
-                    <select>
-                        <option>두바이</option>
-                        <option>아부다비</option>
-                        <option>샤르자</option>
-                        <option>라스알카이마</option>
-                        <option>푸자이라</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label><i class="fas fa-calendar-day"></i> 여행 날짜</label>
-                    <input type="date" value="2026-09-15" />
-                </div>
-                <div class="filter-group">
-                    <label><i class="fas fa-user"></i> 인원</label>
-                    <select>
-                        <option>1인</option>
-                        <option selected>2인</option>
-                        <option>3-4인</option>
-                        <option>5-8인</option>
-                        <option>9인+</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label><i class="fas fa-wallet"></i> 예산 (1일)</label>
-                    <select>
-                        <option>$50-100</option>
-                        <option selected>$100-200</option>
-                        <option>$200-300</option>
-                        <option>$300+</option>
-                    </select>
-                </div>
-                <button class="btn btn-primary"><i class="fas fa-search"></i> 검색</button>
-            </div>
-
-            <!-- 가이드 카드 그리드 -->
-            <div class="card-grid">
-
-                <!-- 가이드 1 -->
-                <div class="guide-card">
-                    <div class="guide-top">
-                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 56 56'%3E%3Crect width='56' height='56' rx='28' fill='%23d0d8e8'/%3E%3Ctext x='28' y='36' text-anchor='middle' font-size='28' fill='%23666'%3E👩%3C/text%3E%3C/svg%3E" alt="가이드" class="guide-avatar" />
-                        <div>
-                            <div class="guide-name">김현지</div>
-                            <div class="guide-location">🇦🇪 두바이 · 8년 경력</div>
-                            <span class="guide-badge">⭐ 프리미엄</span>
-                        </div>
-                    </div>
-                    <div class="guide-info">
-                        <i class="fas fa-language"></i> 한국어 · 영어 · 아랍어<br />
-                        <i class="fas fa-tag"></i> 시티투어 · 사막투어 · 럭셔리
-                    </div>
-                    <div class="guide-rating">
-                        <span class="stars">★★★★★</span>
-                        <span class="count">(234 리뷰)</span>
-                    </div>
-                    <div class="guide-bottom">
-                        <span class="guide-price">$150 <span>/ 1일</span></span>
-                        <a href="#" class="btn btn-primary btn-sm">예약하기</a>
-                    </div>
-                </div>
-
-                <!-- 가이드 2 -->
-                <div class="guide-card">
-                    <div class="guide-top">
-                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 56 56'%3E%3Crect width='56' height='56' rx='28' fill='%23d0d8e8'/%3E%3Ctext x='28' y='36' text-anchor='middle' font-size='28' fill='%23666'%3E👨%3C/text%3E%3C/svg%3E" alt="가이드" class="guide-avatar" />
-                        <div>
-                            <div class="guide-name">아흐메드 알리</div>
-                            <div class="guide-location">🇦🇪 아부다비 · 12년 경력</div>
-                            <span class="guide-badge">🏆 베스트</span>
-                        </div>
-                    </div>
-                    <div class="guide-info">
-                        <i class="fas fa-language"></i> 영어 · 아랍어 · 프랑스어<br />
-                        <i class="fas fa-tag"></i> 문화유산 · 루브르 · 대모스크
-                    </div>
-                    <div class="guide-rating">
-                        <span class="stars">★★★★★</span>
-                        <span class="count">(412 리뷰)</span>
-                    </div>
-                    <div class="guide-bottom">
-                        <span class="guide-price">$200 <span>/ 1일</span></span>
-                        <a href="#" class="btn btn-primary btn-sm">예약하기</a>
-                    </div>
-                </div>
-
-                <!-- 가이드 3 -->
-                <div class="guide-card">
-                    <div class="guide-top">
-                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 56 56'%3E%3Crect width='56' height='56' rx='28' fill='%23d0d8e8'/%3E%3Ctext x='28' y='36' text-anchor='middle' font-size='28' fill='%23666'%3E👩‍🦰%3C/text%3E%3C/svg%3E" alt="가이드" class="guide-avatar" />
-                        <div>
-                            <div class="guide-name">박소연</div>
-                            <div class="guide-location">🇦🇪 두바이 · 5년 경력</div>
-                            <span class="guide-badge">🌿 에코</span>
-                        </div>
-                    </div>
-                    <div class="guide-info">
-                        <i class="fas fa-language"></i> 한국어 · 영어 · 일본어<br />
-                        <i class="fas fa-tag"></i> 자연 · 하이킹 · 스노클링
-                    </div>
-                    <div class="guide-rating">
-                        <span class="stars">★★★★☆</span>
-                        <span class="count">(98 리뷰)</span>
-                    </div>
-                    <div class="guide-bottom">
-                        <span class="guide-price">$120 <span>/ 1일</span></span>
-                        <a href="#" class="btn btn-primary btn-sm">예약하기</a>
-                    </div>
-                </div>
-
-                <!-- 가이드 4 -->
-                <div class="guide-card">
-                    <div class="guide-top">
-                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 56 56'%3E%3Crect width='56' height='56' rx='28' fill='%23d0d8e8'/%3E%3Ctext x='28' y='36' text-anchor='middle' font-size='28' fill='%23666'%3E🧑‍💼%3C/text%3E%3C/svg%3E" alt="가이드" class="guide-avatar" />
-                        <div>
-                            <div class="guide-name">카림 하산</div>
-                            <div class="guide-location">🇦🇪 샤르자 · 7년 경력</div>
-                            <span class="guide-badge">📸 포토</span>
-                        </div>
-                    </div>
-                    <div class="guide-info">
-                        <i class="fas fa-language"></i> 영어 · 아랍어 · 힌디어<br />
-                        <i class="fas fa-tag"></i> 사진투어 · 시장 · 골드소크
-                    </div>
-                    <div class="guide-rating">
-                        <span class="stars">★★★★★</span>
-                        <span class="count">(167 리뷰)</span>
-                    </div>
-                    <div class="guide-bottom">
-                        <span class="guide-price">$170 <span>/ 1일</span></span>
-                        <a href="#" class="btn btn-primary btn-sm">예약하기</a>
-                    </div>
-                </div>
-
-            </div>
-
-            <!-- 더 보기 -->
-            <div style="text-align:center; margin-top:40px;">
-                <a href="#" class="btn btn-outline btn-large">
-                    <i class="fas fa-chevron-down"></i> 모든 가이드 보기
+            <h1>
+                정보는 <span>AI</span>로,<br />
+                감동은 <span>현지 가이드</span>로
+            </h1>
+            <p>
+                Team One Tour는 인공지능이 여행 계획을 최적화하고,
+                검증된 현지 전문 가이드가 당신만의 특별한 경험을 만듭니다.
+            </p>
+            <div style="display:flex; gap:12px; margin-top:24px; flex-wrap:wrap;">
+                <a href="#" class="btn btn-primary" style="padding:12px 32px; font-size:16px;">
+                    <i class="fas fa-sparkles"></i> AI 일정 생성
+                </a>
+                <a href="#" class="btn btn-outline" style="padding:12px 32px; font-size:16px; border-color:#ccc;">
+                    <i class="fas fa-compass"></i> 가이드 둘러보기
                 </a>
             </div>
-
         </div>
     </section>
 
-    <!-- ============================================================
-    REVIEWS
-    ============================================================ -->
-    <section class="section" style="padding-top:60px;">
-        <div class="container">
+    <script>
+        // ============================================================
+        // 햄버거 메뉴 토글
+        // ============================================================
+        const hamburger = document.getElementById('hamburger');
+        const mobileMenu = document.getElementById('mobileMenu');
 
-            <div class="section-header">
-                <div class="section-tag">💬 실제 후기</div>
-                <h2 class="section-title">여행자들이 말하는 Team One Tour</h2>
-                <p class="section-desc">
-                    실제 여행자들이 남긴 진솔한 후기를 확인하세요.
-                </p>
-            </div>
+        hamburger.addEventListener('click', function() {
+            this.classList.toggle('active');
+            mobileMenu.classList.toggle('open');
+            document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
+        });
 
-            <div class="card-grid">
-                <div class="review-card">
-                    <div class="review-header">
-                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='20' fill='%23e5e7eb'/%3E%3Ctext x='20' y='26' text-anchor='middle' font-size='18' fill='%23666'%3E😊%3C/text%3E%3C/svg%3E" alt="user" class="review-avatar" />
-                        <div>
-                            <div class="review-name">이서연</div>
-                            <div class="review-date">2026년 8월 12일</div>
-                        </div>
-                        <span class="review-stars">★★★★★</span>
-                    </div>
-                    <p class="review-text">
-                        "AI가 추천해준 가이드 덕분에 두바이에서 정말 특별한 경험을 했어요.
-                        현지인만 아는 맛집과 명소를 소개받아서 완전 만족스러웠습니다!"
-                    </p>
-                </div>
+        // 메뉴 클릭 시 닫기
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', function() {
+                hamburger.classList.remove('active');
+                mobileMenu.classList.remove('open');
+                document.body.style.overflow = '';
+            });
+        });
 
-                <div class="review-card">
-                    <div class="review-header">
-                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='20' fill='%23e5e7eb'/%3E%3Ctext x='20' y='26' text-anchor='middle' font-size='18' fill='%23666'%3E👨%3C/text%3E%3C/svg%3E" alt="user" class="review-avatar" />
-                        <div>
-                            <div class="review-name">김민준</div>
-                            <div class="review-date">2026년 8월 8일</div>
-                        </div>
-                        <span class="review-stars">★★★★★</span>
-                    </div>
-                    <p class="review-text">
-                        "AI 일정 생성 기능이 정말 대단해요. 제가 원하는 취향을 입력하니까
-                        완벽한 4일 일정을 짜주더라고요. 직접 수정도 가능해서 더 좋았어요!"
-                    </p>
-                </div>
-
-                <div class="review-card">
-                    <div class="review-header">
-                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='20' fill='%23e5e7eb'/%3E%3Ctext x='20' y='26' text-anchor='middle' font-size='18' fill='%23666'%3E👩%3C/text%3E%3C/svg%3E" alt="user" class="review-avatar" />
-                        <div>
-                            <div class="review-name">최유진</div>
-                            <div class="review-date">2026년 8월 3일</div>
-                        </div>
-                        <span class="review-stars">★★★★★</span>
-                    </div>
-                    <p class="review-text">
-                        "가이드님과의 소통이 너무 원활했어요. 예약 전에 메시지로 궁금한 점을
-                        다 물어볼 수 있어서 안심하고 여행을 떠날 수 있었습니다."
-                    </p>
-                </div>
-            </div>
-
-        </div>
-    </section>
-
-    <!-- ============================================================
-    DESTINATIONS (UAE 여행 정보)
-    ============================================================ -->
-    <section class="section" id="destinations" style="background:#f5f8ff; border-radius:48px 48px 0 0; padding-top:60px;">
-        <div class="container">
-
-            <div class="section-header">
-                <div class="section-tag">🇦🇪 UAE 여행 정보</div>
-                <h2 class="section-title">두바이 &amp; 아부다비,<br />이곳을 놓치지 마세요</h2>
-                <p class="section-desc">
-                    AI가 추천하는 UAE 핵심 관광지와 실시간 여행 정보를 확인하세요.
-                </p>
-            </div>
-
-            <div class="card-grid">
-                <div class="dest-card">
-                    <div class="dest-img" style="background:linear-gradient(135deg,#1a3a5c,#2d6a9f);">🏙️</div>
-                    <div class="dest-body">
-                        <h4>부르즈 칼리파</h4>
-                        <p>세계 최고층 건물, 828m 전망대에서 두바이를 한눈에</p>
-                        <span class="dest-tag">⭐ 필수 코스</span>
-                    </div>
-                </div>
-
-                <div class="dest-card">
-                    <div class="dest-img" style="background:linear-gradient(135deg,#c8943c,#e8b84c);">🏖️</div>
-                    <div class="dest-body">
-                        <h4>팜 주메이라</h4>
-                        <p>인공 섬의 절경, 럭셔리 리조트와 워터파크의 천국</p>
-                        <span class="dest-tag">🌴 럭셔리</span>
-                    </div>
-                </div>
-
-                <div class="dest-card">
-                    <div class="dest-img" style="background:linear-gradient(135deg,#2d5a3a,#4a8c5a);">🕌</div>
-                    <div class="dest-body">
-                        <h4>셰이크 자이드 모스크</h4>
-                        <p>아부다비의 상징, 화이트 마블의 장엄한 이슬람 성지</p>
-                        <span class="dest-tag">📸 포토 명소</span>
-                    </div>
-                </div>
-
-                <div class="dest-card">
-                    <div class="dest-img" style="background:linear-gradient(135deg,#8b5e3c,#c49a6c);">🏜️</div>
-                    <div class="dest-body">
-                        <h4>두바이 사막</h4>
-                        <p>사파리, 캠핑, 별빛 아래의 낭만적인 사막 체험</p>
-                        <span class="dest-tag">🌙 야간 투어</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 실시간 여행 정보 -->
-            <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:16px; margin-top:32px; background:#fff; border-radius:20px; padding:24px; border:1px solid rgba(0,0,0,0.04);">
-                <div style="text-align:center;">
-                    <div style="font-size:24px;">🌡️</div>
-                    <div style="font-weight:600; font-size:15px;">현재 날씨</div>
-                    <div style="font-size:13px; color:#666;">두바이 38°C · 맑음</div>
-                </div>
-                <div style="text-align:center;">
-                    <div style="font-size:24px;">💰</div>
-                    <div style="font-weight:600; font-size:15px;">환율</div>
-                    <div style="font-size:13px; color:#666;">1 USD = 3.67 AED</div>
-                </div>
-                <div style="text-align:center;">
-                    <div style="font-size:24px;">🛂</div>
-                    <div style="font-weight:600; font-size:15px;">비자 정보</div>
-                    <div style="font-size:13px; color:#666;">한국인 무비자 30일</div>
-                </div>
-                <div style="text-align:center;">
-                    <div style="font-size:24px;">🕌</div>
-                    <div style="font-weight:600; font-size:15px;">현지 시간</div>
-                    <div style="font-size:13px; color:#666;">GMT+4 (한국-5시간)</div>
-                </div>
-            </div>
-
-        </div>
-    </section>
-
-    <!-- ============================================================
-    CTA BANNER
-    ============================================================ -->
-    <section class="section" style="padding-top:60px;">
-        <div class="container">
-            <div class="cta-banner">
-                <div>
-                    <h2>지금 바로 AI 여행을 시작하세요</h2>
-                    <p>복잡한 여행 준비는 Team One Tour의 AI가 해결해 드립니다.</p>
-                </div>
-                <div style="display:flex; gap:12px; flex-wrap:wrap;">
-                    <a href="#" class="btn btn-white"><i class="fas fa-sparkles"></i> AI 일정 생성</a>
-                    <a href="#" class="btn btn-dark"><i class="fas fa-user-plus"></i> 무료 회원가입</a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ============================================================
-    FOOTER
-    ============================================================ -->
-    <footer class="footer">
-        <div class="container">
-
-            <div class="footer-grid">
-                <div class="footer-brand">
-                    <a href="#" class="logo">Team One Tour</a>
-                    <p>Team One Tour FZ LLC – United Arab Emirates<br />
-                    두바이 인터넷 시티, 빌딩 A1, 3층<br />
-                    Admin@teamonetour.com</p>
-                    <div class="social">
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-youtube"></i></a>
-                        <a href="#"><i class="fab fa-facebook"></i></a>
-                        <a href="#"><i class="fab fa-tiktok"></i></a>
-                    </div>
-                </div>
-
-                <div class="footer-col">
-                    <h4>서비스</h4>
-                    <a href="#">AI 일정 생성</a>
-                    <a href="#">AI 가이드 추천</a>
-                    <a href="#">AI 상담</a>
-                    <a href="#">음성 상담</a>
-                </div>
-
-                <div class="footer-col">
-                    <h4>여행자</h4>
-                    <a href="#">가이드 찾기</a>
-                    <a href="#">예약하기</a>
-                    <a href="#">리뷰 쓰기</a>
-                    <a href="#">마이페이지</a>
-                </div>
-
-                <div class="footer-col">
-                    <h4>고객센터</h4>
-                    <a href="#">FAQ</a>
-                    <a href="#">이용약관</a>
-                    <a href="#">개인정보처리방침</a>
-                    <a href="#">+971 50 123 4567</a>
-                </div>
-            </div>
-
-            <div class="footer-bottom">
-                &copy; 2026 Team One Tour. All rights reserved. | 
-                Made with <i class="fas fa-heart" style="color:#ff4d4d; font-size:12px;"></i> in Dubai
-            </div>
-
-        </div>
-    </footer>
+        // ============================================================
+        // 스크롤 시 헤더 축소
+        // ============================================================
+        window.addEventListener('scroll', function() {
+            const header = document.getElementById('header');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+    </script>
 
 </body>
 </html>
