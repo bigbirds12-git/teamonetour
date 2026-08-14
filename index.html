@@ -13,14 +13,14 @@
     /* Layout - Header with only logo and auth buttons */
     header { background:#ffffff; border-bottom:1px solid #e5e7eb; position: relative; z-index: 1000; }
     .container { max-width: 1200px; margin: 0 auto; padding: 0 16px; width: 100%; }
-    .nav { display:flex; align-items:center; justify-content:space-between; height:64px; }
-    .logo {width: 100%; max-width: 120px; height: 40px; display: flex; align-items: center; }
+    .nav { display:flex; align-items:center; justify-content:space-between; height:64px; gap:12px; }
+    .logo { flex-shrink: 0; width: auto; max-width: 120px; height: 40px; display: flex; align-items: center; }
     .logo img {max-width: 100%; max-height: 100%; height: auto; display: block; width: auto; }
     
-    .nav-right { display:flex; align-items:center; gap:12px; }
-    .btn { height: 36px;  padding: 0 16px; border-radius:999px; font-size:13px; border:1px solid transparent; 
-          align-items: center; justify-content: center; white-space: nowrap; display: inline-flex;  gap: 6px;
-          font-weight: 500; cursor: pointer; transition: all 0.2s; background: transparent; position: relative;}
+    .nav-right { display:flex; align-items:center; gap:8px; flex-shrink: 0; }
+    .btn { height: 36px; padding: 0 14px; border-radius:999px; font-size:13px; border:1px solid transparent; 
+          align-items: center; justify-content: center; white-space: nowrap; display: inline-flex; gap: 4px;
+          font-weight: 500; cursor: pointer; transition: all 0.2s; background: transparent; position: relative; }
     .btn-outline { border-color:#d1d5db; background:#ffffff; color:#374151; }
     .btn-primary { background:#2563eb; color:#ffffff; border-color:#2563eb; }
     .btn-ghost { background:transparent; color:#4b5563; border-color:transparent; }
@@ -48,15 +48,22 @@
     from { opacity: 0; transform: translateX(-50%) translateY(-8px); }
     to {opacity: 1;transform: translateX(-50%) translateY(0);}}
 
-  /* Mobile responsive */
+  /* Mobile responsive - keep everything in one line */
   @media (max-width: 768px) {
-    .nav {flex-wrap: wrap; height: auto; padding: 12px 0; gap: 12px; }
-    .nav-right {flex-wrap: wrap; gap: 8px; width: 100%; justify-content: flex-start; margin-top: 4px;}
-    .btn {font-size: 12px;padding: 0 12px;height: 32px;}
-    .logo {max-width: 100px;height: 32px;}
+    .nav { height: 56px; gap: 8px; }
+    .logo { max-width: 90px; height: 32px; }
+    .btn { font-size: 12px; padding: 0 10px; height: 32px; }
+    .nav-right { gap: 4px; }
+    .dropdown-menu { min-width: 130px; right: 0; left: auto; transform: translateX(0); }
+    .dropdown-arrow { width: 12px; height: 12px; }
   }
+  
   @media (max-width: 480px) {
-    .dropdown-menu {min-width: 130px;}
+    .nav { height: 50px; gap: 6px; }
+    .logo { max-width: 75px; height: 28px; }
+    .btn { font-size: 11px; padding: 0 8px; height: 28px; }
+    .nav-right { gap: 3px; }
+    .dropdown-menu { min-width: 120px; }
   }
  
     main { padding:40px 0 64px; }
