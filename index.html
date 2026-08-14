@@ -11,59 +11,71 @@
     a { text-decoration: none; color: inherit; }
 
     /* Layout */
-    header { background:#ffffff; border-bottom:1px solid #e5e7eb; }
+    header { background:#ffffff; border-bottom:1px solid #e5e7eb; position: relative; z-index: 1000; }
     .container { max-width: 1200px; margin: 0 auto; padding: 0 16px; width: 100%; }
     .nav { display:flex; align-items:center; justify-content:space-between; height:64px; }
-    .nav-left { display:flex; align-items:center; gap:24px; }
-    .logo {width: 100%; max-width: 100px; height: 40px; display: flex; align-items: center; }
+    .nav-left { display:flex; align-items:center; gap:32px; }
+    .logo {width: 100%; max-width: 120px; height: 40px; display: flex; align-items: center; }
     .logo img {max-width: 100%; max-height: 100%; height: auto; display: block; width: auto; }
-    .nav-menu { display:flex; gap:16px; font-size:14px; color:#4b5563; }
-    .nav-menu a {text-decoration: none; color: #4b5563; transition: color 0.2s;}
+    .nav-menu { display:flex; gap:24px; font-size:14px; color:#4b5563; font-weight:500; }
+    .nav-menu a {text-decoration: none; color: #4b5563; transition: color 0.2s; white-space: nowrap;}
     .nav-menu a:hover {color: #2563eb;}
-    .nav-right { display:flex; align-items:center; gap:8px; }
-    .btn { height: 36px;  padding: 0 14px; border-radius:999px; font-size:13px; border:1px solid transparent; 
-          align-items: center; justify-content: center; white-space: nowrap; display: inline-flex;  gap: 6px;}
+    .nav-right { display:flex; align-items:center; gap:12px; }
+    .btn { height: 36px;  padding: 0 16px; border-radius:999px; font-size:13px; border:1px solid transparent; 
+          align-items: center; justify-content: center; white-space: nowrap; display: inline-flex;  gap: 6px;
+          font-weight: 500; cursor: pointer; transition: all 0.2s; background: transparent; position: relative;}
     .btn-outline { border-color:#d1d5db; background:#ffffff; color:#374151; }
-    .btn-primary { background:#2563eb; color:#ffffff; }
-    .btn-ghost { background:transparent; color:#2563eb; }
+    .btn-primary { background:#2563eb; color:#ffffff; border-color:#2563eb; }
+    .btn-ghost { background:transparent; color:#4b5563; border-color:transparent; }
     .btn:hover { opacity: 0.8; transform: scale(0.98); }
     .btn:active {transform: scale(0.95);}
-    .btn-primary:hover {background: #1d4ed8;}
+    .btn-primary:hover {background: #1d4ed8; border-color: #1d4ed8;}
     .btn-outline:hover {background: #f3f4f6; }
+    .btn-ghost:hover {background: #f3f4f6; }
 
+    /* Dropdown for buttons */
     .dropdown {position: relative; display: inline-block;}
-    .dropdown-menu {display: none;position: absolute;top: calc(100% + 6px);right: 0;background: #ffffff; border-radius: 12px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);padding: 6px;min-width: 180px;z-index: 100; border: 1px solid #f1f5f9;}
+    .dropdown-toggle { display: flex; align-items: center; gap: 6px; background: transparent; border: none; 
+                       font-size: 13px; color: #4b5563; cursor: pointer; padding: 6px 10px; 
+                       border-radius: 8px; font-weight: 500; transition: all 0.2s; }
+    .dropdown-toggle:hover { background: #f3f4f6; }
+    .dropdown-arrow { width: 14px; height: 14px; transition: transform 0.2s ease; margin-left: 2px; }
+    .dropdown.show .dropdown-arrow {transform: rotate(180deg);}
+    
+    .dropdown-menu {display: none;position: absolute;top: calc(100% + 8px);left: 50%; transform: translateX(-50%);
+                    background: #ffffff; border-radius: 12px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
+                    padding: 6px; min-width: 140px;z-index: 100; border: 1px solid #f1f5f9;}
     .dropdown-menu.show {display: block;animation: fadeDown 0.2s ease;}
-    .dropdown-menu a {display: flex;align-items: center;gap: 10px;padding: 10px 14px;border-radius: 8px;
-  text-decoration: none;color: #1e293b;font-size: 13px;font-weight: 500;transition: background 0.15s;}
+    .dropdown-menu a {display: flex;align-items: center;gap: 10px;padding: 10px 16px;border-radius: 8px;
+                      text-decoration: none;color: #1e293b;font-size: 13px;font-weight: 500;
+                      transition: background 0.15s; white-space: nowrap;}
     .dropdown-menu a:hover {background: #f1f5f9;}
     .dropdown-menu .divider {height: 1px; background: #e5e7eb;margin: 4px 10px;}
-    .dropdown-arrow { width: 14px; height: 14px; transition: transform 0.2s ease;}
-    .dropdown.show .dropdown-arrow {transform: rotate(180deg);}
-    .badge {font-size: 9px;font-weight: 700;background: #dbeafe;color: #2563eb; padding: 2px 10px;border-radius: 999px;letter-spacing: 0.3px; margin-left: auto;border: 1px solid #bfdbfe;}
-    .badge-guide {background: #fef3c7;color: #d97706; border-color: #fde68a;}
 
   @keyframes fadeDown {
-    from { opacity: 0; transform: translateY(-8px); }
-    to {opacity: 1;transform: translateY(0);}}
+    from { opacity: 0; transform: translateX(-50%) translateY(-8px); }
+    to {opacity: 1;transform: translateX(-50%) translateY(0);}}
 
+  /* Mobile responsive */
   @media (max-width: 768px) {
     .nav {flex-wrap: wrap; height: auto; padding: 12px 0; gap: 12px; }
     .nav-left {flex-wrap: wrap; gap: 16px; width: 100%;}
-    .nav-menu {gap: 14px;font-size: 13px;flex-wrap: wrap;}
-    .nav-right {flex-wrap: wrap; gap: 8px; width: 100%; justify-content: flex-end;}}
-  @media (max-width: 480px) {
+    .nav-menu {gap: 16px;font-size: 13px;flex-wrap: wrap;}
+    .nav-right {flex-wrap: wrap; gap: 8px; width: 100%; justify-content: flex-start; margin-top: 4px;}
     .btn {font-size: 12px;padding: 0 12px;height: 32px;}
-    .logo {max-width: 80px;height: 32px;}
-    .nav-menu {gap: 10px;font-size: 12px;}
-    .dropdown-menu {min-width: 160px;right: -10px;}}
+    .logo {max-width: 100px;height: 32px;}
+  }
+  @media (max-width: 480px) {
+    .nav-menu {gap: 12px;font-size: 12px;}
+    .dropdown-menu {min-width: 120px;}
+    .dropdown-toggle {font-size: 12px;padding: 4px 8px;}
+  }
  
     main { padding:40px 0 64px; }
     .hero { display:grid; grid-template-columns: minmax(0,1.4fr) minmax(0,1fr); gap:32px; align-items:center; }
     .hero-title { font-size:32px; font-weight:700; color:#111827; margin-bottom:16px; }
     .hero-sub { font-size:15px; color:#4b5563; line-height:1.6; margin-bottom:24px; }
-    .hero-actions { display:flex; gap:12px; margin-bottom:24px; }
+    .hero-actions { display:flex; gap:12px; margin-bottom:24px; flex-wrap: wrap; }
     .hero-stats { display:flex; flex-wrap:wrap; gap:16px; font-size:13px; color:#4b5563; }
     .hero-stat-item { background:#e5f0ff; padding:10px 14px; border-radius:12px; }
     .hero-right { background:#1d4ed8; color:#e5f0ff; border-radius:16px; padding:20px; }
@@ -78,7 +90,8 @@
     .ai-card { background:#ffffff; border-radius:14px; padding:16px; border:1px solid #e5e7eb; display:flex; flex-direction:column; gap:8px; }
     .ai-title { font-size:14px; font-weight:600; color:#111827; }
     .ai-desc { font-size:12px; color:#6b7280; line-height:1.5; }
-    .ai-btn { margin-top:auto; font-size:12px; padding:6px 10px; border-radius:999px; border:1px solid #2563eb; color:#2563eb; background:#eff6ff; align-self:flex-start; cursor:pointer; }
+    .ai-btn { margin-top:auto; font-size:12px; padding:6px 10px; border-radius:999px; border:1px solid #2563eb; color:#2563eb; background:#eff6ff; align-self:flex-start; cursor:pointer; transition: all 0.2s; }
+    .ai-btn:hover { background:#2563eb; color: #fff; }
 
     /* Footer */
     footer { background:#0b1120; color:#e5e7eb; padding:32px 0 16px; margin-top:48px; }
@@ -86,10 +99,12 @@
     .footer-title { font-weight:600; margin-bottom:10px; font-size:13px; }
     .footer-text { color:#9ca3af; line-height:1.6; margin-bottom:6px; }
     .footer-list { list-style:none; }
-    .footer-list li { margin-bottom:6px; color:#d1d5db; }
+    .footer-list li { margin-bottom:6px; color:#d1d5db; cursor: pointer; transition: color 0.2s; }
+    .footer-list li:hover { color: #60a5fa; }
     .footer-social { display:flex; gap:8px; margin-top:10px; }
-    .footer-social span { width:24px; height:24px; border-radius:999px; background:#111827; display:flex; align-items:center; justify-content:center; font-size:11px; }
-    .footer-bottom { margin-top:24px; font-size:11px; color:#6b7280; text-align:center; }
+    .footer-social span { width:28px; height:28px; border-radius:999px; background:#1e293b; display:flex; align-items:center; justify-content:center; font-size:11px; cursor: pointer; transition: all 0.2s; }
+    .footer-social span:hover { background:#2563eb; }
+    .footer-bottom { margin-top:24px; font-size:11px; color:#6b7280; text-align:center; border-top: 1px solid #1e293b; padding-top: 16px; }
 
     @media (max-width: 900px) {
       .hero { grid-template-columns: 1fr; }
@@ -99,7 +114,6 @@
     @media (max-width: 600px) {
       .ai-grid { grid-template-columns: 1fr; }
       .footer-grid { grid-template-columns: 1fr; }
-      .nav-menu { display:none; }
     }
  </style>
 </head>
@@ -110,20 +124,69 @@
   <header>
     <div class="container">
       <nav class="nav">
+        <!-- Left: Logo + Nav Menu -->
         <div class="nav-left">
-        <div class="logo">
-          <a href="/"><img src="/images/logo.png" alt="Team One Tour logo"></a>
-           </div>
-            <div class="nav-menu">
+          <div class="logo">
+            <a href="/"><img src="/images/logo.png" alt="Team One Tour logo"></a>
+          </div>
+          <div class="nav-menu">
             <a href="#ai-services">AI 서비스</a>
             <a href="#guides">가이드 찾기</a>
             <a href="#uae-info">UAE 정보</a>
           </div>
         </div>
+        
+        <!-- Right: Language Dropdown + Login Dropdown + Signup Dropdown -->
         <div class="nav-right">
-          <button class="btn btn-ghost">로그인</button>
-          <button class="btn btn-outline">등록</button>
-          <button class="btn btn-primary">회원가입</button>
+          <!-- Language Dropdown -->
+          <div class="dropdown" id="langDropdown">
+            <button class="dropdown-toggle" onclick="toggleDropdown('langDropdown', 'langMenu')" aria-haspopup="true" aria-expanded="false">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="2" y1="12" x2="22" y2="12"/>
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+              </svg>
+              한국어
+              <svg class="dropdown-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"/>
+              </svg>
+            </button>
+            <div class="dropdown-menu" id="langMenu" role="menu">
+              <a href="#" role="menuitem" onclick="selectLanguage(this, 'langDropdown', 'langMenu')">한국어</a>
+              <a href="#" role="menuitem" onclick="selectLanguage(this, 'langDropdown', 'langMenu')">English</a>
+              <a href="#" role="menuitem" onclick="selectLanguage(this, 'langDropdown', 'langMenu')">العربية</a>
+              <a href="#" role="menuitem" onclick="selectLanguage(this, 'langDropdown', 'langMenu')">日本語</a>
+              <a href="#" role="menuitem" onclick="selectLanguage(this, 'langDropdown', 'langMenu')">中文</a>
+            </div>
+          </div>
+
+          <!-- Login Dropdown -->
+          <div class="dropdown" id="loginDropdown">
+            <button class="btn btn-ghost" onclick="toggleDropdown('loginDropdown', 'loginMenu')">
+              로그인
+              <svg class="dropdown-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"/>
+              </svg>
+            </button>
+            <div class="dropdown-menu" id="loginMenu" role="menu">
+              <a href="#" role="menuitem">👤 고객 로그인</a>
+              <a href="#" role="menuitem">⭐ 가이드 로그인</a>
+            </div>
+          </div>
+
+          <!-- Signup Dropdown -->
+          <div class="dropdown" id="signupDropdown">
+            <button class="btn btn-primary" onclick="toggleDropdown('signupDropdown', 'signupMenu')">
+              회원가입
+              <svg class="dropdown-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"/>
+              </svg>
+            </button>
+            <div class="dropdown-menu" id="signupMenu" role="menu">
+              <a href="#" role="menuitem">👤 고객 회원가입</a>
+              <a href="#" role="menuitem">⭐ 가이드 회원가입</a>
+            </div>
+          </div>
         </div>
       </nav>
     </div>
@@ -252,5 +315,78 @@
       </div>
     </div>
   </footer>
+
+  <script>
+    // Toggle dropdown
+    function toggleDropdown(dropdownId, menuId) {
+      const menu = document.getElementById(menuId);
+      const dropdown = document.getElementById(dropdownId);
+      const isOpen = menu.classList.contains('show');
+      
+      // Close all dropdowns first
+      closeAllDropdowns();
+      
+      // Toggle the clicked one
+      if (!isOpen) {
+        menu.classList.add('show');
+        dropdown.classList.add('show');
+      }
+    }
+
+    // Close all dropdowns
+    function closeAllDropdowns() {
+      document.querySelectorAll('.dropdown-menu').forEach(menu => {
+        menu.classList.remove('show');
+      });
+      document.querySelectorAll('.dropdown').forEach(dropdown => {
+        dropdown.classList.remove('show');
+      });
+    }
+
+    // Select language and update button text
+    function selectLanguage(element, dropdownId, menuId) {
+      event.preventDefault();
+      const text = element.textContent.trim();
+      const dropdown = document.getElementById(dropdownId);
+      const button = dropdown.querySelector('.dropdown-toggle');
+      
+      // Update button text
+      button.innerHTML = `
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="2" y1="12" x2="22" y2="12"/>
+          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+        </svg>
+        ${text}
+        <svg class="dropdown-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      `;
+      
+      closeAllDropdowns();
+    }
+
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', function(event) {
+      const isDropdown = event.target.closest('.dropdown');
+      if (!isDropdown) {
+        closeAllDropdowns();
+      }
+    });
+
+    // Handle dropdown menu item clicks (for login/signup)
+    document.querySelectorAll('.dropdown-menu a[role="menuitem"]').forEach(item => {
+      item.addEventListener('click', function(e) {
+        // Don't prevent default for language items (handled separately)
+        if (!this.closest('#langMenu')) {
+          e.preventDefault();
+          const action = this.textContent.trim();
+          console.log('Selected:', action);
+          // Here you can add logic to handle login/signup actions
+          closeAllDropdowns();
+        }
+      });
+    });
+  </script>
 </body>
 </html>
