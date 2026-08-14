@@ -10,16 +10,13 @@
     body { font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background:#f5f7fb; color:#111827; }
     a { text-decoration: none; color: inherit; }
 
-    /* Layout */
+    /* Layout - Header with only logo and auth buttons */
     header { background:#ffffff; border-bottom:1px solid #e5e7eb; position: relative; z-index: 1000; }
     .container { max-width: 1200px; margin: 0 auto; padding: 0 16px; width: 100%; }
     .nav { display:flex; align-items:center; justify-content:space-between; height:64px; }
-    .nav-left { display:flex; align-items:center; gap:32px; }
     .logo {width: 100%; max-width: 120px; height: 40px; display: flex; align-items: center; }
     .logo img {max-width: 100%; max-height: 100%; height: auto; display: block; width: auto; }
-    .nav-menu { display:flex; gap:24px; font-size:14px; color:#4b5563; font-weight:500; }
-    .nav-menu a {text-decoration: none; color: #4b5563; transition: color 0.2s; white-space: nowrap;}
-    .nav-menu a:hover {color: #2563eb;}
+    
     .nav-right { display:flex; align-items:center; gap:12px; }
     .btn { height: 36px;  padding: 0 16px; border-radius:999px; font-size:13px; border:1px solid transparent; 
           align-items: center; justify-content: center; white-space: nowrap; display: inline-flex;  gap: 6px;
@@ -54,34 +51,34 @@
   /* Mobile responsive */
   @media (max-width: 768px) {
     .nav {flex-wrap: wrap; height: auto; padding: 12px 0; gap: 12px; }
-    .nav-left {flex-wrap: wrap; gap: 16px; width: 100%;}
-    .nav-menu {gap: 16px;font-size: 13px;flex-wrap: wrap;}
     .nav-right {flex-wrap: wrap; gap: 8px; width: 100%; justify-content: flex-start; margin-top: 4px;}
     .btn {font-size: 12px;padding: 0 12px;height: 32px;}
     .logo {max-width: 100px;height: 32px;}
   }
   @media (max-width: 480px) {
-    .nav-menu {gap: 12px;font-size: 12px;}
     .dropdown-menu {min-width: 130px;}
   }
  
     main { padding:40px 0 64px; }
-    .hero { display:grid; grid-template-columns: minmax(0,1.4fr) minmax(0,1fr); gap:32px; align-items:center; }
+    
+    /* Hero Section */
+    .hero { display:grid; grid-template-columns: minmax(0,1.4fr) minmax(0,1fr); gap:48px; align-items:center; background: #ffffff; border-radius: 24px; padding: 48px; box-shadow: 0 4px 24px rgba(0,0,0,0.04); margin-bottom: 32px; }
     .hero-title { font-size:32px; font-weight:700; color:#111827; margin-bottom:16px; }
     .hero-sub { font-size:15px; color:#4b5563; line-height:1.6; margin-bottom:24px; }
     .hero-actions { display:flex; gap:12px; margin-bottom:24px; flex-wrap: wrap; }
     .hero-stats { display:flex; flex-wrap:wrap; gap:16px; font-size:13px; color:#4b5563; }
     .hero-stat-item { background:#e5f0ff; padding:10px 14px; border-radius:12px; }
-    .hero-right { background:#1d4ed8; color:#e5f0ff; border-radius:16px; padding:20px; }
+    .hero-right { background:#1d4ed8; color:#e5f0ff; border-radius:16px; padding:24px; min-height: 180px; display: flex; flex-direction: column; justify-content: center; }
     .hero-right-title { font-size:15px; font-weight:600; margin-bottom:8px; }
-    .hero-right-sub { font-size:13px; color:#bfdbfe; margin-bottom:12px; }
-    .hero-right-tag { display:inline-block; margin-top:8px; font-size:12px; background:#0f172a; color:#e5f0ff; padding:6px 10px; border-radius:999px; }
+    .hero-right-sub { font-size:13px; color:#bfdbfe; margin-bottom:12px; line-height: 1.5; }
+    .hero-right-tag { display:inline-block; margin-top:8px; font-size:12px; background:#0f172a; color:#e5f0ff; padding:6px 10px; border-radius:999px; align-self: flex-start; }
 
     /* AI services section */
     .section-title { margin-top:48px; font-size:20px; font-weight:600; margin-bottom:8px; }
     .section-sub { font-size:14px; color:#6b7280; margin-bottom:20px; }
     .ai-grid { display:grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap:16px; }
-    .ai-card { background:#ffffff; border-radius:14px; padding:16px; border:1px solid #e5e7eb; display:flex; flex-direction:column; gap:8px; }
+    .ai-card { background:#ffffff; border-radius:14px; padding:16px; border:1px solid #e5e7eb; display:flex; flex-direction:column; gap:8px; transition: all 0.3s ease; }
+    .ai-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.06); transform: translateY(-2px); }
     .ai-title { font-size:14px; font-weight:600; color:#111827; }
     .ai-desc { font-size:12px; color:#6b7280; line-height:1.5; }
     .ai-btn { margin-top:auto; font-size:12px; padding:6px 10px; border-radius:999px; border:1px solid #2563eb; color:#2563eb; background:#eff6ff; align-self:flex-start; cursor:pointer; transition: all 0.2s; }
@@ -101,11 +98,13 @@
     .footer-bottom { margin-top:24px; font-size:11px; color:#6b7280; text-align:center; border-top: 1px solid #1e293b; padding-top: 16px; }
 
     @media (max-width: 900px) {
-      .hero { grid-template-columns: 1fr; }
+      .hero { grid-template-columns: 1fr; gap: 32px; padding: 32px; }
       .ai-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
       .footer-grid { grid-template-columns: 1fr 1fr; }
     }
     @media (max-width: 600px) {
+      .hero { padding: 24px; }
+      .hero-title { font-size: 26px; }
       .ai-grid { grid-template-columns: 1fr; }
       .footer-grid { grid-template-columns: 1fr; }
     }
@@ -114,23 +113,15 @@
 
 <body>
 
-  <!-- Header -->
+  <!-- Header - Only Logo and Auth Buttons -->
   <header>
     <div class="container">
       <nav class="nav">
-        <!-- Left: Logo + Nav Menu -->
-        <div class="nav-left">
-          <div class="logo">
-            <a href="/"><img src="/images/logo.png" alt="Team One Tour logo"></a>
-          </div>
-          <div class="nav-menu">
-            <a href="#ai-services">AI 서비스</a>
-            <a href="#guides">가이드 찾기</a>
-            <a href="#uae-info">UAE 정보</a>
-          </div>
+        <div class="logo">
+          <a href="/"><img src="/images/logo.png" alt="Team One Tour logo"></a>
         </div>
         
-        <!-- Right: Login Dropdown + Signup Dropdown -->
+        <!-- Auth Buttons -->
         <div class="nav-right">
           <!-- Login Dropdown -->
           <div class="dropdown" id="loginDropdown">
@@ -167,7 +158,7 @@
   <!-- Main -->
   <main>
     <div class="container">
-      <!-- Hero -->
+      <!-- Hero Section -->
       <section class="hero">
         <div class="hero-left">
           <h1 class="hero-title">정보는 AI로, 감동은 현지 가이드로</h1>
@@ -319,11 +310,7 @@
     function handleAction(action) {
       event.preventDefault();
       console.log('Selected action:', action);
-      
-      // You can add your own logic here
-      // For example: redirect to login page, show modal, etc.
       alert(`${action}을(를) 선택하셨습니다.`);
-      
       closeAllDropdowns();
     }
 
