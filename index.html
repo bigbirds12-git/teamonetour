@@ -19,10 +19,13 @@
     .logo img {max-width: 100%; max-height: 100%; height: auto; display: block; width: auto; }
     .nav-menu { display:flex; gap:16px; font-size:14px; color:#4b5563; }
     .nav-right { display:flex; align-items:center; gap:8px; }
-    .btn { padding:8px 14px; border-radius:999px; font-size:13px; border:1px solid transparent; cursor:pointer; height: 36px;  display: flex; align-items: center;}
+    .btn { height: 36px;  padding: 0 14px; border-radius:999px; font-size:13px; border:1px solid transparent; 
+          align-items: center; justify-content: center; white-space: nowrap; display: inline-flex;  gap: 6px;}
     .btn-outline { border-color:#d1d5db; background:#ffffff; color:#374151; }
     .btn-primary { background:#2563eb; color:#ffffff; }
     .btn-ghost { background:transparent; color:#2563eb; }
+    .btn:hover { opacity: 0.8; transform: scale(0.98); }
+    .btn:active {transform: scale(0.95);}
  
     main { padding:40px 0 64px; }
     .hero { display:grid; grid-template-columns: minmax(0,1.4fr) minmax(0,1fr); gap:32px; align-items:center; }
