@@ -27,6 +27,7 @@
             color: #0a0a0a;
             line-height: 1.6;
             -webkit-font-smoothing: antialiased;
+            padding-top: 72px;
         }
 
         a {
@@ -85,13 +86,13 @@
 
         .btn-outline {
             background: transparent;
-            color: #0078ff;
-            border: 1.5px solid rgba(0, 120, 255, 0.25);
+            color: #444;
+            border: 1px solid #e0e0e0;
         }
 
         .btn-outline:hover {
-            background: rgba(0, 120, 255, 0.06);
-            border-color: #0078ff;
+            background: #f5f7fa;
+            border-color: #ccc;
         }
 
         .btn-large {
@@ -109,26 +110,40 @@
             transform: translateY(-2px);
         }
 
+        .btn-sm {
+            padding: 8px 20px;
+            font-size: 13px;
+            border-radius: 100px;
+            font-weight: 600;
+        }
+
         /* ============================================================
-                   HEADER (Glassmorphism)
+                   HEADER (개선된 버전)
                    ============================================================ */
         .header {
-            position: sticky;
+            position: fixed;
             top: 0;
+            left: 0;
+            right: 0;
             z-index: 1000;
-            background: rgba(255, 255, 255, 0.78);
+            background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(20px) saturate(180%);
             -webkit-backdrop-filter: blur(20px) saturate(180%);
             border-bottom: 1px solid rgba(0, 0, 0, 0.04);
             padding: 12px 0;
+            transition: all 0.3s ease;
+        }
+
+        .header.scrolled {
+            padding: 8px 0;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
         }
 
         .header-inner {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
-            gap: 12px;
         }
 
         .logo {
@@ -140,20 +155,26 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
             flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        /* 네비게이션 */
+        .logo i {
+            -webkit-text-fill-color: #0078ff;
+            font-size: 20px;
+        }
+
         .nav {
             display: flex;
             align-items: center;
             gap: 4px;
-            flex-wrap: wrap;
         }
 
         .nav a {
-            padding: 6px 14px;
+            padding: 8px 16px;
             border-radius: 100px;
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 500;
             color: #444;
             transition: all 0.2s ease;
@@ -161,8 +182,8 @@
         }
 
         .nav a i {
-            margin-right: 5px;
-            font-size: 12px;
+            margin-right: 6px;
+            font-size: 13px;
         }
 
         .nav a:hover {
@@ -170,34 +191,214 @@
             color: #0078ff;
         }
 
-        /* 헤더 우측 액션 (회원/가이드) */
-        .header-actions {
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-toggle {
             display: flex;
             align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
+            gap: 4px;
+            cursor: pointer;
         }
 
-        .header-actions .divider {
-            width: 1px;
-            height: 28px;
-            background: #e0e0e0;
-            margin: 0 4px;
-        }
-
-        .header-actions .guide-link {
-            font-size: 12px;
+        .dropdown-toggle .chevron {
+            font-size: 10px;
+            transition: transform 0.25s ease;
             color: #999;
-            transition: color 0.2s ease;
         }
 
-        .header-actions .guide-link:hover {
+        .dropdown:hover .chevron {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 50%;
+            transform: translateX(-50%) translateY(4px);
+            background: #fff;
+            border-radius: 16px;
+            padding: 8px;
+            min-width: 200px;
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.12);
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .dropdown:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .dropdown-menu a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+            white-space: nowrap;
+        }
+
+        .dropdown-menu a:hover {
+            background: rgba(0, 120, 255, 0.06);
             color: #0078ff;
         }
 
-        .header-actions .guide-register {
+        .dropdown-menu a i {
+            width: 20px;
+            text-align: center;
+            color: #0078ff;
+            font-size: 14px;
+        }
+
+        .dropdown-menu .divider {
+            height: 1px;
+            background: #f0f0f0;
+            margin: 4px 12px;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: #0078ff;
+        }
+
+        .btn-ghost:hover {
+            background: rgba(0, 120, 255, 0.06);
+        }
+
+        .guide-badge {
+            display: flex;
+            align-items: center;
+            gap: 4px;
             font-size: 12px;
-            font-weight: 600;
+            color: #999;
+            padding: 4px 12px;
+            border-radius: 100px;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+        }
+
+        .guide-badge:hover {
+            background: rgba(0, 120, 255, 0.04);
+            color: #0078ff;
+            border-color: rgba(0, 120, 255, 0.1);
+        }
+
+        .guide-badge i {
+            font-size: 12px;
+        }
+
+        .guide-badge .sep {
+            color: #e0e0e0;
+            margin: 0 2px;
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            cursor: pointer;
+            padding: 4px;
+            background: none;
+            border: none;
+        }
+
+        .hamburger span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: #333;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(4px, 4px);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(4px, -4px);
+        }
+
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 72px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            padding: 24px;
+            flex-direction: column;
+            gap: 4px;
+            overflow-y: auto;
+            z-index: 999;
+            border-top: 1px solid rgba(0, 0, 0, 0.04);
+        }
+
+        .mobile-menu.open {
+            display: flex;
+        }
+
+        .mobile-menu a {
+            padding: 14px 16px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 500;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .mobile-menu a:hover {
+            background: rgba(0, 120, 255, 0.06);
+            color: #0078ff;
+        }
+
+        .mobile-menu a i {
+            width: 24px;
+            text-align: center;
+            color: #0078ff;
+        }
+
+        .mobile-menu .mobile-divider {
+            height: 1px;
+            background: #f0f0f0;
+            margin: 8px 0;
+        }
+
+        .mobile-menu .mobile-guide {
+            font-size: 14px;
+            color: #999;
+            padding: 12px 16px;
+        }
+
+        .mobile-menu .mobile-guide a {
+            display: inline;
+            padding: 0;
+            font-size: 14px;
             color: #0078ff;
         }
 
@@ -297,7 +498,6 @@
             color: #888;
         }
 
-        /* Hero 우측 일러스트 */
         .hero-visual {
             display: flex;
             justify-content: center;
@@ -380,7 +580,7 @@
         }
 
         /* ============================================================
-                   FILTER / SEARCH BAR
+                   FILTER BAR
                    ============================================================ */
         .filter-bar {
             background: #fff;
@@ -445,7 +645,7 @@
         }
 
         /* ============================================================
-                   SERVICE CARD (AI 서비스용)
+                   SERVICE CARD
                    ============================================================ */
         .service-card {
             background: #fff;
@@ -505,7 +705,7 @@
         }
 
         /* ============================================================
-                   GUIDE CARD (가이드 프로필)
+                   GUIDE CARD
                    ============================================================ */
         .guide-card {
             background: #fff;
@@ -605,13 +805,6 @@
             font-size: 13px;
             font-weight: 400;
             color: #999;
-        }
-
-        .guide-card .btn-sm {
-            padding: 8px 20px;
-            font-size: 13px;
-            border-radius: 100px;
-            font-weight: 600;
         }
 
         /* ============================================================
@@ -869,16 +1062,6 @@
             .section-title {
                 font-size: 28px;
             }
-            .header-inner {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .nav {
-                justify-content: center;
-            }
-            .header-actions {
-                justify-content: center;
-            }
             .filter-bar {
                 flex-direction: column;
                 align-items: stretch;
@@ -895,6 +1078,28 @@
             }
             .cta-banner h2 {
                 font-size: 26px;
+            }
+        }
+
+        @media (max-width: 860px) {
+            .nav {
+                display: none;
+            }
+            .hamburger {
+                display: flex;
+            }
+            .header-actions .btn-outline {
+                display: none;
+            }
+            .guide-badge {
+                display: none;
+            }
+            .header-actions .btn-primary {
+                padding: 8px 16px;
+                font-size: 13px;
+            }
+            .logo {
+                font-size: 18px;
             }
         }
 
@@ -938,45 +1143,110 @@
                 display: none;
             }
         }
+
+        @media (max-width: 480px) {
+            .header-actions .btn-primary {
+                padding: 6px 14px;
+                font-size: 12px;
+            }
+            .header-actions .btn-primary span {
+                display: none;
+            }
+            .logo {
+                font-size: 16px;
+            }
+            .hero-text h1 {
+                font-size: 26px;
+            }
+        }
     </style>
 </head>
 
 <body>
 
     <!-- ============================================================
-    HEADER
+    HEADER (개선 버전)
     ============================================================ -->
-    <header class="header">
+    <header class="header" id="header">
         <div class="container header-inner">
 
-            <a href="#" class="logo">Team One Tour</a>
+            <a href="#" class="logo">
+                <i class="fas fa-compass"></i> Team One Tour
+            </a>
 
+            <!-- 데스크탑 네비게이션 -->
             <nav class="nav">
-                <a href="#ai-services"><i class="fas fa-robot"></i> AI 일정</a>
-                <a href="#ai-services"><i class="fas fa-user-check"></i> AI 가이드</a>
-                <a href="#ai-services"><i class="fas fa-comment-dots"></i> AI 상담</a>
+                <div class="dropdown">
+                    <a href="#" class="dropdown-toggle">
+                        <i class="fas fa-robot"></i> AI 서비스
+                        <span class="chevron"><i class="fas fa-chevron-down"></i></span>
+                    </a>
+                    <div class="dropdown-menu">
+                        <a href="#ai-services"><i class="fas fa-route"></i> AI 일정 생성</a>
+                        <a href="#ai-services"><i class="fas fa-user-check"></i> AI 가이드 추천</a>
+                        <a href="#ai-services"><i class="fas fa-comment-dots"></i> AI 텍스트 상담</a>
+                        <a href="#ai-services"><i class="fas fa-microphone"></i> AI 음성 상담</a>
+                    </div>
+                </div>
+
                 <a href="#guides"><i class="fas fa-users"></i> 가이드 찾기</a>
                 <a href="#destinations"><i class="fas fa-info-circle"></i> UAE 정보</a>
             </nav>
 
+            <!-- 우측 액션 -->
             <div class="header-actions">
-                <!-- 여행자용 -->
-                <a href="#" class="btn btn-outline" style="padding:6px 16px; font-size:13px;">
+                <a href="#" class="guide-badge">
+                    <i class="fas fa-id-badge"></i>
+                    <span class="sep">|</span>
+                    가이드 로그인
+                    <span class="sep">·</span>
+                    <span style="color:#0078ff; font-weight:600;">등록</span>
+                </a>
+
+                <a href="#" class="btn btn-outline">
                     <i class="fas fa-user"></i> 로그인
                 </a>
-                <a href="#" class="btn btn-primary" style="padding:6px 18px; font-size:13px;">
-                    <i class="fas fa-user-plus"></i> 회원가입
+                <a href="#" class="btn btn-primary">
+                    <i class="fas fa-user-plus"></i> <span>회원가입</span>
                 </a>
 
-                <span class="divider"></span>
-
-                <!-- 가이드용 -->
-                <a href="#" class="guide-link"><i class="fas fa-id-badge"></i> 가이드 로그인</a>
-                <a href="#" class="guide-register">가이드 등록</a>
+                <button class="hamburger" id="hamburger" aria-label="메뉴 열기">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
             </div>
 
         </div>
     </header>
+
+    <!-- ============================================================
+    모바일 메뉴
+    ============================================================ -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="#" style="font-weight:700; color:#0078ff;"><i class="fas fa-robot"></i> AI 서비스</a>
+        <a href="#ai-services" style="padding-left:44px; font-size:15px;"><i class="fas fa-route"></i> AI 일정 생성</a>
+        <a href="#ai-services" style="padding-left:44px; font-size:15px;"><i class="fas fa-user-check"></i> AI 가이드 추천</a>
+        <a href="#ai-services" style="padding-left:44px; font-size:15px;"><i class="fas fa-comment-dots"></i> AI 텍스트 상담</a>
+        <a href="#ai-services" style="padding-left:44px; font-size:15px;"><i class="fas fa-microphone"></i> AI 음성 상담</a>
+
+        <div class="mobile-divider"></div>
+
+        <a href="#guides"><i class="fas fa-users"></i> 가이드 찾기</a>
+        <a href="#destinations"><i class="fas fa-info-circle"></i> UAE 여행 정보</a>
+
+        <div class="mobile-divider"></div>
+
+        <a href="#"><i class="fas fa-user"></i> 로그인 (여행자)</a>
+        <a href="#"><i class="fas fa-user-plus"></i> 회원가입</a>
+
+        <div class="mobile-divider"></div>
+
+        <div class="mobile-guide">
+            <i class="fas fa-id-badge" style="color:#0078ff;"></i>
+            <a href="#">가이드 로그인</a> · <a href="#">가이드 등록</a>
+        </div>
+    </div>
 
     <!-- ============================================================
     HERO
@@ -996,7 +1266,7 @@
                     두바이부터 전 세계까지.
                 </p>
                 <div class="hero-buttons">
-                    <a href="#" class="btn btn-primary btn-large">
+                    <a href="#ai-services" class="btn btn-primary btn-large">
                         <i class="fas fa-sparkles"></i> AI 일정 생성
                     </a>
                     <a href="#guides" class="btn btn-outline btn-large">
@@ -1091,7 +1361,6 @@
                 </p>
             </div>
 
-            <!-- 필터 바 -->
             <div class="filter-bar">
                 <div class="filter-group">
                     <label><i class="fas fa-map-pin"></i> 목적지</label>
@@ -1129,10 +1398,8 @@
                 <button class="btn btn-primary"><i class="fas fa-search"></i> 검색</button>
             </div>
 
-            <!-- 가이드 카드 그리드 -->
             <div class="card-grid">
 
-                <!-- 가이드 1 -->
                 <div class="guide-card">
                     <div class="guide-top">
                         <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 56 56'%3E%3Crect width='56' height='56' rx='28' fill='%23d0d8e8'/%3E%3Ctext x='28' y='36' text-anchor='middle' font-size='28' fill='%23666'%3E👩%3C/text%3E%3C/svg%3E" alt="가이드" class="guide-avatar" />
@@ -1156,7 +1423,6 @@
                     </div>
                 </div>
 
-                <!-- 가이드 2 -->
                 <div class="guide-card">
                     <div class="guide-top">
                         <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 56 56'%3E%3Crect width='56' height='56' rx='28' fill='%23d0d8e8'/%3E%3Ctext x='28' y='36' text-anchor='middle' font-size='28' fill='%23666'%3E👨%3C/text%3E%3C/svg%3E" alt="가이드" class="guide-avatar" />
@@ -1180,7 +1446,6 @@
                     </div>
                 </div>
 
-                <!-- 가이드 3 -->
                 <div class="guide-card">
                     <div class="guide-top">
                         <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 56 56'%3E%3Crect width='56' height='56' rx='28' fill='%23d0d8e8'/%3E%3Ctext x='28' y='36' text-anchor='middle' font-size='28' fill='%23666'%3E👩‍🦰%3C/text%3E%3C/svg%3E" alt="가이드" class="guide-avatar" />
@@ -1204,7 +1469,6 @@
                     </div>
                 </div>
 
-                <!-- 가이드 4 -->
                 <div class="guide-card">
                     <div class="guide-top">
                         <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 56 56'%3E%3Crect width='56' height='56' rx='28' fill='%23d0d8e8'/%3E%3Ctext x='28' y='36' text-anchor='middle' font-size='28' fill='%23666'%3E🧑‍💼%3C/text%3E%3C/svg%3E" alt="가이드" class="guide-avatar" />
@@ -1230,7 +1494,6 @@
 
             </div>
 
-            <!-- 더 보기 -->
             <div style="text-align:center; margin-top:40px;">
                 <a href="#" class="btn btn-outline btn-large">
                     <i class="fas fa-chevron-down"></i> 모든 가이드 보기
@@ -1305,7 +1568,7 @@
     </section>
 
     <!-- ============================================================
-    DESTINATIONS (UAE 여행 정보)
+    DESTINATIONS
     ============================================================ -->
     <section class="section" id="destinations" style="background:#f5f8ff; border-radius:48px 48px 0 0; padding-top:60px;">
         <div class="container">
@@ -1356,7 +1619,6 @@
                 </div>
             </div>
 
-            <!-- 실시간 여행 정보 -->
             <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:16px; margin-top:32px; background:#fff; border-radius:20px; padding:24px; border:1px solid rgba(0,0,0,0.04);">
                 <div style="text-align:center;">
                     <div style="font-size:24px;">🌡️</div>
@@ -1394,7 +1656,7 @@
                     <p>복잡한 여행 준비는 Team One Tour의 AI가 해결해 드립니다.</p>
                 </div>
                 <div style="display:flex; gap:12px; flex-wrap:wrap;">
-                    <a href="#" class="btn btn-white"><i class="fas fa-sparkles"></i> AI 일정 생성</a>
+                    <a href="#ai-services" class="btn btn-white"><i class="fas fa-sparkles"></i> AI 일정 생성</a>
                     <a href="#" class="btn btn-dark"><i class="fas fa-user-plus"></i> 무료 회원가입</a>
                 </div>
             </div>
@@ -1453,6 +1715,40 @@
 
         </div>
     </footer>
+
+    <!-- ============================================================
+    JAVASCRIPT
+    ============================================================ -->
+    <script>
+        // 햄버거 메뉴 토글
+        const hamburger = document.getElementById('hamburger');
+        const mobileMenu = document.getElementById('mobileMenu');
+
+        hamburger.addEventListener('click', function() {
+            this.classList.toggle('active');
+            mobileMenu.classList.toggle('open');
+            document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
+        });
+
+        // 모바일 메뉴 클릭 시 닫기
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', function() {
+                hamburger.classList.remove('active');
+                mobileMenu.classList.remove('open');
+                document.body.style.overflow = '';
+            });
+        });
+
+        // 스크롤 시 헤더 축소
+        window.addEventListener('scroll', function() {
+            const header = document.getElementById('header');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+    </script>
 
 </body>
 </html>
