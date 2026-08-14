@@ -119,7 +119,32 @@ body {
     box-shadow: 0 0 0 3px rgba(0,120,255,0.1);
 }
 
-/* ===== 읽기 전용 필드 스타일 ===== */
+/* ===== 필수 필드 누락 시 에러 스타일 ===== */
+.form-group input.error,
+.form-group select.error,
+.form-group textarea.error {
+    border-color: #dc2626;
+    background: #fef2f2;
+}
+
+.form-group input.error:focus,
+.form-group select.error:focus,
+.form-group textarea.error:focus {
+    border-color: #dc2626;
+    box-shadow: 0 0 0 3px rgba(220,38,38,0.1);
+}
+
+.form-group .error-message {
+    display: none;
+    font-size: 12px;
+    color: #dc2626;
+    margin-top: 4px;
+}
+
+.form-group .error-message.show {
+    display: block;
+}
+
 .form-group input.readonly {
     background: #f3f4f6;
     color: #6b7280;
@@ -195,6 +220,21 @@ body {
     color: #6b7280;
 }
 
+/* ===== 필수 필드 안내 ===== */
+.required-info {
+    font-size: 13px;
+    color: #6b7280;
+    margin-bottom: 16px;
+    padding: 10px 14px;
+    background: #f9fafb;
+    border-radius: 8px;
+    border-left: 3px solid #0078ff;
+}
+
+.required-info .required-star {
+    color: #dc2626;
+}
+
 /* ===== 버튼 ===== */
 .btn-group {
     display: flex;
@@ -227,6 +267,13 @@ body {
 
 .btn-primary:active {
     transform: translateY(0);
+}
+
+.btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
 }
 
 .btn-secondary {
@@ -264,6 +311,12 @@ body {
     display: block;
     background: #dbeafe;
     color: #1e40af;
+}
+
+#msg.warning {
+    display: block;
+    background: #fef3c7;
+    color: #92400e;
 }
 
 /* ===== 로딩 오버레이 ===== */
@@ -339,12 +392,17 @@ body {
     <!-- 로딩 오버레이 -->
     <div class="loading-overlay" id="loadingOverlay">
         <div class="spinner"></div>
-        <p style="color: #4b5563; font-weight: 500;">저장 중...</p>
+        <p style="color: #4b5563; font-weight: 500;">로딩 중...</p>
     </div>
 
     <!-- ===== 폼 ===== -->
     <form id="profileForm" onsubmit="return false;">
         
+        <!-- ===== 필수 필드 안내 ===== -->
+        <div class="required-info">
+            <span class="required-star">*</span> 표시된 항목은 필수 입력 항목입니다.
+        </div>
+
         <!-- ===== 이메일 정보 (읽기 전용) ===== -->
         <div class="email-info-box">
             <span class="email-icon">📧</span>
@@ -354,23 +412,26 @@ body {
             </div>
         </div>
 
-        <!-- 이름 -->
-        <div class="form-group">
+        <!-- 이름 (필수) -->
+        <div class="form-group" id="nameGroup">
             <label>이름 <span class="required">*</span></label>
             <input id="name" placeholder="이름 또는 닉네임을 입력하세요">
+            <div class="error-message" id="nameError">⚠️ 이름은 필수 입력 항목입니다.</div>
         </div>
 
-        <!-- 전화번호 -->
-        <div class="form-group">
-            <label>전화번호</label>
+        <!-- 전화번호 (필수) -->
+        <div class="form-group" id="phoneGroup">
+            <label>전화번호 <span class="required">*</span></label>
             <input id="phone" placeholder="예: +971 50 123 4567">
+            <div class="error-message" id="phoneError">⚠️ 전화번호는 필수 입력 항목입니다.</div>
         </div>
 
         <!-- 국적 & 성별 -->
         <div class="form-row">
-            <div class="form-group">
-                <label>국적</label>
+            <div class="form-group" id="nationalityGroup">
+                <label>국적 <span class="required">*</span></label>
                 <select id="nationality">
+                    <option value="">선택하세요</option>
                     <option value="South Korea">🇰🇷 South Korea</option>
                     <option value="UAE">🇦🇪 UAE</option>
                     <option value="Japan">🇯🇵 Japan</option>
@@ -384,20 +445,23 @@ body {
                     <option value="Germany">🇩🇪 Germany</option>
                     <option value="Other">🌍 Other</option>
                 </select>
+                <div class="error-message" id="nationalityError">⚠️ 국적은 필수 선택 항목입니다.</div>
             </div>
-            <div class="form-group">
-                <label>성별</label>
+            <div class="form-group" id="genderGroup">
+                <label>성별 <span class="required">*</span></label>
                 <select id="gender">
+                    <option value="">선택하세요</option>
                     <option value="남성">👨 남성</option>
                     <option value="여성">👩 여성</option>
                     <option value="기타">🌈 기타</option>
                 </select>
+                <div class="error-message" id="genderError">⚠️ 성별은 필수 선택 항목입니다.</div>
             </div>
         </div>
 
-        <!-- 가능 언어 -->
-        <div class="form-group">
-            <label>가능 언어 (Ctrl+클릭으로 다중 선택)</label>
+        <!-- 가능 언어 (필수) -->
+        <div class="form-group" id="languagesGroup">
+            <label>가능 언어 <span class="required">*</span> (Ctrl+클릭으로 다중 선택)</label>
             <select id="languages" multiple>
                 <option value="Korean">🇰🇷 Korean</option>
                 <option value="English">🇬🇧 English</option>
@@ -410,13 +474,15 @@ body {
                 <option value="French">🇫🇷 French</option>
                 <option value="German">🇩🇪 German</option>
             </select>
+            <div class="error-message" id="languagesError">⚠️ 최소 1개 이상의 언어를 선택해야 합니다.</div>
         </div>
 
         <!-- 경력 & 전문 분야 -->
         <div class="form-row">
-            <div class="form-group">
-                <label>경력</label>
+            <div class="form-group" id="experienceGroup">
+                <label>경력 <span class="required">*</span></label>
                 <select id="experience">
+                    <option value="">선택하세요</option>
                     <option value="1">1년</option>
                     <option value="2">2년</option>
                     <option value="3">3년</option>
@@ -426,9 +492,10 @@ body {
                     <option value="15">15년</option>
                     <option value="20">20년+</option>
                 </select>
+                <div class="error-message" id="experienceError">⚠️ 경력은 필수 선택 항목입니다.</div>
             </div>
-            <div class="form-group">
-                <label>전문 분야 (Ctrl+클릭)</label>
+            <div class="form-group" id="specialtiesGroup">
+                <label>전문 분야 <span class="required">*</span> (Ctrl+클릭)</label>
                 <select id="specialties" multiple>
                     <option value="문화/예술">🎭 문화/예술</option>
                     <option value="역사">🏛️ 역사</option>
@@ -440,12 +507,13 @@ body {
                     <option value="가족 여행">👨‍👩‍👧‍👦 가족 여행</option>
                     <option value="비즈니스 출장">💼 비즈니스 출장</option>
                 </select>
+                <div class="error-message" id="specialtiesError">⚠️ 최소 1개 이상의 전문 분야를 선택해야 합니다.</div>
             </div>
         </div>
 
-        <!-- 활동 지역 -->
-        <div class="form-group">
-            <label>활동 지역 (Ctrl+클릭)</label>
+        <!-- 활동 지역 (필수) -->
+        <div class="form-group" id="regionsGroup">
+            <label>활동 지역 <span class="required">*</span> (Ctrl+클릭)</label>
             <select id="regions" multiple>
                 <option value="Dubai Marina">🏖️ Dubai Marina</option>
                 <option value="Downtown Dubai">🏙️ Downtown Dubai</option>
@@ -454,17 +522,20 @@ body {
                 <option value="Abu Dhabi">🏛️ Abu Dhabi</option>
                 <option value="Sharjah">📚 Sharjah</option>
             </select>
+            <div class="error-message" id="regionsError">⚠️ 최소 1개 이상의 활동 지역을 선택해야 합니다.</div>
         </div>
 
-        <!-- 요금 -->
+        <!-- 요금 (필수) -->
         <div class="form-row">
-            <div class="form-group">
-                <label>시간당 요금 (AED)</label>
+            <div class="form-group" id="priceHourGroup">
+                <label>시간당 요금 (AED) <span class="required">*</span></label>
                 <input id="price_hour" placeholder="예: 150" type="number" min="0">
+                <div class="error-message" id="priceHourError">⚠️ 시간당 요금은 필수 입력 항목입니다.</div>
             </div>
-            <div class="form-group">
-                <label>하루 요금 (AED)</label>
+            <div class="form-group" id="priceDayGroup">
+                <label>하루 요금 (AED) <span class="required">*</span></label>
                 <input id="price_day" placeholder="예: 800" type="number" min="0">
+                <div class="error-message" id="priceDayError">⚠️ 하루 요금은 필수 입력 항목입니다.</div>
             </div>
         </div>
 
@@ -474,10 +545,22 @@ body {
             <textarea id="bio" placeholder="자기소개를 입력하세요 (최대 500자)" maxlength="500"></textarea>
         </div>
 
+        <!-- 완성도 표시 -->
+        <div id="completenessBar" style="margin-top: 16px; padding: 12px 16px; background: #f9fafb; border-radius: 10px; display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                <span style="font-size: 14px; font-weight: 600; color: #374151;">프로필 완성도</span>
+                <span id="completenessPercent" style="font-size: 14px; font-weight: 700; color: #0078ff;">0%</span>
+            </div>
+            <div style="width: 100%; height: 6px; background: #e5e7eb; border-radius: 3px; overflow: hidden;">
+                <div id="completenessFill" style="width: 0%; height: 100%; background: linear-gradient(90deg, #0078ff, #10b981); border-radius: 3px; transition: width 0.5s ease;"></div>
+            </div>
+            <p id="completenessText" style="font-size: 12px; color: #6b7280; margin-top: 4px;"></p>
+        </div>
+
         <!-- 버튼 -->
         <div class="btn-group">
             <button type="button" class="btn btn-secondary" onclick="handleClose()">취소</button>
-            <button type="button" class="btn btn-primary" onclick="saveGuide()">💾 저장하기</button>
+            <button type="button" class="btn btn-primary" id="saveBtn" onclick="saveGuide()">💾 저장하기</button>
         </div>
 
         <div id="msg"></div>
@@ -506,9 +589,24 @@ body {
 
     let currentUser = null;
     let existingData = null;
+    let isProfileLoaded = false;
 
     // ===== iframe 내부 확인 =====
     const isInIframe = window.parent !== window;
+
+    // ===== 필수 필드 정의 =====
+    const requiredFields = [
+        { id: 'name', groupId: 'nameGroup', errorId: 'nameError', label: '이름' },
+        { id: 'phone', groupId: 'phoneGroup', errorId: 'phoneError', label: '전화번호' },
+        { id: 'nationality', groupId: 'nationalityGroup', errorId: 'nationalityError', label: '국적' },
+        { id: 'gender', groupId: 'genderGroup', errorId: 'genderError', label: '성별' },
+        { id: 'languages', groupId: 'languagesGroup', errorId: 'languagesError', label: '가능 언어', multi: true },
+        { id: 'experience', groupId: 'experienceGroup', errorId: 'experienceError', label: '경력' },
+        { id: 'specialties', groupId: 'specialtiesGroup', errorId: 'specialtiesError', label: '전문 분야', multi: true },
+        { id: 'regions', groupId: 'regionsGroup', errorId: 'regionsError', label: '활동 지역', multi: true },
+        { id: 'price_hour', groupId: 'priceHourGroup', errorId: 'priceHourError', label: '시간당 요금' },
+        { id: 'price_day', groupId: 'priceDayGroup', errorId: 'priceDayError', label: '하루 요금' }
+    ];
 
     // ===== 메시지 표시 =====
     function showMessage(text, type = 'info') {
@@ -524,8 +622,10 @@ body {
     }
 
     // ===== 로딩 표시 =====
-    function showLoading() {
-        document.getElementById('loadingOverlay').classList.add('active');
+    function showLoading(text = '로딩 중...') {
+        const overlay = document.getElementById('loadingOverlay');
+        overlay.querySelector('p').textContent = text;
+        overlay.classList.add('active');
     }
 
     function hideLoading() {
@@ -535,9 +635,7 @@ body {
     // ===== 닫기 처리 =====
     window.handleClose = function() {
         if (isInIframe) {
-            window.parent.postMessage({
-                type: 'CLOSE_MODAL'
-            }, '*');
+            window.parent.postMessage({ type: 'CLOSE_MODAL' }, '*');
         } else {
             window.location.href = "../guidedata/index.html";
         }
@@ -546,10 +644,114 @@ body {
     // ===== 이메일 표시 =====
     function displayEmail(email) {
         const emailEl = document.getElementById('displayEmail');
-        if (email) {
-            emailEl.textContent = email;
+        emailEl.textContent = email || '이메일 정보 없음';
+    }
+
+    // ===== 필드 검증 =====
+    function validateField(field) {
+        const element = document.getElementById(field.id);
+        const group = document.getElementById(field.groupId);
+        const errorEl = document.getElementById(field.errorId);
+        
+        let isValid = false;
+        
+        if (field.multi) {
+            // 다중 선택 필드
+            const selected = Array.from(element.selectedOptions).length;
+            isValid = selected > 0;
+        } else if (element.tagName === 'SELECT') {
+            // 단일 선택 필드
+            isValid = element.value !== '' && element.value !== null;
         } else {
-            emailEl.textContent = '이메일 정보 없음';
+            // 입력 필드
+            isValid = element.value.trim() !== '';
+        }
+        
+        // 에러 표시
+        if (isValid) {
+            group.classList.remove('error');
+            errorEl.classList.remove('show');
+        } else {
+            group.classList.add('error');
+            errorEl.classList.add('show');
+        }
+        
+        return isValid;
+    }
+
+    // ===== 모든 필드 검증 =====
+    function validateAllFields() {
+        let allValid = true;
+        for (const field of requiredFields) {
+            if (!validateField(field)) {
+                allValid = false;
+            }
+        }
+        return allValid;
+    }
+
+    // ===== 완성도 계산 =====
+    function calculateCompleteness() {
+        let filled = 0;
+        const total = requiredFields.length;
+        
+        for (const field of requiredFields) {
+            const element = document.getElementById(field.id);
+            let isFilled = false;
+            
+            if (field.multi) {
+                isFilled = Array.from(element.selectedOptions).length > 0;
+            } else if (element.tagName === 'SELECT') {
+                isFilled = element.value !== '' && element.value !== null;
+            } else {
+                isFilled = element.value.trim() !== '';
+            }
+            
+            if (isFilled) filled++;
+        }
+        
+        const percent = Math.round((filled / total) * 100);
+        return { filled, total, percent };
+    }
+
+    // ===== 완성도 업데이트 =====
+    function updateCompleteness() {
+        const { filled, total, percent } = calculateCompleteness();
+        const bar = document.getElementById('completenessBar');
+        const fill = document.getElementById('completenessFill');
+        const percentEl = document.getElementById('completenessPercent');
+        const textEl = document.getElementById('completenessText');
+        
+        bar.style.display = 'block';
+        fill.style.width = percent + '%';
+        percentEl.textContent = percent + '%';
+        
+        if (percent === 100) {
+            textEl.textContent = '🎉 모든 필수 항목이 입력되었습니다! 저장이 가능합니다.';
+            textEl.style.color = '#065f46';
+        } else {
+            const remaining = total - filled;
+            textEl.textContent = `📝 ${remaining}개의 필수 항목이 남았습니다. (총 ${total}개 중 ${filled}개 입력)`;
+            textEl.style.color = '#6b7280';
+        }
+    }
+
+    // ===== 입력 이벤트 리스너 =====
+    function setupInputListeners() {
+        for (const field of requiredFields) {
+            const element = document.getElementById(field.id);
+            if (element) {
+                element.addEventListener('change', function() {
+                    validateField(field);
+                    updateCompleteness();
+                });
+                element.addEventListener('input', function() {
+                    if (element.tagName !== 'SELECT') {
+                        validateField(field);
+                        updateCompleteness();
+                    }
+                });
+            }
         }
     }
 
@@ -557,8 +759,9 @@ body {
     async function loadProfileData() {
         if (!currentUser) return;
 
+        showLoading('프로필 정보를 불러오는 중...');
+        
         try {
-            // 이메일 표시
             displayEmail(currentUser.email);
 
             const docRef = doc(db, "guides", currentUser.uid);
@@ -570,9 +773,9 @@ body {
                 // 폼에 데이터 채우기
                 document.getElementById("name").value = existingData.name || '';
                 document.getElementById("phone").value = existingData.phone || '';
-                document.getElementById("nationality").value = existingData.nationality || 'South Korea';
-                document.getElementById("gender").value = existingData.gender || '남성';
-                document.getElementById("experience").value = existingData.experience || '1';
+                document.getElementById("nationality").value = existingData.nationality || '';
+                document.getElementById("gender").value = existingData.gender || '';
+                document.getElementById("experience").value = existingData.experience || '';
                 document.getElementById("price_hour").value = existingData.price_hour || '';
                 document.getElementById("price_day").value = existingData.price_day || '';
                 document.getElementById("bio").value = existingData.bio || '';
@@ -596,9 +799,21 @@ body {
                         opt.selected = existingData.regions.includes(opt.value);
                     });
                 }
+            } else {
+                // 신규 등록
+                showMessage('⚠️ 등록된 프로필이 없습니다. 정보를 입력해주세요.', 'warning');
             }
+
+            // 모든 필드 검증 및 완성도 업데이트
+            isProfileLoaded = true;
+            validateAllFields();
+            updateCompleteness();
+            
         } catch (error) {
             console.error('프로필 로드 실패:', error);
+            showMessage('❌ 프로필 정보를 불러오는데 실패했습니다: ' + error.message, 'error');
+        } finally {
+            hideLoading();
         }
     }
 
@@ -609,27 +824,38 @@ body {
             return;
         }
 
-        // 필수 필드 검증
-        const name = document.getElementById("name").value.trim();
-        if (!name) {
-            showMessage('⚠️ 이름을 입력해주세요.', 'error');
-            document.getElementById("name").focus();
+        hideMessage();
+
+        // 모든 필드 검증
+        const allValid = validateAllFields();
+        updateCompleteness();
+
+        if (!allValid) {
+            // 첫 번째 에러 필드로 스크롤
+            const firstError = document.querySelector('.form-group.error');
+            if (firstError) {
+                firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                const input = firstError.querySelector('input, select, textarea');
+                if (input) input.focus();
+            }
+            showMessage('⚠️ 모든 필수 항목을 입력해주세요.', 'error');
             return;
         }
 
-        hideMessage();
-        showLoading();
+        // 저장 버튼 비활성화
+        const saveBtn = document.getElementById('saveBtn');
+        saveBtn.disabled = true;
+        showLoading('저장 중...');
 
         try {
             const specialtiesArr = Array.from(document.getElementById("specialties").selectedOptions).map(opt => opt.value);
             const regionsArr = Array.from(document.getElementById("regions").selectedOptions).map(opt => opt.value);
             const languagesArr = Array.from(document.getElementById("languages").selectedOptions).map(opt => opt.value);
 
-            // 🔒 이메일은 절대 수정하지 않음 (currentUser.email 사용)
             const guideData = {
                 uid: currentUser.uid,
-                email: currentUser.email,  // 🔒 읽기 전용
-                name: name,
+                email: currentUser.email,
+                name: document.getElementById("name").value.trim(),
                 phone: document.getElementById("phone").value.trim(),
                 nationality: document.getElementById("nationality").value,
                 gender: document.getElementById("gender").value,
@@ -643,22 +869,20 @@ body {
                 updatedAt: new Date()
             };
 
-            // 기존 데이터가 있으면 createdAt 유지
             if (existingData?.createdAt) {
                 guideData.createdAt = existingData.createdAt;
             } else {
                 guideData.createdAt = new Date();
             }
 
-            // 🔒 이메일이 변경되지 않았는지 확인 (보안 검증)
+            // 이메일 변경 방지
             if (existingData && existingData.email !== currentUser.email) {
                 console.warn('⚠️ 이메일 변경 시도가 감지되었습니다. 무시합니다.');
-                guideData.email = existingData.email; // 기존 이메일 유지
+                guideData.email = existingData.email;
             }
 
             await setDoc(doc(db, "guides", currentUser.uid), guideData);
 
-            // 저장 성공
             if (isInIframe) {
                 window.parent.postMessage({
                     type: 'PROFILE_SAVED',
@@ -669,9 +893,7 @@ body {
                 showMessage('✅ 프로필이 성공적으로 저장되었습니다!', 'success');
                 
                 setTimeout(() => {
-                    window.parent.postMessage({
-                        type: 'CLOSE_MODAL'
-                    }, '*');
+                    window.parent.postMessage({ type: 'CLOSE_MODAL' }, '*');
                 }, 1200);
             } else {
                 showMessage('✅ 프로필이 성공적으로 저장되었습니다!', 'success');
@@ -683,12 +905,13 @@ body {
         } catch (error) {
             console.error('저장 오류:', error);
             showMessage('❌ 저장 실패: ' + error.message, 'error');
+            saveBtn.disabled = false;
         } finally {
             hideLoading();
         }
     };
 
-    // ===== 부모창에서 메시지 수신 =====
+    // ===== 부모창 메시지 수신 =====
     window.addEventListener('message', function(event) {
         const data = event.data;
         if (data && data.type === 'SET_USER') {
@@ -696,7 +919,7 @@ body {
         }
     });
 
-    // ===== Enter 키로 저장 =====
+    // ===== 키보드 이벤트 =====
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
             e.preventDefault();
@@ -719,6 +942,11 @@ body {
         }
 
         currentUser = user;
+        
+        // 입력 리스너 설정
+        setupInputListeners();
+        
+        // 프로필 데이터 로드
         await loadProfileData();
         
         if (isInIframe) {
