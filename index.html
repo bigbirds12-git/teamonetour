@@ -148,7 +148,8 @@
             </button>
             <div class="dropdown-menu" id="signupMenu" role="menu">
               <a href="#" role="menuitem" onclick="handleAction('customerSignup')">👤 고객 회원가입</a>
-              <a href="#" role="menuitem" onclick="handleAction('guideSignup')">⭐ 가이드 회원가입</a>
+              <!-- 가이드 회원가입 - 페이지 이동 -->
+              <a href="/login/guidelogin.html" role="menuitem">⭐ 가이드 회원가입</a>
             </div>
           </div>
         </div>
@@ -273,11 +274,24 @@
       });
     }
 
-    // Handle login/signup actions
+    // Handle login/signup actions (except guide signup which uses direct link)
     function handleAction(action) {
       event.preventDefault();
       console.log('Selected action:', action);
-      alert(`${action}을(를) 선택하셨습니다.`);
+      
+      if (action === 'customerSignup') {
+        // 고객 회원가입 페이지로 이동 (예시)
+        window.location.href = '/login/customersignup.html';
+      } else if (action === 'customerLogin') {
+        // 고객 로그인 페이지로 이동
+        window.location.href = '/login/customerlogin.html';
+      } else if (action === 'guideLogin') {
+        // 가이드 로그인 페이지로 이동
+        window.location.href = '/login/guidelogin.html';
+      } else {
+        alert(`${action}을(를) 선택하셨습니다.`);
+      }
+      
       closeAllDropdowns();
     }
 
