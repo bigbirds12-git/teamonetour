@@ -2,213 +2,659 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>Guide Registration</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guide Profile Management</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
 <style>
-body {
+* {
     margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
     font-family: 'Inter', sans-serif;
     background: #f5f7fa;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
+    padding: 20px;
 }
 
 .reg-box {
-    width: 480px;
+    width: 520px;
+    max-width: 100%;
     background: white;
-    padding: 30px;
-    border-radius: 14px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    padding: 32px 36px;
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+    position: relative;
+}
+
+.reg-box .close-btn {
+    position: absolute;
+    top: 16px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 28px;
+    color: #9ca3af;
+    cursor: pointer;
+    padding: 0 8px;
+    transition: all 0.2s;
+    width: auto;
+    margin: 0;
+}
+
+.reg-box .close-btn:hover {
+    color: #dc2626;
+    transform: rotate(90deg);
 }
 
 .reg-box h2 {
     text-align: center;
-    margin-bottom: 20px;
+    font-size: 24px;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 8px;
 }
 
-input, textarea, select {
+.reg-box .subtitle {
+    text-align: center;
+    color: #6b7280;
+    font-size: 14px;
+    margin-bottom: 24px;
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 4px;
+}
+
+.form-group label .required {
+    color: #dc2626;
+    margin-left: 2px;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
     width: 100%;
-    padding: 12px;
-    margin-top: 10px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1.5px solid #e5e7eb;
+    font-size: 14px;
+    font-family: inherit;
+    transition: all 0.2s;
+    background: #f9fafb;
 }
 
-textarea {
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #0078ff;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(0,120,255,0.1);
+}
+
+.form-group textarea {
+    height: 80px;
+    resize: vertical;
+    min-height: 60px;
+}
+
+.form-group select[multiple] {
     height: 100px;
+    padding: 6px;
 }
 
-button {
-    width: 100%;
-    padding: 12px;
-    margin-top: 20px;
+.form-group select[multiple] option {
+    padding: 6px 10px;
+    border-radius: 4px;
+}
+
+.form-group select[multiple] option:checked {
     background: #0078ff;
     color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
 }
 
-button:hover {
-    background: #005fcc;
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.form-row .form-group {
+    margin-bottom: 0;
+}
+
+/* ===== 버튼 ===== */
+.btn-group {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.btn {
+    flex: 1;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+}
+
+.btn-primary {
+    background: #0078ff;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #0066dd;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,120,255,0.3);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+.btn-secondary {
+    background: #f0f4f9;
+    color: #4b5563;
+}
+
+.btn-secondary:hover {
+    background: #e5e9f0;
+}
+
+.btn-danger {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.btn-danger:hover {
+    background: #fecaca;
 }
 
 #msg {
-    color: red;
-    margin-top: 10px;
+    margin-top: 14px;
+    padding: 10px 14px;
+    border-radius: 8px;
     text-align: center;
+    font-size: 14px;
+    font-weight: 500;
+    display: none;
+}
+
+#msg.success {
+    display: block;
+    background: #d1fae5;
+    color: #065f46;
+}
+
+#msg.error {
+    display: block;
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+#msg.info {
+    display: block;
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+/* ===== 로딩 오버레이 ===== */
+.loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255,255,255,0.85);
+    border-radius: 20px;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 16px;
+    z-index: 10;
+}
+
+.loading-overlay.active {
+    display: flex;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #e5e7eb;
+    border-top-color: #0078ff;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ===== 반응형 ===== */
+@media (max-width: 640px) {
+    .reg-box {
+        padding: 24px 20px;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .form-row .form-group {
+        margin-bottom: 16px;
+    }
+
+    .btn-group {
+        flex-direction: column;
+    }
 }
 </style>
 </head>
 
 <body>
 
-<div class="reg-box">
-    <h2>Guide Registration</h2>
+<div class="reg-box" id="regBox">
+    <!-- 닫기 버튼 (iframe용) -->
+    <button class="close-btn" onclick="handleClose()" title="닫기">×</button>
 
-    <input id="name" placeholder="이름 또는 닉네임">
-    <input id="phone" placeholder="전화번호">
+    <h2>👤 프로필 수정</h2>
+    <p class="subtitle">가이드 프로필 정보를 업데이트하세요</p>
 
-    <label style="margin-top:15px;">국적</label>
-    <select id="nationality">
-        <option value="South Korea">South Korea</option>
-        <option value="UAE">UAE</option>
-        <option value="Japan">Japan</option>
-        <option value="China">China</option>
-        <option value="India">India</option>
-        <option value="Philippines">Philippines</option>
-        <option value="Russia">Russia</option>
-        <option value="UK">UK</option>
-        <option value="USA">USA</option>
-        <option value="France">France</option>
-        <option value="Germany">Germany</option>
-        <option value="Other">Other</option>
-    </select>
+    <!-- 로딩 오버레이 -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <p style="color: #4b5563; font-weight: 500;">저장 중...</p>
+    </div>
 
-    <label style="margin-top:15px;">성별</label>
-    <select id="gender">
-        <option value="남성">남성</option>
-        <option value="여성">여성</option>
-        <option value="기타">기타</option>
-    </select>
+    <!-- ===== 폼 ===== -->
+    <form id="profileForm" onsubmit="return false;">
+        <!-- 이름 -->
+        <div class="form-group">
+            <label>이름 <span class="required">*</span></label>
+            <input id="name" placeholder="이름 또는 닉네임을 입력하세요">
+        </div>
 
-    <label style="margin-top:15px;">가능 언어</label>
-    <select id="languages" multiple>
-        <option value="Korean">Korean</option>
-        <option value="English">English</option>
-        <option value="Arabic">Arabic</option>
-        <option value="Chinese">Chinese</option>
-        <option value="Japanese">Japanese</option>
-        <option value="Hindi">Hindi</option>
-        <option value="Russian">Russian</option>
-        <option value="Filipino">Filipino</option>
-        <option value="French">French</option>
-        <option value="German">German</option>
-    </select>
+        <!-- 전화번호 -->
+        <div class="form-group">
+            <label>전화번호</label>
+            <input id="phone" placeholder="예: +971 50 123 4567">
+        </div>
 
-    <label style="margin-top:15px;">경력 (Years of Experience)</label>
-    <select id="experience">
-        <option value="1">1년</option>
-        <option value="2">2년</option>
-        <option value="3">3년</option>
-        <option value="5">5년</option>
-        <option value="7">7년</option>
-        <option value="10">10년</option>
-        <option value="15">15년</option>
-        <option value="20">20년</option>
-    </select>
+        <!-- 국적 & 성별 -->
+        <div class="form-row">
+            <div class="form-group">
+                <label>국적</label>
+                <select id="nationality">
+                    <option value="South Korea">🇰🇷 South Korea</option>
+                    <option value="UAE">🇦🇪 UAE</option>
+                    <option value="Japan">🇯🇵 Japan</option>
+                    <option value="China">🇨🇳 China</option>
+                    <option value="India">🇮🇳 India</option>
+                    <option value="Philippines">🇵🇭 Philippines</option>
+                    <option value="Russia">🇷🇺 Russia</option>
+                    <option value="UK">🇬🇧 UK</option>
+                    <option value="USA">🇺🇸 USA</option>
+                    <option value="France">🇫🇷 France</option>
+                    <option value="Germany">🇩🇪 Germany</option>
+                    <option value="Other">🌍 Other</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>성별</label>
+                <select id="gender">
+                    <option value="남성">👨 남성</option>
+                    <option value="여성">👩 여성</option>
+                    <option value="기타">🌈 기타</option>
+                </select>
+            </div>
+        </div>
 
-    <label style="margin-top:15px;">전문 분야</label>
-    <select id="specialties" multiple>
-        <option value="문화/예술">문화/예술</option>
-        <option value="역사">역사</option>
-        <option value="사막 사파리">사막 사파리</option>
-        <option value="사진 촬영">사진 촬영</option>
-        <option value="쇼핑">쇼핑</option>
-        <option value="미식">미식</option>
-        <option value="VIP 의전">VIP 의전</option>
-        <option value="가족 여행">가족 여행</option>
-        <option value="비즈니스 출장">비즈니스 출장</option>
-    </select>
+        <!-- 가능 언어 -->
+        <div class="form-group">
+            <label>가능 언어 (Ctrl+클릭으로 다중 선택)</label>
+            <select id="languages" multiple>
+                <option value="Korean">🇰🇷 Korean</option>
+                <option value="English">🇬🇧 English</option>
+                <option value="Arabic">🇦🇪 Arabic</option>
+                <option value="Chinese">🇨🇳 Chinese</option>
+                <option value="Japanese">🇯🇵 Japanese</option>
+                <option value="Hindi">🇮🇳 Hindi</option>
+                <option value="Russian">🇷🇺 Russian</option>
+                <option value="Filipino">🇵🇭 Filipino</option>
+                <option value="French">🇫🇷 French</option>
+                <option value="German">🇩🇪 German</option>
+            </select>
+        </div>
 
-    <label style="margin-top:15px;">활동 지역</label>
-    <select id="regions" multiple>
-        <option value="Dubai Marina">Dubai Marina</option>
-        <option value="Downtown Dubai">Downtown Dubai</option>
-        <option value="Deira">Deira</option>
-        <option value="Jumeirah">Jumeirah</option>
-        <option value="Abu Dhabi">Abu Dhabi</option>
-        <option value="Sharjah">Sharjah</option>
-    </select>
+        <!-- 경력 & 전문 분야 -->
+        <div class="form-row">
+            <div class="form-group">
+                <label>경력</label>
+                <select id="experience">
+                    <option value="1">1년</option>
+                    <option value="2">2년</option>
+                    <option value="3">3년</option>
+                    <option value="5">5년</option>
+                    <option value="7">7년</option>
+                    <option value="10">10년</option>
+                    <option value="15">15년</option>
+                    <option value="20">20년+</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>전문 분야 (Ctrl+클릭)</label>
+                <select id="specialties" multiple>
+                    <option value="문화/예술">🎭 문화/예술</option>
+                    <option value="역사">🏛️ 역사</option>
+                    <option value="사막 사파리">🐪 사막 사파리</option>
+                    <option value="사진 촬영">📸 사진 촬영</option>
+                    <option value="쇼핑">🛍️ 쇼핑</option>
+                    <option value="미식">🍽️ 미식</option>
+                    <option value="VIP 의전">👔 VIP 의전</option>
+                    <option value="가족 여행">👨‍👩‍👧‍👦 가족 여행</option>
+                    <option value="비즈니스 출장">💼 비즈니스 출장</option>
+                </select>
+            </div>
+        </div>
 
-    <input id="price_hour" placeholder="시간당 요금 (AED)">
-    <input id="price_day" placeholder="하루 요금 (AED)">
+        <!-- 활동 지역 -->
+        <div class="form-group">
+            <label>활동 지역 (Ctrl+클릭)</label>
+            <select id="regions" multiple>
+                <option value="Dubai Marina">🏖️ Dubai Marina</option>
+                <option value="Downtown Dubai">🏙️ Downtown Dubai</option>
+                <option value="Deira">🕌 Deira</option>
+                <option value="Jumeirah">🌊 Jumeirah</option>
+                <option value="Abu Dhabi">🏛️ Abu Dhabi</option>
+                <option value="Sharjah">📚 Sharjah</option>
+            </select>
+        </div>
 
-    <textarea id="bio" placeholder="가이드 소개"></textarea>
+        <!-- 요금 -->
+        <div class="form-row">
+            <div class="form-group">
+                <label>시간당 요금 (AED)</label>
+                <input id="price_hour" placeholder="예: 150" type="number" min="0">
+            </div>
+            <div class="form-group">
+                <label>하루 요금 (AED)</label>
+                <input id="price_day" placeholder="예: 800" type="number" min="0">
+            </div>
+        </div>
 
-    <button onclick="saveGuide()">정보 저장</button>
-    <p id="msg"></p>
+        <!-- 소개 -->
+        <div class="form-group">
+            <label>소개</label>
+            <textarea id="bio" placeholder="자기소개를 입력하세요 (최대 500자)" maxlength="500"></textarea>
+        </div>
+
+        <!-- 버튼 -->
+        <div class="btn-group">
+            <button type="button" class="btn btn-secondary" onclick="handleClose()">취소</button>
+            <button type="button" class="btn btn-primary" onclick="saveGuide()">💾 저장하기</button>
+        </div>
+
+        <div id="msg"></div>
+    </form>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+    // ===== Firebase Config =====
     const firebaseConfig = {
-      apiKey: "AIzaSyCgOSQsv_MRdaqrW4wJw0q2QY6wXZ-azQs",
-      authDomain: "guidelogin-b0053.firebaseapp.com",
-      projectId: "guidelogin-b0053",
-      storageBucket: "guidelogin-b0053.firebasestorage.app",
-      messagingSenderId: "981519805247",
-      appId: "1:981519805247:web:cc32682b177a4957c0818a",
-      measurementId: "G-2VR4TS6JND"
+        apiKey: "AIzaSyCgOSQsv_MRdaqrW4wJw0q2QY6wXZ-azQs",
+        authDomain: "guidelogin-b0053.firebaseapp.com",
+        projectId: "guidelogin-b0053",
+        storageBucket: "guidelogin-b0053.firebasestorage.app",
+        messagingSenderId: "981519805247",
+        appId: "1:981519805247:web:cc32682b177a4957c0818a",
+        measurementId: "G-2VR4TS6JND"
     };
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    onAuthStateChanged(auth, user => {
-        if (!user) window.location.href = "guidelogin.html";
-    });
+    let currentUser = null;
+    let existingData = null;
 
-    window.saveGuide = async function() {
-        const user = auth.currentUser;
-        if (!user) return;
+    // ===== iframe 내부 확인 =====
+    const isInIframe = window.parent !== window;
 
-        const specialtiesArr = Array.from(document.getElementById("specialties").selectedOptions).map(opt => opt.value);
-        const regionsArr = Array.from(document.getElementById("regions").selectedOptions).map(opt => opt.value);
-        const languagesArr = Array.from(document.getElementById("languages").selectedOptions).map(opt => opt.value);
+    // ===== 메시지 표시 =====
+    function showMessage(text, type = 'info') {
+        const msgEl = document.getElementById('msg');
+        msgEl.textContent = text;
+        msgEl.className = type;
+        msgEl.style.display = 'block';
+    }
 
-        const guideData = {
-            uid: user.uid,
-            email: user.email,
-            name: document.getElementById("name").value,
-            phone: document.getElementById("phone").value,
-            nationality: document.getElementById("nationality").value,
-            gender: document.getElementById("gender").value,
-            languages: languagesArr,
-            experience: document.getElementById("experience").value,
-            specialties: specialtiesArr,
-            regions: regionsArr,
-            price_hour: document.getElementById("price_hour").value,
-            price_day: document.getElementById("price_day").value,
-            bio: document.getElementById("bio").value,
-            createdAt: new Date()
-        };
+    function hideMessage() {
+        const msgEl = document.getElementById('msg');
+        msgEl.style.display = 'none';
+    }
+
+    // ===== 로딩 표시 =====
+    function showLoading() {
+        document.getElementById('loadingOverlay').classList.add('active');
+    }
+
+    function hideLoading() {
+        document.getElementById('loadingOverlay').classList.remove('active');
+    }
+
+    // ===== 닫기 처리 =====
+    window.handleClose = function() {
+        if (isInIframe) {
+            // 부모창에 닫기 요청
+            window.parent.postMessage({
+                type: 'CLOSE_MODAL'
+            }, '*');
+        } else {
+            // 직접 접속 시 index.html로 이동
+            window.location.href = "../guidedata/index.html";
+        }
+    };
+
+    // ===== 기존 프로필 데이터 로드 =====
+    async function loadProfileData() {
+        if (!currentUser) return;
 
         try {
-            await setDoc(doc(db, "guides", user.uid), guideData);
-            window.location.href = "../guidedata/guide-dashboard.html";
-        } catch (err) {
-            document.getElementById("msg").innerText = err.message;
+            const docRef = doc(db, "guides", currentUser.uid);
+            const docSnap = await getDoc(docRef);
+
+            if (docSnap.exists()) {
+                existingData = docSnap.data();
+                
+                // 폼에 데이터 채우기
+                document.getElementById("name").value = existingData.name || '';
+                document.getElementById("phone").value = existingData.phone || '';
+                document.getElementById("nationality").value = existingData.nationality || 'South Korea';
+                document.getElementById("gender").value = existingData.gender || '남성';
+                document.getElementById("experience").value = existingData.experience || '1';
+                document.getElementById("price_hour").value = existingData.price_hour || '';
+                document.getElementById("price_day").value = existingData.price_day || '';
+                document.getElementById("bio").value = existingData.bio || '';
+
+                // 다중 선택 필드
+                if (existingData.languages) {
+                    const select = document.getElementById("languages");
+                    Array.from(select.options).forEach(opt => {
+                        opt.selected = existingData.languages.includes(opt.value);
+                    });
+                }
+                if (existingData.specialties) {
+                    const select = document.getElementById("specialties");
+                    Array.from(select.options).forEach(opt => {
+                        opt.selected = existingData.specialties.includes(opt.value);
+                    });
+                }
+                if (existingData.regions) {
+                    const select = document.getElementById("regions");
+                    Array.from(select.options).forEach(opt => {
+                        opt.selected = existingData.regions.includes(opt.value);
+                    });
+                }
+            }
+        } catch (error) {
+            console.error('프로필 로드 실패:', error);
         }
     }
+
+    // ===== 저장 =====
+    window.saveGuide = async function() {
+        if (!currentUser) {
+            showMessage('⚠️ 로그인이 필요합니다.', 'error');
+            return;
+        }
+
+        // 필수 필드 검증
+        const name = document.getElementById("name").value.trim();
+        if (!name) {
+            showMessage('⚠️ 이름을 입력해주세요.', 'error');
+            document.getElementById("name").focus();
+            return;
+        }
+
+        hideMessage();
+        showLoading();
+
+        try {
+            const specialtiesArr = Array.from(document.getElementById("specialties").selectedOptions).map(opt => opt.value);
+            const regionsArr = Array.from(document.getElementById("regions").selectedOptions).map(opt => opt.value);
+            const languagesArr = Array.from(document.getElementById("languages").selectedOptions).map(opt => opt.value);
+
+            const guideData = {
+                uid: currentUser.uid,
+                email: currentUser.email,
+                name: name,
+                phone: document.getElementById("phone").value.trim(),
+                nationality: document.getElementById("nationality").value,
+                gender: document.getElementById("gender").value,
+                languages: languagesArr,
+                experience: document.getElementById("experience").value,
+                specialties: specialtiesArr,
+                regions: regionsArr,
+                price_hour: document.getElementById("price_hour").value.trim(),
+                price_day: document.getElementById("price_day").value.trim(),
+                bio: document.getElementById("bio").value.trim(),
+                updatedAt: new Date()
+            };
+
+            // 기존 데이터가 있으면 createdAt 유지
+            if (existingData?.createdAt) {
+                guideData.createdAt = existingData.createdAt;
+            } else {
+                guideData.createdAt = new Date();
+            }
+
+            await setDoc(doc(db, "guides", currentUser.uid), guideData);
+
+            // 저장 성공
+            if (isInIframe) {
+                // iframe 내부 → 부모창에 메시지 전송
+                window.parent.postMessage({
+                    type: 'PROFILE_SAVED',
+                    success: true,
+                    data: guideData
+                }, '*');
+
+                showMessage('✅ 프로필이 성공적으로 저장되었습니다!', 'success');
+                
+                // 1초 후 모달 닫기 요청
+                setTimeout(() => {
+                    window.parent.postMessage({
+                        type: 'CLOSE_MODAL'
+                    }, '*');
+                }, 1200);
+            } else {
+                // 직접 접속 → index.html로 이동 (수정됨)
+                showMessage('✅ 프로필이 성공적으로 저장되었습니다!', 'success');
+                setTimeout(() => {
+                    window.location.href = "../guidedata/index.html";
+                }, 1500);
+            }
+
+        } catch (error) {
+            console.error('저장 오류:', error);
+            showMessage('❌ 저장 실패: ' + error.message, 'error');
+        } finally {
+            hideLoading();
+        }
+    };
+
+    // ===== 부모창에서 메시지 수신 =====
+    window.addEventListener('message', function(event) {
+        const data = event.data;
+        if (data && data.type === 'SET_USER') {
+            // 사용자 정보 수신 (선택)
+            console.log('사용자 정보 수신:', data);
+        }
+    });
+
+    // ===== Enter 키로 저장 =====
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
+            e.preventDefault();
+            saveGuide();
+        }
+        if (e.key === 'Escape') {
+            handleClose();
+        }
+    });
+
+    // ===== 인증 상태 확인 =====
+    onAuthStateChanged(auth, async user => {
+        if (!user) {
+            if (!isInIframe) {
+                window.location.href = "guidelogin.html";
+            } else {
+                showMessage('⚠️ 로그인이 필요합니다.', 'error');
+            }
+            return;
+        }
+
+        currentUser = user;
+        await loadProfileData();
+        
+        // 로그인 완료 메시지
+        if (isInIframe) {
+            window.parent.postMessage({
+                type: 'IFRAME_READY',
+                uid: user.uid,
+                email: user.email
+            }, '*');
+        }
+    });
+
+    console.log('🚀 Guide Profile Management loaded');
 </script>
 
 </body>
