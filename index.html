@@ -35,22 +35,17 @@
 
     /* Dropdown for buttons */
     .dropdown {position: relative; display: inline-block;}
-    .dropdown-toggle { display: flex; align-items: center; gap: 6px; background: transparent; border: none; 
-                       font-size: 13px; color: #4b5563; cursor: pointer; padding: 6px 10px; 
-                       border-radius: 8px; font-weight: 500; transition: all 0.2s; }
-    .dropdown-toggle:hover { background: #f3f4f6; }
     .dropdown-arrow { width: 14px; height: 14px; transition: transform 0.2s ease; margin-left: 2px; }
     .dropdown.show .dropdown-arrow {transform: rotate(180deg);}
     
     .dropdown-menu {display: none;position: absolute;top: calc(100% + 8px);left: 50%; transform: translateX(-50%);
                     background: #ffffff; border-radius: 12px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
-                    padding: 6px; min-width: 140px;z-index: 100; border: 1px solid #f1f5f9;}
+                    padding: 6px; min-width: 150px;z-index: 100; border: 1px solid #f1f5f9;}
     .dropdown-menu.show {display: block;animation: fadeDown 0.2s ease;}
     .dropdown-menu a {display: flex;align-items: center;gap: 10px;padding: 10px 16px;border-radius: 8px;
                       text-decoration: none;color: #1e293b;font-size: 13px;font-weight: 500;
                       transition: background 0.15s; white-space: nowrap;}
     .dropdown-menu a:hover {background: #f1f5f9;}
-    .dropdown-menu .divider {height: 1px; background: #e5e7eb;margin: 4px 10px;}
 
   @keyframes fadeDown {
     from { opacity: 0; transform: translateX(-50%) translateY(-8px); }
@@ -67,8 +62,7 @@
   }
   @media (max-width: 480px) {
     .nav-menu {gap: 12px;font-size: 12px;}
-    .dropdown-menu {min-width: 120px;}
-    .dropdown-toggle {font-size: 12px;padding: 4px 8px;}
+    .dropdown-menu {min-width: 130px;}
   }
  
     main { padding:40px 0 64px; }
@@ -136,30 +130,8 @@
           </div>
         </div>
         
-        <!-- Right: Language Dropdown + Login Dropdown + Signup Dropdown -->
+        <!-- Right: Login Dropdown + Signup Dropdown -->
         <div class="nav-right">
-          <!-- Language Dropdown -->
-          <div class="dropdown" id="langDropdown">
-            <button class="dropdown-toggle" onclick="toggleDropdown('langDropdown', 'langMenu')" aria-haspopup="true" aria-expanded="false">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;">
-                <circle cx="12" cy="12" r="10"/>
-                <line x1="2" y1="12" x2="22" y2="12"/>
-                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-              </svg>
-              한국어
-              <svg class="dropdown-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="6 9 12 15 18 9"/>
-              </svg>
-            </button>
-            <div class="dropdown-menu" id="langMenu" role="menu">
-              <a href="#" role="menuitem" onclick="selectLanguage(this, 'langDropdown', 'langMenu')">한국어</a>
-              <a href="#" role="menuitem" onclick="selectLanguage(this, 'langDropdown', 'langMenu')">English</a>
-              <a href="#" role="menuitem" onclick="selectLanguage(this, 'langDropdown', 'langMenu')">العربية</a>
-              <a href="#" role="menuitem" onclick="selectLanguage(this, 'langDropdown', 'langMenu')">日本語</a>
-              <a href="#" role="menuitem" onclick="selectLanguage(this, 'langDropdown', 'langMenu')">中文</a>
-            </div>
-          </div>
-
           <!-- Login Dropdown -->
           <div class="dropdown" id="loginDropdown">
             <button class="btn btn-ghost" onclick="toggleDropdown('loginDropdown', 'loginMenu')">
@@ -169,8 +141,8 @@
               </svg>
             </button>
             <div class="dropdown-menu" id="loginMenu" role="menu">
-              <a href="#" role="menuitem">👤 고객 로그인</a>
-              <a href="#" role="menuitem">⭐ 가이드 로그인</a>
+              <a href="#" role="menuitem" onclick="handleAction('customerLogin')">👤 고객 로그인</a>
+              <a href="#" role="menuitem" onclick="handleAction('guideLogin')">⭐ 가이드 로그인</a>
             </div>
           </div>
 
@@ -183,8 +155,8 @@
               </svg>
             </button>
             <div class="dropdown-menu" id="signupMenu" role="menu">
-              <a href="#" role="menuitem">👤 고객 회원가입</a>
-              <a href="#" role="menuitem">⭐ 가이드 회원가입</a>
+              <a href="#" role="menuitem" onclick="handleAction('customerSignup')">👤 고객 회원가입</a>
+              <a href="#" role="menuitem" onclick="handleAction('guideSignup')">⭐ 가이드 회원가입</a>
             </div>
           </div>
         </div>
@@ -343,25 +315,14 @@
       });
     }
 
-    // Select language and update button text
-    function selectLanguage(element, dropdownId, menuId) {
+    // Handle login/signup actions
+    function handleAction(action) {
       event.preventDefault();
-      const text = element.textContent.trim();
-      const dropdown = document.getElementById(dropdownId);
-      const button = dropdown.querySelector('.dropdown-toggle');
+      console.log('Selected action:', action);
       
-      // Update button text
-      button.innerHTML = `
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;">
-          <circle cx="12" cy="12" r="10"/>
-          <line x1="2" y1="12" x2="22" y2="12"/>
-          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-        </svg>
-        ${text}
-        <svg class="dropdown-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="6 9 12 15 18 9"/>
-        </svg>
-      `;
+      // You can add your own logic here
+      // For example: redirect to login page, show modal, etc.
+      alert(`${action}을(를) 선택하셨습니다.`);
       
       closeAllDropdowns();
     }
@@ -374,18 +335,11 @@
       }
     });
 
-    // Handle dropdown menu item clicks (for login/signup)
-    document.querySelectorAll('.dropdown-menu a[role="menuitem"]').forEach(item => {
-      item.addEventListener('click', function(e) {
-        // Don't prevent default for language items (handled separately)
-        if (!this.closest('#langMenu')) {
-          e.preventDefault();
-          const action = this.textContent.trim();
-          console.log('Selected:', action);
-          // Here you can add logic to handle login/signup actions
-          closeAllDropdowns();
-        }
-      });
+    // Close dropdown when pressing ESC key
+    document.addEventListener('keydown', function(event) {
+      if (event.key === 'Escape') {
+        closeAllDropdowns();
+      }
     });
   </script>
 </body>
