@@ -498,46 +498,182 @@
             color: #888;
         }
 
-        .hero-visual {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
+        /* ===== AI 추천 카드 (전문가 의견 반영) ===== */
         .hero-illustration {
             width: 100%;
             max-width: 480px;
             aspect-ratio: 1 / 0.85;
-            background: linear-gradient(135deg, #0078ff, #00c6fb);
+            background: linear-gradient(145deg, #1a2a6c, #1d4ed8);
             border-radius: 32px;
             display: flex;
             flex-direction: column;
-            align-items: center;
             justify-content: center;
             color: #fff;
             box-shadow: 0 24px 64px rgba(0, 120, 255, 0.25);
             position: relative;
             overflow: hidden;
-            padding: 40px;
-            text-align: center;
+            padding: 32px 28px;
+            text-align: left;
+            transition: transform 0.2s ease;
         }
 
-        .hero-illustration .emoji-big {
-            font-size: 80px;
-            margin-bottom: 16px;
-            filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.1));
+        .hero-illustration:hover {
+            transform: translateY(-4px);
         }
 
-        .hero-illustration .ill-text {
-            font-size: 18px;
-            font-weight: 500;
-            opacity: 0.9;
+        .hero-illustration::after {
+            content: "✨";
+            position: absolute;
+            right: 16px;
+            bottom: 16px;
+            font-size: 56px;
+            opacity: 0.12;
+            pointer-events: none;
         }
 
-        .hero-illustration .ill-sub {
+        .hero-illustration .badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(4px);
+            padding: 4px 14px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            color: #e0f2fe;
+            margin-bottom: 14px;
+            align-self: flex-start;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .hero-illustration .ill-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 2px;
+            line-height: 1.3;
+        }
+
+        .hero-illustration .ill-title small {
+            font-weight: 400;
             font-size: 14px;
+            opacity: 0.8;
+            margin-left: 6px;
+        }
+
+        .hero-illustration .ill-highlight {
+            background: rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin: 10px 0 12px 0;
+            border-left: 3px solid #fbbf24;
+        }
+
+        .hero-illustration .ill-highlight .label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
             opacity: 0.7;
-            margin-top: 4px;
+            font-weight: 600;
+        }
+
+        .hero-illustration .ill-highlight .content {
+            font-size: 15px;
+            font-weight: 500;
+            margin-top: 2px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 6px 10px;
+        }
+
+        .hero-illustration .ill-highlight .content .tag {
+            background: rgba(255,255,255,0.12);
+            padding: 2px 12px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 400;
+        }
+
+        .hero-illustration .ill-guide {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 2px 0 8px 0;
+            font-size: 14px;
+        }
+
+        .hero-illustration .ill-guide .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #fbbf24;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .hero-illustration .ill-guide .name {
+            font-weight: 600;
+        }
+
+        .hero-illustration .ill-guide .rating {
+            color: #fcd34d;
+            letter-spacing: 1px;
+            font-size: 13px;
+        }
+
+        .hero-illustration .ill-reason {
+            font-size: 13px;
+            color: #dbeafe;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .hero-illustration .ill-reason i {
+            color: #fbbf24;
+        }
+
+        .hero-illustration .ill-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 2px;
+        }
+
+        .hero-illustration .ill-actions .btn-sm {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #fff;
+            padding: 6px 16px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 500;
+            transition: all 0.2s;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .hero-illustration .ill-actions .btn-sm:hover {
+            background: #ffffff;
+            color: #1d4ed8;
+            border-color: #ffffff;
+        }
+
+        .hero-illustration .ill-actions .btn-sm-outline {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.25);
+            color: #e0f2fe;
+        }
+
+        .hero-illustration .ill-actions .btn-sm-outline:hover {
+            background: rgba(255,255,255,0.08);
         }
 
         /* ============================================================
@@ -735,6 +871,10 @@
             object-fit: cover;
             background: #e5e7eb;
             flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
         }
 
         .guide-card .guide-name {
@@ -831,6 +971,10 @@
             border-radius: 50%;
             background: #e5e7eb;
             flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
         }
 
         .review-card .review-name {
@@ -874,7 +1018,6 @@
 
         .dest-card .dest-img {
             height: 180px;
-            background: #d0d8e8;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -1052,12 +1195,10 @@
                 font-size: 38px;
             }
             .hero-illustration {
-                max-width: 340px;
+                max-width: 420px;
                 margin: 0 auto;
-                padding: 30px;
-            }
-            .hero-illustration .emoji-big {
-                font-size: 56px;
+                padding: 28px 24px;
+                text-align: left;
             }
             .section-title {
                 font-size: 28px;
@@ -1115,6 +1256,16 @@
                 gap: 16px;
                 align-items: center;
             }
+            .hero-illustration {
+                max-width: 100%;
+                padding: 24px 20px;
+            }
+            .hero-illustration .ill-title {
+                font-size: 20px;
+            }
+            .hero-illustration .ill-highlight .content {
+                font-size: 13px;
+            }
             .card-grid {
                 grid-template-columns: 1fr;
             }
@@ -1142,6 +1293,9 @@
             .header-actions .divider {
                 display: none;
             }
+            .hero-illustration .ill-actions {
+                justify-content: center;
+            }
         }
 
         @media (max-width: 480px) {
@@ -1157,6 +1311,11 @@
             }
             .hero-text h1 {
                 font-size: 26px;
+            }
+            .hero-illustration .ill-title small {
+                display: block;
+                margin-left: 0;
+                margin-top: 2px;
             }
         }
     </style>
@@ -1249,7 +1408,7 @@
     </div>
 
     <!-- ============================================================
-    HERO
+    HERO (전문가 의견 반영 - AI 추천 카드)
     ============================================================ -->
     <section class="hero">
         <div class="container hero-grid">
@@ -1289,11 +1448,46 @@
                 </div>
             </div>
 
-            <div class="hero-visual">
-                <div class="hero-illustration">
-                    <div class="emoji-big">🌍</div>
-                    <div class="ill-text">두바이 · 아부다비 · 샤르자</div>
-                    <div class="ill-sub">AI가 추천하는 맞춤형 UAE 여행</div>
+            <!-- ===== AI 추천 UAE 여행 (전문가 의견 반영) ===== -->
+            <div class="hero-illustration">
+                <div class="badge"><i class="fas fa-robot" style="margin-right:6px;"></i> 실시간 AI 추천</div>
+
+                <div class="ill-title">
+                    UAE 맞춤형 3일 코스
+                    <small>두바이 + 아부다비</small>
+                </div>
+
+                <!-- 추천 코스 미리보기 -->
+                <div class="ill-highlight">
+                    <div class="label"><i class="far fa-calendar-alt"></i> 오늘의 추천 일정</div>
+                    <div class="content">
+                        <span>🌆 두바이 시티 투어</span>
+                        <span class="tag">사막 사파리</span>
+                        <span class="tag">부르즈 할리파</span>
+                        <span>→ 루브르 아부다비</span>
+                    </div>
+                </div>
+
+                <!-- 추천 가이드 미리보기 -->
+                <div class="ill-guide">
+                    <div class="avatar">🧑</div>
+                    <div>
+                        <div class="name">Ahmad Al Maktoum</div>
+                        <div class="rating">⭐ 4.9 · 감동 후기 200+</div>
+                    </div>
+                    <span style="font-size:12px; background:rgba(255,255,255,0.12); padding:2px 10px; border-radius:999px; margin-left:auto;">🇦🇪 15년 경험</span>
+                </div>
+
+                <!-- 추천 이유 -->
+                <div class="ill-reason">
+                    <i class="fas fa-lightbulb"></i>
+                    <span>최근 2주간 40대 가족 여행객에게 가장 높은 만족도</span>
+                </div>
+
+                <!-- 액션 버튼 -->
+                <div class="ill-actions">
+                    <a href="#" class="btn-sm"><i class="fas fa-arrow-right"></i> 이 여행으로 바로가기</a>
+                    <a href="#" class="btn-sm btn-sm-outline"><i class="fas fa-sync-alt"></i> 다른 추천 보기</a>
                 </div>
             </div>
 
@@ -1402,7 +1596,7 @@
 
                 <div class="guide-card">
                     <div class="guide-top">
-                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 56 56'%3E%3Crect width='56' height='56' rx='28' fill='%23d0d8e8'/%3E%3Ctext x='28' y='36' text-anchor='middle' font-size='28' fill='%23666'%3E👩%3C/text%3E%3C/svg%3E" alt="가이드" class="guide-avatar" />
+                        <div class="guide-avatar">👩</div>
                         <div>
                             <div class="guide-name">김현지</div>
                             <div class="guide-location">🇦🇪 두바이 · 8년 경력</div>
@@ -1425,7 +1619,7 @@
 
                 <div class="guide-card">
                     <div class="guide-top">
-                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 56 56'%3E%3Crect width='56' height='56' rx='28' fill='%23d0d8e8'/%3E%3Ctext x='28' y='36' text-anchor='middle' font-size='28' fill='%23666'%3E👨%3C/text%3E%3C/svg%3E" alt="가이드" class="guide-avatar" />
+                        <div class="guide-avatar">👨</div>
                         <div>
                             <div class="guide-name">아흐메드 알리</div>
                             <div class="guide-location">🇦🇪 아부다비 · 12년 경력</div>
@@ -1448,7 +1642,7 @@
 
                 <div class="guide-card">
                     <div class="guide-top">
-                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 56 56'%3E%3Crect width='56' height='56' rx='28' fill='%23d0d8e8'/%3E%3Ctext x='28' y='36' text-anchor='middle' font-size='28' fill='%23666'%3E👩‍🦰%3C/text%3E%3C/svg%3E" alt="가이드" class="guide-avatar" />
+                        <div class="guide-avatar">👩‍🦰</div>
                         <div>
                             <div class="guide-name">박소연</div>
                             <div class="guide-location">🇦🇪 두바이 · 5년 경력</div>
@@ -1471,7 +1665,7 @@
 
                 <div class="guide-card">
                     <div class="guide-top">
-                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 56 56'%3E%3Crect width='56' height='56' rx='28' fill='%23d0d8e8'/%3E%3Ctext x='28' y='36' text-anchor='middle' font-size='28' fill='%23666'%3E🧑‍💼%3C/text%3E%3C/svg%3E" alt="가이드" class="guide-avatar" />
+                        <div class="guide-avatar">🧑‍💼</div>
                         <div>
                             <div class="guide-name">카림 하산</div>
                             <div class="guide-location">🇦🇪 샤르자 · 7년 경력</div>
@@ -1520,7 +1714,7 @@
             <div class="card-grid">
                 <div class="review-card">
                     <div class="review-header">
-                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='20' fill='%23e5e7eb'/%3E%3Ctext x='20' y='26' text-anchor='middle' font-size='18' fill='%23666'%3E😊%3C/text%3E%3C/svg%3E" alt="user" class="review-avatar" />
+                        <div class="review-avatar">😊</div>
                         <div>
                             <div class="review-name">이서연</div>
                             <div class="review-date">2026년 8월 12일</div>
@@ -1535,7 +1729,7 @@
 
                 <div class="review-card">
                     <div class="review-header">
-                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='20' fill='%23e5e7eb'/%3E%3Ctext x='20' y='26' text-anchor='middle' font-size='18' fill='%23666'%3E👨%3C/text%3E%3C/svg%3E" alt="user" class="review-avatar" />
+                        <div class="review-avatar">👨</div>
                         <div>
                             <div class="review-name">김민준</div>
                             <div class="review-date">2026년 8월 8일</div>
@@ -1550,7 +1744,7 @@
 
                 <div class="review-card">
                     <div class="review-header">
-                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='20' fill='%23e5e7eb'/%3E%3Ctext x='20' y='26' text-anchor='middle' font-size='18' fill='%23666'%3E👩%3C/text%3E%3C/svg%3E" alt="user" class="review-avatar" />
+                        <div class="review-avatar">👩</div>
                         <div>
                             <div class="review-name">최유진</div>
                             <div class="review-date">2026년 8월 3일</div>
