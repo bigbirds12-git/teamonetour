@@ -527,6 +527,56 @@ body {
     to { transform: rotate(360deg); }
 }
 
+/* ===== Schedule iframe 스타일 ===== */
+.schedule-iframe {
+    width: 100%;
+    height: calc(100vh - 220px);
+    border: none;
+    border-radius: 16px;
+    background: white;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+
+.schedule-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.schedule-header .left h1 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    color: #1a1a2e;
+}
+
+.schedule-header .left .subtitle {
+    color: #6b7280;
+    font-size: 15px;
+}
+
+.refresh-btn {
+    padding: 8px 20px;
+    background: #0078ff;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.refresh-btn:hover {
+    background: #0066dd;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,120,255,0.3);
+}
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 1200px) {
     .card-grid {
@@ -558,6 +608,10 @@ body {
 
     .card-grid {
         grid-template-columns: repeat(2, 1fr);
+    }
+
+    .schedule-iframe {
+        height: 500px;
     }
 }
 
@@ -607,6 +661,16 @@ body {
 
     .modal-body iframe {
         height: 450px;
+    }
+
+    .schedule-iframe {
+        height: 400px;
+    }
+
+    .schedule-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
     }
 }
 </style>
@@ -759,7 +823,7 @@ body {
     }
 
     // ============================================
-    //  MODAL CONTROLS (전역으로 노출 - 중요!)
+    //  MODAL CONTROLS (전역으로 노출)
     // ============================================
     window.openProfileModal = function() {
         const modal = document.getElementById('profileModal');
@@ -801,7 +865,7 @@ body {
     };
 
     // ============================================
-    //  IFRAME MESSAGE HANDLER (전역으로 노출)
+    //  IFRAME MESSAGE HANDLER
     // ============================================
     window.handleIframeMessage = function(event) {
         const data = event.data;
@@ -841,7 +905,6 @@ body {
         }
     };
 
-    // ===== 메시지 리스너 등록 =====
     window.addEventListener('message', window.handleIframeMessage);
 
     // ============================================
@@ -906,7 +969,7 @@ body {
                 <div class="card" onclick="navigate('schedule')">
                     <span class="icon">📅</span>
                     <h3>내 일정</h3>
-                    <p>오늘의 투어 일정을 확인하고 관리하세요</p>
+                    <p>투어 일정을 확인하고 관리하세요</p>
                 </div>
 
                 <div class="card" onclick="navigate('bookings')">
@@ -984,16 +1047,38 @@ body {
         `;
     }
 
+    // ============================================
+    //  🔥 수정된 loadSchedule 함수 (iframe으로 my-schedule.html 로드)
+    // ============================================
     function loadSchedule() {
         document.getElementById('app').innerHTML = `
-            <h1>📅 내 일정</h1>
-            <p class="subtitle">투어 일정을 관리하세요</p>
-            <div style="background: white; padding: 24px; border-radius: 16px; border: 1px solid #e5e7eb;">
-                <p style="color: #6b7280;">📌 오늘의 일정이 없습니다.</p>
-                <p style="font-size: 14px; color: #9ca3af; margin-top: 8px;">새로운 투어 일정을 추가하려면 관리자에게 문의하세요.</p>
+            <div class="schedule-header">
+                <div class="left">
+                    <h1>📅 내 일정</h1>
+                    <p class="subtitle">투어 일정을 한눈에 확인하고 관리하세요</p>
+                </div>
+                <button class="refresh-btn" onclick="refreshSchedule()">
+                    🔄 새로고침
+                </button>
             </div>
+            <iframe 
+                id="scheduleIframe"
+                src="/guidedata/my-schedule.html" 
+                class="schedule-iframe"
+                loading="lazy"
+            ></iframe>
         `;
     }
+
+    // ===== iframe 새로고침 함수 =====
+    window.refreshSchedule = function() {
+        const iframe = document.getElementById('scheduleIframe');
+        if (iframe) {
+            // iframe 새로고침
+            iframe.src = iframe.src;
+            console.log('🔄 일정 페이지 새로고침');
+        }
+    };
 
     // ===== Logout Handler =====
     window.handleLogout = async function() {
