@@ -508,57 +508,70 @@
         // ============================================================
         // 🔥 검색
         // ============================================================
-        async function searchSchedules() {
-            const startDate = document.getElementById('filterStartDate').value;
-            const endDate = document.getElementById('filterEndDate').value;
-            const status = document.getElementById('filterStatus').value;
-            const region = document.getElementById('filterRegion').value;
+       // ============================================================
+// 🔥 검색 (클라이언트 측 필터링 방식으로 수정)
+// ============================================================
+async function searchSchedules() {
+    const startDate = document.getElementById('filterStartDate').value;
+    const endDate = document.getElementById('filterEndDate').value;
+    const status = document.getElementById('filterStatus').value;
+    const region = document.getElementById('filterRegion').value;
 
-            try {
-                let query = db.collection(SCHEDULES_COLLECTION);
+    try {
+        // 1. 전체 데이터 조회 (복합 색인 오류 방지)
+        const snapshot = await db.collection(SCHEDULES_COLLECTION).get();
+        let results = [];
 
-                if (startDate) query = query.where('date', '>=', startDate);
-                if (endDate) query = query.where('date', '<=', endDate);
-                if (region) query = query.where('region', '==', region);
-                if (status) query = query.where('status', '==', status);
+        snapshot.forEach(doc => {
+            results.push({ id: doc.id, ...doc.data() });
+        });
 
-                const snapshot = await query.orderBy('date', 'desc').orderBy('time').get();
+        // 2. 조건별 필터링
+        if (startDate) results = results.filter(item => item.date >= startDate);
+        if (endDate) results = results.filter(item => item.date <= endDate);
+        if (region) results = results.filter(item => item.region === region);
+        if (status) results = results.filter(item => item.status === status);
 
-                const list = document.getElementById('searchResultList');
-                const countEl = document.getElementById('resultCount');
+        // 3. 날짜 내림차순 및 시간 오름차순 정렬
+        results.sort((a, b) => {
+            if (a.date !== b.date) return b.date.localeCompare(a.date);
+            return (a.time || '').localeCompare(b.time || '');
+        });
 
-                if (snapshot.empty) {
-                    list.innerHTML = `<div class="result-empty"><i class="fas fa-search"></i>검색 결과가 없습니다</div>`;
-                    countEl.innerHTML = '총 <strong>0</strong>건';
-                    return;
-                }
+        const list = document.getElementById('searchResultList');
+        const countEl = document.getElementById('resultCount');
 
-                let html = '';
-                snapshot.forEach(doc => {
-                    const d = doc.data();
-                    const statusClass = d.status || 'pending';
-                    const statusLabel = { 'confirmed': '확정', 'pending': '대기', 'cancelled': '취소' } [statusClass] ||
-                        '대기';
-                    const displayDate = d.date.replace(/-/g, '/');
-
-                    html += `
-                        <div class="result-item" onclick="viewDetail('${doc.id}')">
-                            <span class="result-date">${displayDate}</span>
-                            <div class="result-info">
-                                <div class="result-title">${d.title}</div>
-                                <div class="result-meta">${d.guideName || d.guideEmail} · ${d.people}명 · ${d.time} · ${d.region}</div>
-                            </div>
-                            <span class="result-status ${statusClass}">${statusLabel}</span>
-                        </div>
-                    `;
-                });
-
-                list.innerHTML = html;
-                countEl.innerHTML = `총 <strong>${snapshot.size}</strong>건`;
-            } catch (error) {
-                console.error('검색 오류:', error);
-            }
+        if (results.length === 0) {
+            list.innerHTML = `<div class="result-empty"><i class="fas fa-search"></i>검색 결과가 없습니다</div>`;
+            countEl.innerHTML = '총 <strong>0</strong>건';
+            return;
         }
+
+        let html = '';
+        results.forEach(d => {
+            const statusClass = d.status || 'pending';
+            const statusLabel = { 'confirmed': '확정', 'pending': '대기', 'cancelled': '취소' }[statusClass] || '대기';
+            const displayDate = d.date ? d.date.replace(/-/g, '/') : '';
+
+            html += `
+                <div class="result-item" onclick="viewDetail('${d.id}')">
+                    <span class="result-date">${displayDate}</span>
+                    <div class="result-info">
+                        <div class="result-title">${d.title}</div>
+                        <div class="result-meta">${d.guideName || d.guideEmail || '-'} · ${d.people || 0}명 · ${d.time || ''} · ${d.region || ''}</div>
+                    </div>
+                    <span class="result-status ${statusClass}">${statusLabel}</span>
+                </div>
+            `;
+        });
+
+        list.innerHTML = html;
+        countEl.innerHTML = `총 <strong>${results.length}</strong>건`;
+    } catch (error) {
+        console.error('검색 오류:', error);
+        showToast('❌ 조회 중 오류 발생: ' + error.message, 'error');
+    }
+}
 
         // ============================================================
         // 기타 함수
