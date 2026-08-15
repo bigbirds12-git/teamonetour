@@ -634,8 +634,13 @@ body {
 
     // ===== 닫기 처리 =====
     window.handleClose = function() {
+        console.log('🔒 닫기 버튼 클릭');
         if (isInIframe) {
             window.parent.postMessage({ type: 'CLOSE_MODAL' }, '*');
+            // 안전장치: 0.5초 후에도 안 닫히면 강제 닫기
+            setTimeout(() => {
+                window.parent.postMessage({ type: 'CLOSE_MODAL_FORCE' }, '*');
+            }, 500);
         } else {
             window.location.href = "../guidedata/index.html";
         }
@@ -656,18 +661,14 @@ body {
         let isValid = false;
         
         if (field.multi) {
-            // 다중 선택 필드
             const selected = Array.from(element.selectedOptions).length;
             isValid = selected > 0;
         } else if (element.tagName === 'SELECT') {
-            // 단일 선택 필드
             isValid = element.value !== '' && element.value !== null;
         } else {
-            // 입력 필드
             isValid = element.value.trim() !== '';
         }
         
-        // 에러 표시
         if (isValid) {
             group.classList.remove('error');
             errorEl.classList.remove('show');
@@ -770,7 +771,6 @@ body {
             if (docSnap.exists()) {
                 existingData = docSnap.data();
                 
-                // 폼에 데이터 채우기
                 document.getElementById("name").value = existingData.name || '';
                 document.getElementById("phone").value = existingData.phone || '';
                 document.getElementById("nationality").value = existingData.nationality || '';
@@ -780,7 +780,6 @@ body {
                 document.getElementById("price_day").value = existingData.price_day || '';
                 document.getElementById("bio").value = existingData.bio || '';
 
-                // 다중 선택 필드
                 if (existingData.languages) {
                     const select = document.getElementById("languages");
                     Array.from(select.options).forEach(opt => {
@@ -800,11 +799,9 @@ body {
                     });
                 }
             } else {
-                // 신규 등록
                 showMessage('⚠️ 등록된 프로필이 없습니다. 정보를 입력해주세요.', 'warning');
             }
 
-            // 모든 필드 검증 및 완성도 업데이트
             isProfileLoaded = true;
             validateAllFields();
             updateCompleteness();
@@ -814,6 +811,22 @@ body {
             showMessage('❌ 프로필 정보를 불러오는데 실패했습니다: ' + error.message, 'error');
         } finally {
             hideLoading();
+        }
+    }
+
+    // ===== 부모창으로 메시지 전송 (안전장치 포함) =====
+    function sendMessageToParent(type, data = {}) {
+        if (!isInIframe) return;
+        
+        try {
+            window.parent.postMessage({
+                type: type,
+                ...data,
+                _timestamp: Date.now()
+            }, '*');
+            console.log('📤 부모창으로 메시지 전송:', type);
+        } catch (error) {
+            console.error('메시지 전송 실패:', error);
         }
     }
 
@@ -831,7 +844,6 @@ body {
         updateCompleteness();
 
         if (!allValid) {
-            // 첫 번째 에러 필드로 스크롤
             const firstError = document.querySelector('.form-group.error');
             if (firstError) {
                 firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -842,7 +854,6 @@ body {
             return;
         }
 
-        // 저장 버튼 비활성화
         const saveBtn = document.getElementById('saveBtn');
         saveBtn.disabled = true;
         showLoading('저장 중...');
@@ -875,7 +886,6 @@ body {
                 guideData.createdAt = new Date();
             }
 
-            // 이메일 변경 방지
             if (existingData && existingData.email !== currentUser.email) {
                 console.warn('⚠️ 이메일 변경 시도가 감지되었습니다. 무시합니다.');
                 guideData.email = existingData.email;
@@ -883,18 +893,32 @@ body {
 
             await setDoc(doc(db, "guides", currentUser.uid), guideData);
 
+            // ===== 저장 성공 =====
             if (isInIframe) {
-                window.parent.postMessage({
-                    type: 'PROFILE_SAVED',
-                    success: true,
-                    data: guideData
-                }, '*');
-
+                // 1. 저장 완료 메시지 전송
+                sendMessageToParent('PROFILE_SAVED', { data: guideData });
+                
+                // 2. 성공 메시지 표시
                 showMessage('✅ 프로필이 성공적으로 저장되었습니다!', 'success');
                 
+                // 3. 0.8초 후 모달 닫기 요청
                 setTimeout(() => {
-                    window.parent.postMessage({ type: 'CLOSE_MODAL' }, '*');
-                }, 1200);
+                    sendMessageToParent('CLOSE_MODAL');
+                    
+                    // 4. 안전장치: 0.5초 후에도 안 닫히면 강제 닫기
+                    setTimeout(() => {
+                        sendMessageToParent('CLOSE_MODAL_FORCE');
+                    }, 500);
+                }, 800);
+
+                // 5. 추가 안전장치: 2초 후에도 안 닫히면 자체 닫기 시도
+                setTimeout(() => {
+                    if (document.getElementById('regBox')) {
+                        console.log('⚠️ 자체 닫기 시도 (안전장치)');
+                        window.parent.postMessage({ type: 'CLOSE_MODAL_FORCE' }, '*');
+                    }
+                }, 3000);
+
             } else {
                 showMessage('✅ 프로필이 성공적으로 저장되었습니다!', 'success');
                 setTimeout(() => {
@@ -914,6 +938,7 @@ body {
     // ===== 부모창 메시지 수신 =====
     window.addEventListener('message', function(event) {
         const data = event.data;
+        console.log('📨 iframe 메시지 수신:', data);
         if (data && data.type === 'SET_USER') {
             console.log('사용자 정보 수신:', data);
         }
@@ -943,10 +968,7 @@ body {
 
         currentUser = user;
         
-        // 입력 리스너 설정
         setupInputListeners();
-        
-        // 프로필 데이터 로드
         await loadProfileData();
         
         if (isInIframe) {
@@ -959,6 +981,7 @@ body {
     });
 
     console.log('🚀 Guide Profile Management loaded');
+    console.log('📌 isInIframe:', isInIframe);
 </script>
 
 </body>
