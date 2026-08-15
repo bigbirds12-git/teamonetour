@@ -1,411 +1,472 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>Klook-style Travel Landing</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Team One Tour</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Font Awesome (아이콘) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
-    body { margin:0; font-family:system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background:#f5f5f7; color:#222; }
-    a { text-decoration:none; color:inherit; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background:#f5f7fb; color:#111827; }
+    a { text-decoration: none; color: inherit; }
 
-    /* Header */
-    .header {
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      padding:12px 32px;
-      background:#ffffff;
-      border-bottom:1px solid #e5e5e5;
-      position:sticky;
-      top:0;
-      z-index:10;
-    }
-    .logo { font-weight:700; color:#ff5a5f; font-size:20px; }
-    .nav { display:flex; gap:16px; font-size:14px; }
-    .nav a { padding:6px 10px; border-radius:999px; }
-    .nav a:hover { background:#f0f0f0; }
-    .header-right { display:flex; gap:12px; align-items:center; font-size:13px; }
-    .btn-outline {
-      padding:6px 12px;
-      border-radius:999px;
-      border:1px solid #ddd;
-      font-size:13px;
-    }
-    .btn-primary {
-      padding:6px 14px;
-      border-radius:999px;
-      background:#ff5a5f;
-      color:#fff;
-      font-size:13px;
-      border:none;
-    }
+    /* Layout - Header with only logo and auth buttons */
+    header { background:#ffffff; border-bottom:1px solid #e5e7eb; position: relative; z-index: 1000; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 16px; width: 100%; }
+    .nav { display:flex; align-items:center; justify-content:space-between; height:64px; gap:12px; }
+    .logo { flex-shrink: 0; width: auto; max-width: 120px; height: 40px; display: flex; align-items: center; }
+    .logo img { max-width: 100%; max-height: 100%; height: auto; display: block; width: auto; }
+    
+    .nav-right { display:flex; align-items:center; gap:8px; flex-shrink: 0; }
+    .btn { height: 36px; padding: 0 14px; border-radius:999px; font-size:13px; border:1px solid transparent; 
+          align-items: center; justify-content: center; white-space: nowrap; display: inline-flex; gap: 4px;
+          font-weight: 500; cursor: pointer; transition: all 0.2s; background: transparent; position: relative; }
+    .btn-outline { border-color:#d1d5db; background:#ffffff; color:#374151; }
+    .btn-primary { background:#2563eb; color:#ffffff; border-color:#2563eb; }
+    .btn-ghost { background:transparent; color:#4b5563; border-color:transparent; }
+    .btn:hover { opacity: 0.8; transform: scale(0.98); }
+    .btn:active { transform: scale(0.95); }
+    .btn-primary:hover { background: #1d4ed8; border-color: #1d4ed8; }
+    .btn-outline:hover { background: #f3f4f6; }
+    .btn-ghost:hover { background: #f3f4f6; }
 
-    /* Hero */
-    .hero {
-      padding:40px 32px 24px;
-      background:linear-gradient(135deg,#ff9a9e 0%,#fad0c4 50%,#fbc2eb 100%);
-      color:#fff;
-    }
-    .hero-inner {
-      max-width:960px;
-      margin:0 auto;
-      display:flex;
-      flex-wrap:wrap;
-      gap:24px;
-      align-items:flex-start;
-    }
-    .hero-text { flex:1 1 280px; }
-    .hero-title { font-size:32px; font-weight:700; margin-bottom:8px; }
-    .hero-sub { font-size:15px; opacity:0.9; margin-bottom:16px; }
-    .hero-search {
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-    }
-    .hero-search input {
-      flex:1 1 220px;
-      padding:10px 12px;
-      border-radius:999px;
-      border:none;
-      outline:none;
-    }
-    .hero-search button {
-      padding:10px 18px;
-      border-radius:999px;
-      border:none;
-      background:#ff5a5f;
-      color:#fff;
-      font-weight:600;
-      cursor:pointer;
-    }
-    .hero-search button:hover { opacity:0.9; }
-    .hero-badges { margin-top:12px; font-size:12px; display:flex; gap:12px; flex-wrap:wrap; }
-    .hero-badge { padding:4px 10px; border-radius:999px; background:rgba(255,255,255,0.15); }
+    /* Dropdown for buttons */
+    .dropdown { position: relative; display: inline-block; }
+    .dropdown-arrow { width: 14px; height: 14px; transition: transform 0.2s ease; margin-left: 2px; }
+    .dropdown.show .dropdown-arrow { transform: rotate(180deg); }
+    
+    .dropdown-menu { display: none; position: absolute; top: calc(100% + 8px); left: 50%; transform: translateX(-50%);
+                    background: #ffffff; border-radius: 12px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
+                    padding: 6px; min-width: 150px; z-index: 100; border: 1px solid #f1f5f9; }
+    .dropdown-menu.show { display: block; animation: fadeDown 0.2s ease; }
+    .dropdown-menu a { display: flex; align-items: center; gap: 10px; padding: 10px 16px; border-radius: 8px;
+                      text-decoration: none; color: #1e293b; font-size: 13px; font-weight: 500;
+                      transition: background 0.15s; white-space: nowrap; }
+    .dropdown-menu a:hover { background: #f1f5f9; }
 
-    .hero-image {
-      flex:1 1 260px;
-      min-height:160px;
-      border-radius:16px;
-      background:rgba(255,255,255,0.2);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-size:13px;
-      text-align:center;
-      padding:16px;
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateX(-50%) translateY(-8px); }
+      to { opacity: 1; transform: translateX(-50%) translateY(0); }
     }
 
-    /* Sections */
-    .section {
-      max-width:960px;
-      margin:0 auto;
-      padding:24px 32px;
+    /* Mobile responsive */
+    @media (max-width: 768px) {
+      .nav { height: 56px; gap: 8px; }
+      .logo { max-width: 90px; height: 32px; }
+      .btn { font-size: 12px; padding: 0 10px; height: 32px; }
+      .nav-right { gap: 4px; }
+      .dropdown-menu { min-width: 130px; right: 0; left: auto; transform: translateX(0); }
+      .dropdown-arrow { width: 12px; height: 12px; }
     }
-    .section-header {
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      margin-bottom:16px;
+    @media (max-width: 480px) {
+      .nav { height: 50px; gap: 6px; }
+      .logo { max-width: 75px; height: 28px; }
+      .btn { font-size: 11px; padding: 0 8px; height: 28px; }
+      .nav-right { gap: 3px; }
+      .dropdown-menu { min-width: 120px; }
     }
-    .section-title { font-size:18px; font-weight:600; }
-    .section-sub { font-size:13px; color:#666; }
+ 
+    main { padding: 40px 0 64px; }
+    
+    /* Hero Section - 개선된 AI 추천 영역 */
+    .hero { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 48px; align-items: stretch; 
+            background: #ffffff; border-radius: 24px; padding: 48px; box-shadow: 0 4px 24px rgba(0,0,0,0.04); 
+            margin-bottom: 32px; }
+    .hero-title { font-size: 32px; font-weight: 700; color: #111827; margin-bottom: 16px; line-height: 1.3; }
+    .hero-sub { font-size: 15px; color: #4b5563; line-height: 1.6; margin-bottom: 24px; }
+    .hero-actions { display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
+    .hero-stats { display: flex; flex-wrap: wrap; gap: 16px; font-size: 13px; color: #4b5563; }
+    .hero-stat-item { background: #e5f0ff; padding: 10px 14px; border-radius: 12px; }
 
-    /* Category chips */
-    .chips {
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-      margin-bottom:8px;
+    /* ===== AI 추천 카드 (전문가 의견 반영) ===== */
+    .hero-right {
+      background: linear-gradient(145deg, #1a2a6c, #1d4ed8);
+      color: #ffffff;
+      border-radius: 20px;
+      padding: 28px 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      box-shadow: 0 12px 32px rgba(29, 78, 216, 0.25);
+      transition: transform 0.2s ease;
+      min-height: 220px;
+      position: relative;
+      overflow: hidden;
     }
-    .chip {
-      padding:6px 12px;
-      border-radius:999px;
-      background:#ffffff;
-      border:1px solid #eee;
-      font-size:13px;
-      cursor:pointer;
+    .hero-right:hover { transform: translateY(-3px); }
+    .hero-right::after {
+      content: "✨";
+      position: absolute;
+      right: 16px;
+      bottom: 16px;
+      font-size: 48px;
+      opacity: 0.15;
+      pointer-events: none;
     }
-    .chip:hover { background:#f8f8f8; }
+    .hero-right-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.18);
+      backdrop-filter: blur(4px);
+      padding: 4px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      color: #e0f2fe;
+      margin-bottom: 12px;
+      align-self: flex-start;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .hero-right-title {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 4px;
+      line-height: 1.3;
+    }
+    .hero-right-title small {
+      font-weight: 400;
+      font-size: 14px;
+      opacity: 0.8;
+      margin-left: 6px;
+    }
+    .hero-right-sub {
+      font-size: 14px;
+      color: #dbeafe;
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+    .hero-right-highlight {
+      background: rgba(255,255,255,0.10);
+      border-radius: 12px;
+      padding: 12px 16px;
+      margin: 6px 0 12px 0;
+      border-left: 3px solid #fbbf24;
+    }
+    .hero-right-highlight .label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      opacity: 0.7;
+      font-weight: 600;
+    }
+    .hero-right-highlight .content {
+      font-size: 15px;
+      font-weight: 500;
+      margin-top: 2px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px 12px;
+    }
+    .hero-right-highlight .content .tag {
+      background: rgba(255,255,255,0.15);
+      padding: 2px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 400;
+    }
+    .hero-right-guide {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 4px 0 8px 0;
+      font-size: 14px;
+    }
+    .hero-right-guide img {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #fbbf24;
+      object-fit: cover;
+    }
+    .hero-right-guide .name {
+      font-weight: 600;
+    }
+    .hero-right-guide .rating {
+      color: #fcd34d;
+      letter-spacing: 1px;
+      font-size: 13px;
+    }
+    .hero-right-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 6px;
+    }
+    .hero-right-actions .btn-sm {
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #fff;
+      padding: 6px 16px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 500;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+    .hero-right-actions .btn-sm:hover {
+      background: #ffffff;
+      color: #1d4ed8;
+      border-color: #ffffff;
+    }
+    .hero-right-actions .btn-sm-outline {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.3);
+      color: #e0f2fe;
+    }
+    .hero-right-actions .btn-sm-outline:hover {
+      background: rgba(255,255,255,0.10);
+    }
 
-    /* Cards grid */
-    .grid {
-      display:grid;
-      grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
-      gap:16px;
-    }
-    .card {
-      background:#ffffff;
-      border-radius:12px;
-      overflow:hidden;
-      box-shadow:0 1px 3px rgba(0,0,0,0.06);
-      display:flex;
-      flex-direction:column;
-    }
-    .card-img {
-      height:140px;
-      background:#ddd;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-size:12px;
-      color:#666;
-    }
-    .card-body {
-      padding:10px 12px 12px;
-      font-size:13px;
-    }
-    .card-title {
-      font-weight:600;
-      margin-bottom:4px;
-    }
-    .card-meta {
-      font-size:12px;
-      color:#777;
-      margin-bottom:6px;
-    }
-    .card-price {
-      font-size:14px;
-      font-weight:700;
-      color:#ff5a5f;
-      margin-bottom:6px;
-    }
-    .card-tags {
-      display:flex;
-      flex-wrap:wrap;
-      gap:4px;
-      font-size:11px;
-    }
-    .tag {
-      padding:2px 6px;
-      border-radius:999px;
-      background:#f5f5f7;
-    }
+    /* AI 서비스 섹션 */
+    .section-title { margin-top: 48px; font-size: 20px; font-weight: 600; margin-bottom: 8px; }
+    .section-sub { font-size: 14px; color: #6b7280; margin-bottom: 20px; }
+    .ai-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+    .ai-card { background: #ffffff; border-radius: 14px; padding: 16px; border: 1px solid #e5e7eb; display: flex; flex-direction: column; gap: 8px; transition: all 0.3s ease; }
+    .ai-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.06); transform: translateY(-2px); }
+    .ai-title { font-size: 14px; font-weight: 600; color: #111827; }
+    .ai-desc { font-size: 12px; color: #6b7280; line-height: 1.5; }
+    .ai-btn { margin-top: auto; font-size: 12px; padding: 6px 10px; border-radius: 999px; border: 1px solid #2563eb; color: #2563eb; background: #eff6ff; align-self: flex-start; cursor: pointer; transition: all 0.2s; }
+    .ai-btn:hover { background: #2563eb; color: #fff; }
 
     /* Footer */
-    .footer {
-      margin-top:32px;
-      padding:24px 32px;
-      background:#111;
-      color:#ccc;
-      font-size:12px;
+    footer { background: #0b1120; color: #e5e7eb; padding: 48px 0 32px; margin-top: 48px; }
+    .footer-content { max-width: 500px; margin: 0 auto; text-align: center; }
+    .footer-title { font-size: 16px; font-weight: 600; margin-bottom: 12px; color: #9ca3af; }
+    .footer-email { color: #9ca3af; font-size: 14px; margin-bottom: 16px; }
+    .footer-divider { width: 60px; height: 2px; background: #2563eb; margin: 0 auto 24px; }
+    .footer-bottom { font-size: 12px; color: #6b7280; }
+
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; gap: 32px; padding: 32px; }
+      .ai-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
-    .footer-inner {
-      max-width:960px;
-      margin:0 auto;
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
-      gap:16px;
-    }
-    .footer-title { font-weight:600; margin-bottom:8px; color:#fff; }
-    .footer a { display:block; margin-bottom:4px; color:#ccc; }
-    .footer-bottom {
-      max-width:960px;
-      margin:16px auto 0;
-      border-top:1px solid #333;
-      padding-top:12px;
-      display:flex;
-      justify-content:space-between;
-      flex-wrap:wrap;
-      gap:8px;
+    @media (max-width: 600px) {
+      .hero { padding: 24px; }
+      .hero-title { font-size: 26px; }
+      .ai-grid { grid-template-columns: 1fr; }
+      .footer-title { font-size: 16px; }
+      .hero-right-title { font-size: 18px; }
     }
   </style>
 </head>
 <body>
+
   <!-- Header -->
-  <header class="header">
-    <div class="logo">Klook Travel</div>
-    <nav class="nav">
-      <a href="#">Things to do</a>
-      <a href="#">Attractions</a>
-      <a href="#">Transport</a>
-      <a href="#">Hotels</a>
-      <a href="#">Packages</a>
-    </nav>
-    <div class="header-right">
-      <span>USD ▾</span>
-      <button class="btn-outline">Log in</button>
-      <button class="btn-primary">Sign up</button>
+  <header>
+    <div class="container">
+      <nav class="nav">
+        <div class="logo">
+          <a href="/"><img src="/images/logo.png" alt="Team One Tour logo"></a>
+        </div>
+        <div class="nav-right">
+          <!-- Login Dropdown -->
+          <div class="dropdown" id="loginDropdown">
+            <button class="btn btn-ghost" onclick="toggleDropdown('loginDropdown', 'loginMenu')">
+              로그인
+              <svg class="dropdown-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"/>
+              </svg>
+            </button>
+            <div class="dropdown-menu" id="loginMenu" role="menu">
+              <a href="#" role="menuitem" onclick="handleAction('customerLogin')">👤 고객 로그인</a>
+              <a href="#" role="menuitem" onclick="handleAction('guideLogin')">⭐ 가이드 로그인</a>
+            </div>
+          </div>
+
+          <!-- Signup Dropdown -->
+          <div class="dropdown" id="signupDropdown">
+            <button class="btn btn-primary" onclick="toggleDropdown('signupDropdown', 'signupMenu')">
+              회원가입
+              <svg class="dropdown-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"/>
+              </svg>
+            </button>
+            <div class="dropdown-menu" id="signupMenu" role="menu">
+              <a href="#" role="menuitem" onclick="handleAction('customerSignup')">👤 고객 회원가입</a>
+              <a href="/login/guidesignup.html" role="menuitem">⭐ 가이드 회원가입</a>
+            </div>
+          </div>
+        </div>
+      </nav>
     </div>
   </header>
 
-  <!-- Hero -->
-  <section class="hero">
-    <div class="hero-inner">
-      <div class="hero-text">
-        <h1 class="hero-title">Discover and book amazing experiences</h1>
-        <p class="hero-sub">
-          Activities, attractions, transport and stays—book everything in one place with instant confirmation.
+  <!-- Main -->
+  <main>
+    <div class="container">
+      <!-- Hero Section - 개선된 AI 추천 영역 포함 -->
+      <section class="hero">
+        <div class="hero-left">
+          <h1 class="hero-title">정보는 AI로,<br />감동은 현지 가이드로</h1>
+          <p class="hero-sub">
+            Team One Tour는 인공지능으로 여행 정보를 자동으로 분석하고, 일정과 가이드를 최적화합니다.<br />
+            여행자는 현지 가이드와 함께, 감동적인 특별한 경험을 할 수 있습니다.
+          </p>
+          <div class="hero-actions">
+            <button class="btn btn-primary">AI 일정 생성</button>
+            <button class="btn btn-outline">가이드 둘러보기</button>
+          </div>
+          <div class="hero-stats">
+            <div class="hero-stat-item">✅ 검증된 가이드 320+</div>
+            <div class="hero-stat-item">⭐ 평균 평점 4.92</div>
+            <div class="hero-stat-item">📝 여행자 후기 1,240+</div>
+          </div>
+        </div>
+
+        <!-- ===== 전문가 의견 반영: AI 추천 UAE 여행 (결과 미리보기) ===== -->
+        <div class="hero-right">
+          <div class="hero-right-badge"><i class="fas fa-robot" style="margin-right:6px;"></i> 실시간 AI 추천</div>
+          
+          <div class="hero-right-title">
+            UAE 맞춤형 3일 코스
+            <small>두바이 + 아부다비</small>
+          </div>
+          
+          <!-- 추천 코스 미리보기 -->
+          <div class="hero-right-highlight">
+            <div class="label"><i class="far fa-calendar-alt"></i> 오늘의 추천 일정</div>
+            <div class="content">
+              <span>🌆 두바이 시티 투어</span>
+              <span class="tag">사막 사파리</span>
+              <span class="tag">부르즈 할리파</span>
+              <span>→ 루브르 아부다비</span>
+            </div>
+          </div>
+
+          <!-- 추천 가이드 미리보기 -->
+          <div class="hero-right-guide">
+            <img src="https://i.pravatar.cc/64?img=11" alt="가이드 사진">
+            <div>
+              <div class="name">Ahmad Al Maktoum</div>
+              <div class="rating">⭐ 4.9 · 감동 후기 200+</div>
+            </div>
+            <span style="font-size:12px; background:rgba(255,255,255,0.12); padding:2px 10px; border-radius:999px; margin-left:auto;">🇦🇪 15년 경험</span>
+          </div>
+
+          <!-- 추천 이유 + 액션 버튼 -->
+          <div style="font-size:13px; color:#dbeafe; margin-bottom:10px; display:flex; align-items:center; gap:6px;">
+            <i class="fas fa-lightbulb" style="color:#fbbf24;"></i> 
+            <span>최근 2주간 40대 가족 여행객에게 가장 높은 만족도</span>
+          </div>
+
+          <div class="hero-right-actions">
+            <button class="btn-sm"><i class="fas fa-arrow-right"></i> 이 여행으로 바로가기</button>
+            <button class="btn-sm btn-sm-outline"><i class="fas fa-sync-alt"></i> 다른 추천 보기</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- AI Services -->
+      <section id="ai-services">
+        <h2 class="section-title">똑똑한 여행, AI가 시작합니다</h2>
+        <p class="section-sub">
+          여행 준비부터 현지 일정까지, Team One Tour의 AI 서비스가 자동으로 도와드립니다.
         </p>
-        <div class="hero-search">
-          <input type="text" placeholder="Where are you going?" />
-          <button>Search</button>
-        </div>
-        <div class="hero-badges">
-          <span class="hero-badge">Instant confirmation</span>
-          <span class="hero-badge">Free cancellation on selected activities</span>
-          <span class="hero-badge">Best price guarantee</span>
-        </div>
-      </div>
-      <div class="hero-image">
-        Hero image / illustration area<br />
-        (Use your own banner or city photo here)
-      </div>
-    </div>
-  </section>
-
-  <!-- Popular destinations -->
-  <section class="section">
-    <div class="section-header">
-      <div>
-        <h2 class="section-title">Popular destinations</h2>
-        <p class="section-sub">Trending cities and regions to explore right now.</p>
-      </div>
-      <a href="#" style="font-size:13px; color:#ff5a5f;">View all ▸</a>
-    </div>
-    <div class="chips">
-      <button class="chip">Tokyo</button>
-      <button class="chip">Osaka</button>
-      <button class="chip">Seoul</button>
-      <button class="chip">Dubai</button>
-      <button class="chip">Singapore</button>
-    </div>
-    <div class="grid">
-      <article class="card">
-        <div class="card-img">Tokyo city image</div>
-        <div class="card-body">
-          <div class="card-title">Tokyo, Japan</div>
-          <div class="card-meta">Top attractions · Food · Anime & culture</div>
-          <div class="card-tags">
-            <span class="tag">Family-friendly</span>
-            <span class="tag">City breaks</span>
+        <div class="ai-grid">
+          <div class="ai-card">
+            <div class="ai-title">AI 일정 생성</div>
+            <div class="ai-desc">
+              여행 기간, 인원, 취향을 입력하면<br />
+              AI가 최적의 UAE 여행 일정을 자동으로 설계합니다.
+            </div>
+            <button class="ai-btn">일정 만들기</button>
+          </div>
+          <div class="ai-card">
+            <div class="ai-title">AI 가이드 추천</div>
+            <div class="ai-desc">
+              여행 스타일과 관심사를 분석해<br />
+              가장 잘 맞는 현지 가이드를 추천합니다.
+            </div>
+            <button class="ai-btn">가이드 추천 받기</button>
+          </div>
+          <div class="ai-card">
+            <div class="ai-title">AI 자동 상담</div>
+            <div class="ai-desc">
+              항공, 호텔, 교통, 액티비티까지<br />
+              궁금한 점을 AI에게 바로 물어보세요.
+            </div>
+            <button class="ai-btn">상담 시작하기</button>
+          </div>
+          <div class="ai-card">
+            <div class="ai-title">AI 음성 상담</div>
+            <div class="ai-desc">
+              텍스트가 아닌 음성으로 질문하고<br />
+              실시간으로 여행 상담을 받아보세요.
+            </div>
+            <button class="ai-btn">음성으로 상담하기</button>
           </div>
         </div>
-      </article>
-      <article class="card">
-        <div class="card-img">Dubai skyline image</div>
-        <div class="card-body">
-          <div class="card-title">Dubai, UAE</div>
-          <div class="card-meta">Burj Khalifa · Desert safari · Theme parks</div>
-          <div class="card-tags">
-            <span class="tag">Desert</span>
-            <span class="tag">Luxury</span>
-          </div>
-        </div>
-      </article>
-      <article class="card">
-        <div class="card-img">Osaka image</div>
-        <div class="card-body">
-          <div class="card-title">Osaka, Japan</div>
-          <div class="card-meta">USJ · Street food · Nightlife</div>
-          <div class="card-tags">
-            <span class="tag">Theme park</span>
-            <span class="tag">Food</span>
-          </div>
-        </div>
-      </article>
+      </section>
     </div>
-  </section>
-
-  <!-- Featured activities -->
-  <section class="section">
-    <div class="section-header">
-      <div>
-        <h2 class="section-title">Featured activities</h2>
-        <p class="section-sub">Handpicked experiences with great reviews and flexible booking.</p>
-      </div>
-      <a href="#" style="font-size:13px; color:#ff5a5f;">See more ▸</a>
-    </div>
-    <div class="grid">
-      <article class="card">
-        <div class="card-img">TeamLab Planets image</div>
-        <div class="card-body">
-          <div class="card-title">teamLab Planets TOKYO Ticket</div>
-          <div class="card-meta">⭐ 4.8 · 12k+ bookings</div>
-          <div class="card-price">From US$ 28.00</div>
-          <div class="card-tags">
-            <span class="tag">Instant confirmation</span>
-            <span class="tag">Free cancellation</span>
-          </div>
-        </div>
-      </article>
-      <article class="card">
-        <div class="card-img">Burj Khalifa image</div>
-        <div class="card-body">
-          <div class="card-title">Burj Khalifa At The Top Ticket</div>
-          <div class="card-meta">⭐ 4.7 · 20k+ bookings</div>
-          <div class="card-price">From US$ 45.00</div>
-          <div class="card-tags">
-            <span class="tag">Mobile ticket</span>
-            <span class="tag">Klook's choice</span>
-          </div>
-        </div>
-      </article>
-      <article class="card">
-        <div class="card-img">Universal Studios Japan image</div>
-        <div class="card-body">
-          <div class="card-title">Universal Studios Japan 1-Day Pass</div>
-          <div class="card-meta">⭐ 4.9 · 30k+ bookings</div>
-          <div class="card-price">From US$ 80.00</div>
-          <div class="card-tags">
-            <span class="tag">Popular</span>
-            <span class="tag">Skip-the-line</span>
-          </div>
-        </div>
-      </article>
-    </div>
-  </section>
-
-  <!-- App / promo section -->
-  <section class="section">
-    <div class="section-header">
-      <div>
-        <h2 class="section-title">Download the app</h2>
-        <p class="section-sub">Manage bookings, access mobile tickets and get exclusive app-only deals.</p>
-      </div>
-    </div>
-    <div style="display:flex; flex-wrap:wrap; gap:16px; align-items:center;">
-      <div style="flex:1 1 260px; font-size:13px;">
-        Scan the QR code or search “Klook” in the App Store or Google Play.
-        <br /><br />
-        Save your favourites, track bookings and access tickets offline.
-      </div>
-      <div style="flex:0 0 160px; height:120px; background:#ddd; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:12px;">
-        QR / app image
-      </div>
-    </div>
-  </section>
+  </main>
 
   <!-- Footer -->
-  <footer class="footer">
-    <div class="footer-inner">
-      <div>
-        <div class="footer-title">Company</div>
-        <a href="#">About us</a>
-        <a href="#">Careers</a>
-        <a href="#">Press</a>
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-title">Team One Tour FZ LLC – United Arab Emirates</div>
+        <div class="footer-email">Email: Admin@teamonetour.com</div>
+        <div class="footer-divider"></div>
+        <div class="footer-bottom">© 2026 Team One Tour. All rights reserved.</div>
       </div>
-      <div>
-        <div class="footer-title">Partner with us</div>
-        <a href="#">List your services</a>
-        <a href="#">Affiliate program</a>
-      </div>
-      <div>
-        <div class="footer-title">Support</div>
-        <a href="#">Help center</a>
-        <a href="#">Contact us</a>
-        <a href="#">Refund policy</a>
-      </div>
-      <div>
-        <div class="footer-title">Legal</div>
-        <a href="#">Terms of use</a>
-        <a href="#">Privacy policy</a>
-        <a href="#">Cookie policy</a>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <span>© 2026 Klook-style Demo. For learning & personal use only.</span>
-      <span>Language: English · Currency: USD</span>
     </div>
   </footer>
+
+  <script>
+    // Toggle dropdown
+    function toggleDropdown(dropdownId, menuId) {
+      const menu = document.getElementById(menuId);
+      const dropdown = document.getElementById(dropdownId);
+      const isOpen = menu.classList.contains('show');
+      
+      closeAllDropdowns();
+      
+      if (!isOpen) {
+        menu.classList.add('show');
+        dropdown.classList.add('show');
+      }
+    }
+
+    function closeAllDropdowns() {
+      document.querySelectorAll('.dropdown-menu').forEach(menu => {
+        menu.classList.remove('show');
+      });
+      document.querySelectorAll('.dropdown').forEach(dropdown => {
+        dropdown.classList.remove('show');
+      });
+    }
+
+    function handleAction(action) {
+      event.preventDefault();
+      console.log('Selected action:', action);
+      
+      if (action === 'customerSignup') {
+        window.location.href = '/login/customersignup.html';
+      } else if (action === 'customerLogin') {
+        window.location.href = '/login/customerlogin.html';
+      } else if (action === 'guideLogin') {
+        window.location.href = '/login/guidelogin.html';
+      } else {
+        alert(`${action}을(를) 선택하셨습니다.`);
+      }
+      closeAllDropdowns();
+    }
+
+    document.addEventListener('click', function(event) {
+      const isDropdown = event.target.closest('.dropdown');
+      if (!isDropdown) {
+        closeAllDropdowns();
+      }
+    });
+
+    document.addEventListener('keydown', function(event) {
+      if (event.key === 'Escape') {
+        closeAllDropdowns();
+      }
+    });
+  </script>
 </body>
 </html>
