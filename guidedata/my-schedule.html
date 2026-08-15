@@ -27,8 +27,6 @@
         .btn-primary:hover { background: #1d4ed8; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(37,99,235,0.3); }
         .btn-outline { background: transparent; color: #4b5563; border: 1px solid #d1d5db; }
         .btn-outline:hover { background: #f9fafb; }
-        .btn-danger { background: #dc2626; color: #ffffff; }
-        .btn-danger:hover { background: #b91c1c; }
         .btn-sm { padding: 6px 14px; font-size: 12px; border-radius: 8px; }
         .btn-icon { width: 36px; height: 36px; border-radius: 10px; background: transparent; border: 1px solid #e5e7eb; color: #6b7280; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; }
         .btn-icon:hover { background: #f3f4f6; }
@@ -110,14 +108,6 @@
         .toast.error { background: #dc2626; }
         .toast.info { background: #2563eb; }
 
-        .debug-panel { background: #1e293b; color: #e2e8f0; padding: 14px 20px; border-radius: 8px; margin-bottom: 16px; font-size: 13px; font-family: 'Courier New', monospace; line-height: 1.8; overflow-x: auto; }
-        .debug-panel .label { color: #94a3b8; }
-        .debug-panel .value { color: #60a5fa; font-weight: 600; }
-        .debug-panel .value.success { color: #34d399; }
-        .debug-panel .value.error { color: #f87171; }
-        .debug-panel .value.warning { color: #fbbf24; }
-        .debug-row { display: flex; gap: 8px; flex-wrap: wrap; }
-
         @media (max-width: 992px) { .main-content { grid-template-columns: 1fr; } .left-panel { border-right: none; border-bottom: 1px solid #edf2f7; } .app-header { padding: 14px 20px; } .left-panel, .right-panel { padding: 20px; } }
         @media (max-width: 640px) { body { padding: 10px; } .app-container { border-radius: 16px; } .app-header .logo-area h1 { font-size: 16px; } .app-header .header-actions .btn span { display: none; } .filter-row { flex-direction: column; } .filter-row .filter-group { min-width: 100%; } .calendar-grid .day { padding: 8px 0; font-size: 12px; } .schedule-item, .result-item { flex-wrap: wrap; gap: 8px; } }
         @media (max-width: 480px) { .app-header { padding: 12px 16px; } .app-header .logo-area .logo-icon { font-size: 18px; } .app-header .logo-area h1 { font-size: 14px; } .btn { padding: 6px 12px; font-size: 12px; } .left-panel, .right-panel { padding: 16px; } .calendar-header .month-year { font-size: 15px; } }
@@ -127,21 +117,6 @@
 <body>
 
     <div class="toast" id="toast"></div>
-
-    <!-- ===== 디버그 패널 ===== -->
-    <div class="app-container" style="margin-bottom: 20px; padding: 16px 24px; background: #1e293b; border-radius: 12px;">
-        <div class="debug-panel" id="debugPanel">
-            <div class="debug-row">
-                <span>🔍 <span class="label">Firebase:</span> <span class="value" id="debugStatus">확인 중...</span></span>
-                <span style="margin-left:16px;">📌 <span class="label">UID:</span> <span class="value" id="debugUid">-</span></span>
-                <span style="margin-left:16px;">👤 <span class="label">가이드:</span> <span class="value" id="debugGuide">-</span></span>
-                <span style="margin-left:16px;">📁 <span class="label">컬렉션:</span> <span class="value" style="color:#fbbf24;">schedules / guides</span></span>
-            </div>
-            <div class="debug-row" style="margin-top:4px; font-size:12px; color:#64748b;">
-                <span>💡 guides 컬렉션에 UID로 문서를 추가하세요 (소문자 g)</span>
-            </div>
-        </div>
-    </div>
 
     <!-- ===== 모달 ===== -->
     <div class="modal-overlay" id="modalOverlay">
@@ -179,13 +154,6 @@
                 <div class="form-group">
                     <label>📝 메모</label>
                     <textarea id="inputMemo" placeholder="추가 정보를 입력하세요"></textarea>
-                </div>
-                <div class="form-group" style="background:#f8fafc; padding:12px 16px; border-radius:10px; border:1px solid #e5e7eb;">
-                    <div style="font-size:12px; color:#6b7280; margin-bottom:4px;">👤 연결된 가이드</div>
-                    <div id="guideDisplay" style="font-size:14px; font-weight:500; color:#1a1a2e;">
-                        <span id="guideNameDisplay">로딩 중...</span>
-                        <span id="guideEmailDisplay" style="font-size:12px; color:#9ca3af; font-weight:400; margin-left:8px;"></span>
-                    </div>
                 </div>
                 <div class="form-actions">
                     <button type="button" class="btn btn-outline" onclick="closeModal()">취소</button>
@@ -316,15 +284,13 @@
         // ============================================================
         // 🔥 사용자 UID (Firebase Authentication에서 복사)
         // ============================================================
-        // koinco1@gmail.com의 UID: 3oFdsbDOSwNIAcBYIDzGb2x13PN2
         const CURRENT_UID = '3oFdsbDOSwNIAcBYIDzGb2x13PN2';
 
         // ============================================================
-        // 🔥 컬렉션 이름 (Firestore 실제 이름과 정확히 일치해야 함)
+        // 🔥 컬렉션 이름 (Firestore 실제 이름과 정확히 일치)
         // ============================================================
-        // ⚠️ Firestore는 대소문자를 구분합니다!
-        const SCHEDULES_COLLECTION = 'schedules';  // 소문자 s
-        const GUIDES_COLLECTION = 'guides';        // ✅ 소문자 g (Firestore 실제 이름과 일치)
+        const SCHEDULES_COLLECTION = 'schedules';
+        const GUIDES_COLLECTION = 'guides';  // ⚠️ 소문자 g
 
         // ============================================================
         // Firebase 초기화
@@ -332,12 +298,9 @@
         try {
             firebase.initializeApp(firebaseConfig);
             console.log('✅ Firebase 초기화 성공');
-            document.getElementById('debugStatus').textContent = '✅ 연결됨';
-            document.getElementById('debugStatus').className = 'value success';
         } catch (error) {
             console.error('❌ Firebase 초기화 실패:', error);
-            document.getElementById('debugStatus').textContent = '❌ 실패: ' + error.message;
-            document.getElementById('debugStatus').className = 'value error';
+            alert('Firebase 연결에 실패했습니다. 설정을 확인해주세요.');
         }
 
         const db = firebase.firestore();
@@ -351,7 +314,7 @@
         let currentGuideInfo = null;
 
         // ============================================================
-        // 토스트
+        // 토스트 메시지
         // ============================================================
         function showToast(msg, type = 'success') {
             const t = document.getElementById('toast');
@@ -362,57 +325,29 @@
         }
 
         // ============================================================
-        // 🔥 현재 가이드 정보 불러오기 (UID 기반 - 소문자 guides 컬렉션)
+        // 🔥 현재 가이드 정보 불러오기 (UID 기반)
         // ============================================================
         async function loadCurrentGuide() {
-            const uidDisplay = document.getElementById('debugUid');
-            const guideDisplay = document.getElementById('debugGuide');
-
-            uidDisplay.textContent = CURRENT_UID;
-
-            if (!CURRENT_UID || CURRENT_UID === 'YOUR_UID_HERE') {
-                uidDisplay.className = 'value error';
-                guideDisplay.textContent = '⚠️ UID 설정 필요';
-                guideDisplay.className = 'value error';
-                document.getElementById('guideNameDisplay').textContent = '⚠️ UID 설정 필요';
-                showToast('⚠️ UID를 설정해주세요!', 'error');
-                return;
-            }
-
             try {
-                console.log(`🔍 guides/${CURRENT_UID} 조회 중... (소문자 g)`);
+                console.log(`🔍 guides/${CURRENT_UID} 조회 중...`);
                 const doc = await db.collection(GUIDES_COLLECTION).doc(CURRENT_UID).get();
 
                 if (doc.exists) {
                     currentGuideInfo = { uid: CURRENT_UID, ...doc.data() };
-                    console.log('✅ 가이드 정보:', currentGuideInfo);
-
-                    guideDisplay.textContent = `${currentGuideInfo.name || '이름 없음'} (${currentGuideInfo.email || ''})`;
-                    guideDisplay.className = 'value success';
-
-                    document.getElementById('guideNameDisplay').textContent = currentGuideInfo.name || '이름 없음';
-                    document.getElementById('guideEmailDisplay').textContent = currentGuideInfo.email || '';
-
+                    console.log('✅ 가이드 정보 로드 성공:', currentGuideInfo);
                     showToast('✅ 가이드 정보를 불러왔습니다!', 'success');
-
                 } else {
                     console.warn('⚠️ guides 컬렉션에 문서 없음. UID:', CURRENT_UID);
-                    guideDisplay.textContent = '❌ guides 컬렉션에 문서 없음!';
-                    guideDisplay.className = 'value error';
-                    document.getElementById('guideNameDisplay').textContent = '❌ 가이드 정보 없음';
-                    document.getElementById('guideEmailDisplay').textContent = '(guides 컬렉션에 추가 필요)';
-
                     showToast('⚠️ guides 컬렉션에 가이드 문서를 추가해주세요!', 'error');
                 }
 
             } catch (error) {
                 console.error('❌ 가이드 정보 로드 오류:', error);
-                guideDisplay.textContent = '❌ 로드 실패: ' + error.message;
-                guideDisplay.className = 'value error';
-                document.getElementById('guideNameDisplay').textContent = '❌ 로드 실패';
-                document.getElementById('guideEmailDisplay').textContent = '';
-
-                showToast('❌ 가이드 정보를 불러오지 못했습니다', 'error');
+                if (error.message.includes('offline')) {
+                    showToast('⚠️ 인터넷 연결을 확인해주세요!', 'error');
+                } else {
+                    showToast('❌ 가이드 정보를 불러오지 못했습니다', 'error');
+                }
             }
         }
 
@@ -436,7 +371,7 @@
         }
 
         // ============================================================
-        // 🔥 저장 (schedules 컬렉션에 저장)
+        // 🔥 저장
         // ============================================================
         async function saveSchedule(event) {
             event.preventDefault();
@@ -468,7 +403,11 @@
 
             } catch (error) {
                 console.error('저장 오류:', error);
-                showToast('❌ 저장 실패: ' + error.message, 'error');
+                if (error.message.includes('offline')) {
+                    showToast('⚠️ 인터넷 연결을 확인해주세요!', 'error');
+                } else {
+                    showToast('❌ 저장 실패: ' + error.message, 'error');
+                }
             }
         }
 
@@ -592,7 +531,6 @@
 
             } catch (error) {
                 console.error('검색 오류:', error);
-                showToast('❌ 검색 실패: ' + error.message, 'error');
             }
         }
 
@@ -682,10 +620,7 @@
         // 🔥 초기 실행
         // ============================================================
         async function init() {
-            // UID 표시
-            document.getElementById('debugUid').textContent = CURRENT_UID;
-
-            // 가이드 정보 로드 (소문자 guides 컬렉션 사용)
+            // 가이드 정보 로드
             await loadCurrentGuide();
 
             // 일정 데이터 로드
