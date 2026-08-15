@@ -2,248 +2,969 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<title>My Schedule (SPA)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guide Platform – Schedule Management</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
 <style>
-body {
-    font-family: Arial;
-    background: #f5f7fa;
-    margin: 0;
+/* ===== 일정 관리 전용 스타일 ===== */
+.schedule-container {
     display: flex;
+    gap: 32px;
+    margin-top: 16px;
 }
 
-.sidebar {
-    width: 220px;
-    background: #1f2937;
-    color: white;
-    height: 100vh;
-    padding: 20px;
-}
-.sidebar h3 {
-    margin-bottom: 20px;
-}
-.sidebar a {
-    display: block;
-    padding: 12px;
-    margin-top: 10px;
-    background: #374151;
-    color: white;
-    text-decoration: none;
-    border-radius: 6px;
-}
-.sidebar a:hover {
-    background: #4b5563;
-}
-
-.main {
-    flex: 1;
-    padding: 30px;
-}
-
-.card {
+/* ===== 캘린더 영역 ===== */
+.calendar-wrapper {
+    flex: 1.2;
     background: white;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 20px;
 }
 
-input, textarea, select {
-    width: 100%;
-    padding: 12px;
-    margin-top: 10px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-}
-textarea {
-    height: 80px;
+.calendar-header h2 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1a1a2e;
 }
 
-button {
-    padding: 12px 20px;
+.calendar-nav {
+    display: flex;
+    gap: 8px;
+}
+
+.calendar-nav button {
+    padding: 8px 16px;
+    border: 1px solid #e5e7eb;
+    background: white;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.2s;
+    color: #4b5563;
+}
+
+.calendar-nav button:hover {
+    background: #f0f7ff;
+    border-color: #0078ff;
+    color: #0078ff;
+}
+
+.calendar-nav .today-btn {
     background: #0078ff;
     color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    margin-top: 15px;
+    border-color: #0078ff;
 }
-button:hover {
-    background: #005fcc;
+
+.calendar-nav .today-btn:hover {
+    background: #0066dd;
+}
+
+/* ===== 캘린더 그리드 ===== */
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+}
+
+.calendar-weekday {
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: #6b7280;
+    padding: 10px 0;
+    border-bottom: 2px solid #f0f2f5;
+}
+
+.calendar-day {
+    min-height: 80px;
+    padding: 6px 8px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: #f9fafb;
+    border: 1px solid transparent;
+    position: relative;
+}
+
+.calendar-day:hover {
+    background: #f0f7ff;
+    border-color: #0078ff;
+}
+
+.calendar-day.other-month {
+    opacity: 0.3;
+}
+
+.calendar-day.today {
+    background: #e8f0fe;
+    border-color: #0078ff;
+}
+
+.calendar-day.selected {
+    background: #0078ff;
+    color: white;
+    border-color: #0078ff;
+}
+
+.calendar-day.selected .day-number {
+    color: white;
+}
+
+.calendar-day .day-number {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1a1a2e;
+}
+
+.calendar-day .event-dots {
+    display: flex;
+    gap: 3px;
+    margin-top: 4px;
+    flex-wrap: wrap;
+}
+
+.calendar-day .event-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #0078ff;
+}
+
+.calendar-day .event-dot.confirmed {
+    background: #10b981;
+}
+
+.calendar-day .event-dot.pending {
+    background: #f59e0b;
+}
+
+.calendar-day .event-dot.completed {
+    background: #6b7280;
+}
+
+.calendar-day .event-count {
+    font-size: 11px;
+    font-weight: 600;
+    color: #0078ff;
+    margin-top: 2px;
+}
+
+.calendar-day.selected .event-count {
+    color: rgba(255,255,255,0.9);
+}
+
+/* ===== 일정 리스트 영역 ===== */
+.schedule-list-wrapper {
+    flex: 1;
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+.schedule-list-wrapper::-webkit-scrollbar {
+    width: 4px;
+}
+
+.schedule-list-wrapper::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.schedule-list-wrapper::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+.schedule-list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.schedule-list-header h3 {
+    font-size: 17px;
+    font-weight: 700;
+    color: #1a1a2e;
+}
+
+.schedule-list-header .date-badge {
+    font-size: 13px;
+    color: #6b7280;
+    background: #f0f4f9;
+    padding: 4px 12px;
+    border-radius: 12px;
 }
 
 .schedule-item {
-    padding: 12px;
-    border-bottom: 1px solid #ddd;
+    padding: 14px 16px;
+    border-radius: 12px;
+    border: 1px solid #f0f2f5;
+    margin-bottom: 10px;
+    transition: all 0.2s;
+    cursor: pointer;
 }
-.schedule-item:last-child {
-    border-bottom: none;
+
+.schedule-item:hover {
+    border-color: #0078ff;
+    box-shadow: 0 4px 12px rgba(0,120,255,0.08);
+}
+
+.schedule-item .item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    margin-bottom: 6px;
+}
+
+.schedule-item .item-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1a1a2e;
+}
+
+.schedule-item .item-time {
+    font-size: 13px;
+    color: #0078ff;
+    font-weight: 600;
+}
+
+.schedule-item .item-details {
+    font-size: 13px;
+    color: #6b7280;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.schedule-item .item-details span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.schedule-item .item-status {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 2px 10px;
+    border-radius: 12px;
+    display: inline-block;
+}
+
+.status-confirmed {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.status-pending {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.status-completed {
+    background: #f0f4f9;
+    color: #6b7280;
+}
+
+.status-cancelled {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.schedule-empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: #9ca3af;
+}
+
+.schedule-empty .empty-icon {
+    font-size: 48px;
+    display: block;
+    margin-bottom: 12px;
+}
+
+/* ===== 일정 추가 버튼 ===== */
+.add-schedule-btn {
+    width: 100%;
+    padding: 12px;
+    background: #0078ff;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 16px;
+}
+
+.add-schedule-btn:hover {
+    background: #0066dd;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,120,255,0.3);
+}
+
+/* ===== 일정 추가 모달 ===== */
+.schedule-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(4px);
+    z-index: 99999;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.schedule-modal-overlay.active {
+    display: flex;
+}
+
+.schedule-modal {
+    background: white;
+    border-radius: 20px;
+    max-width: 500px;
+    width: 100%;
+    padding: 32px;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.2);
+    animation: modalSlideIn 0.3s ease;
+}
+
+.schedule-modal h2 {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: #1a1a2e;
+}
+
+.schedule-modal .form-group {
+    margin-bottom: 16px;
+}
+
+.schedule-modal .form-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 4px;
+}
+
+.schedule-modal .form-group input,
+.schedule-modal .form-group select,
+.schedule-modal .form-group textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1.5px solid #e5e7eb;
+    font-size: 14px;
+    font-family: inherit;
+    transition: all 0.2s;
+    background: #f9fafb;
+}
+
+.schedule-modal .form-group input:focus,
+.schedule-modal .form-group select:focus,
+.schedule-modal .form-group textarea:focus {
+    outline: none;
+    border-color: #0078ff;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(0,120,255,0.1);
+}
+
+.schedule-modal .form-group textarea {
+    height: 80px;
+    resize: vertical;
+}
+
+.schedule-modal .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.schedule-modal .btn-group {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.schedule-modal .btn {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.schedule-modal .btn-primary {
+    background: #0078ff;
+    color: white;
+}
+
+.schedule-modal .btn-primary:hover {
+    background: #0066dd;
+}
+
+.schedule-modal .btn-secondary {
+    background: #f0f4f9;
+    color: #4b5563;
+}
+
+.schedule-modal .btn-secondary:hover {
+    background: #e5e9f0;
+}
+
+.schedule-modal .btn-danger {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.schedule-modal .btn-danger:hover {
+    background: #fecaca;
+}
+
+/* ===== 반응형 ===== */
+@media (max-width: 992px) {
+    .schedule-container {
+        flex-direction: column;
+    }
+
+    .calendar-wrapper,
+    .schedule-list-wrapper {
+        flex: 1;
+        max-height: none;
+    }
+
+    .calendar-day {
+        min-height: 60px;
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 640px) {
+    .calendar-day {
+        min-height: 50px;
+        padding: 4px 6px;
+        font-size: 12px;
+    }
+
+    .calendar-day .day-number {
+        font-size: 12px;
+    }
+
+    .calendar-nav button {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+
+    .schedule-modal .form-row {
+        grid-template-columns: 1fr;
+    }
 }
 </style>
 </head>
-
 <body>
+<!-- 이 파일은 기존 index.html의 schedule 페이지로 통합됩니다 -->
+<!-- 이 코드는 "내 일정" 클릭 시 표시될 콘텐츠입니다 -->
 
-<div class="sidebar">
-    <h3>Guide Menu</h3>
-    <a href="#" onclick="navigate('dashboard')">Home</a>
-    <a href="#" onclick="navigate('schedule')">My Schedule</a>
-    <a href="#" onclick="navigate('bookings')">Bookings</a>
-    <a href="#" onclick="navigate('messages')">Messages</a>
-    <a href="#" onclick="navigate('revenue')">Revenue</a>
-    <a href="#" onclick="navigate('profile')">Edit Profile</a>
+<div class="schedule-container">
+    
+    <!-- ===== 캘린더 영역 ===== -->
+    <div class="calendar-wrapper">
+        <div class="calendar-header">
+            <h2 id="calendarTitle">2026년 8월</h2>
+            <div class="calendar-nav">
+                <button onclick="changeMonth(-1)">◀</button>
+                <button class="today-btn" onclick="goToday()">오늘</button>
+                <button onclick="changeMonth(1)">▶</button>
+            </div>
+        </div>
+        
+        <div class="calendar-grid" id="calendarGrid">
+            <!-- JavaScript로 생성 -->
+        </div>
+    </div>
+
+    <!-- ===== 일정 리스트 영역 ===== -->
+    <div class="schedule-list-wrapper">
+        <div class="schedule-list-header">
+            <h3 id="listTitle">📋 일정</h3>
+            <span class="date-badge" id="dateBadge">2026년 8월 15일</span>
+        </div>
+        <div id="scheduleList">
+            <!-- JavaScript로 생성 -->
+        </div>
+        <button class="add-schedule-btn" onclick="openAddScheduleModal()">➕ 새 일정 추가</button>
+    </div>
+
 </div>
 
-<div class="main" id="app">
-    <!-- SPA 화면이 여기에 로드됨 -->
+<!-- ===== 일정 추가/수정 모달 ===== -->
+<div class="schedule-modal-overlay" id="scheduleModal">
+    <div class="schedule-modal">
+        <h2 id="modalTitle">✏️ 새 일정 추가</h2>
+        <form id="scheduleForm" onsubmit="return false;">
+            <input type="hidden" id="editScheduleId">
+            
+            <div class="form-group">
+                <label>투어 제목 <span style="color:#dc2626;">*</span></label>
+                <input id="schedTitle" placeholder="예: 두바이 시티 투어">
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>날짜 <span style="color:#dc2626;">*</span></label>
+                    <input id="schedDate" type="date">
+                </div>
+                <div class="form-group">
+                    <label>시간</label>
+                    <input id="schedTime" type="time">
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>고객명</label>
+                    <input id="schedCustomer" placeholder="고객 이름">
+                </div>
+                <div class="form-group">
+                    <label>인원</label>
+                    <input id="schedCount" type="number" placeholder="0" min="0">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>장소</label>
+                <input id="schedLocation" placeholder="예: Dubai Marina">
+            </div>
+            
+            <div class="form-group">
+                <label>상태</label>
+                <select id="schedStatus">
+                    <option value="confirmed">✅ 예약완료</option>
+                    <option value="pending">⏳ 대기중</option>
+                    <option value="completed">✔️ 완료</option>
+                    <option value="cancelled">❌ 취소</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>메모</label>
+                <textarea id="schedMemo" placeholder="추가 메모를 입력하세요"></textarea>
+            </div>
+            
+            <div class="btn-group">
+                <button type="button" class="btn btn-secondary" onclick="closeScheduleModal()">취소</button>
+                <button type="button" class="btn btn-danger" id="deleteBtn" style="display:none;" onclick="deleteSchedule()">🗑️ 삭제</button>
+                <button type="button" class="btn btn-primary" onclick="saveSchedule()">💾 저장</button>
+            </div>
+        </form>
+    </div>
 </div>
 
-<!-- Firebase v10 -->
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { getFirestore, collection, addDoc, getDocs } 
-        from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyCgOSQsv_MRdaqrW4wJw0q2QY6wXZ-azQs",
-      authDomain: "guidelogin-b0053.firebaseapp.com",
-      projectId: "guidelogin-b0053",
-      storageBucket: "guidelogin-b0053.firebasestorage.app",
-      messagingSenderId: "981519805247",
-      appId: "1:981519805247:web:cc32682b177a4957c0818a",
-      measurementId: "G-2VR4TS6JND"
-    };
-
-    const appFirebase = initializeApp(firebaseConfig);
-    const auth = getAuth(appFirebase);
-    const db = getFirestore(appFirebase);
-
-    let currentUser = null;
-
-    onAuthStateChanged(auth, async user => {
-        if (!user) {
-            window.location.href = "../login/guidelogin.html";
-            return;
+<script>
+    // ============================================
+    //  일정 관리 시스템 (캘린더 + 리스트)
+    // ============================================
+    
+    // ===== 상태 변수 =====
+    let currentDate = new Date();
+    let selectedDate = new Date();
+    let schedules = [];
+    let currentViewDate = new Date();
+    
+    // ===== 샘플 데이터 (Firebase 연동 전 테스트용) =====
+    const sampleSchedules = [
+        {
+            id: '1',
+            title: '두바이 시티 투어',
+            date: getDateString(new Date()),
+            time: '10:00',
+            customer: '김영수',
+            count: 3,
+            location: 'Dubai Marina',
+            status: 'confirmed',
+            memo: '시내 주요 명소 투어'
+        },
+        {
+            id: '2',
+            title: '사막 사파리',
+            date: getDateString(new Date(Date.now() + 86400000 * 2)),
+            time: '14:00',
+            customer: 'Sarah Johnson',
+            count: 2,
+            location: 'Desert Safari',
+            status: 'pending',
+            memo: '저녁 사파리 투어'
+        },
+        {
+            id: '3',
+            title: '아부다비 투어',
+            date: getDateString(new Date(Date.now() + 86400000 * 5)),
+            time: '08:30',
+            customer: '이민호',
+            count: 4,
+            location: 'Abu Dhabi',
+            status: 'confirmed',
+            memo: '그랜드 모스크 방문'
+        },
+        {
+            id: '4',
+            title: '요트 투어',
+            date: getDateString(new Date(Date.now() + 86400000 * 7)),
+            time: '16:00',
+            customer: 'Emma Wilson',
+            count: 6,
+            location: 'Dubai Marina',
+            status: 'completed',
+            memo: '선셋 요트 투어'
         }
-        currentUser = user;
-        navigate("schedule"); // 기본 화면
-    });
-
-    // SPA 화면 전환
-    function navigate(page) {
-        if (page === "schedule") loadSchedulePage();
-        else document.getElementById("app").innerHTML = `<h2>${page} 화면 준비 중</h2>`;
+    ];
+    
+    // ===== 유틸리티 함수 =====
+    function getDateString(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
     }
-
-    // 일정 화면 로드
-    function loadSchedulePage() {
-        document.getElementById("app").innerHTML = `
-            <h1>My Schedule</h1>
-
-            <div class="card">
-                <h2>일정 추가</h2>
-
-                <input id="date" type="date">
-                <input id="time" type="time">
-                <input id="title" placeholder="일정 제목">
-                <textarea id="description" placeholder="일정 설명"></textarea>
-
-                <label>활동 지역</label>
-                <select id="region">
-                    <option value="Dubai Marina">Dubai Marina</option>
-                    <option value="Downtown Dubai">Downtown Dubai</option>
-                    <option value="Deira">Deira</option>
-                    <option value="Jumeirah">Jumeirah</option>
-                    <option value="Abu Dhabi">Abu Dhabi</option>
-                    <option value="Sharjah">Sharjah</option>
-                </select>
-
-                <label>전문 분야</label>
-                <select id="specialty">
-                    <option value="문화/예술">문화/예술</option>
-                    <option value="역사">역사</option>
-                    <option value="사막 사파리">사막 사파리</option>
-                    <option value="사진 촬영">사진 촬영</option>
-                    <option value="쇼핑">쇼핑</option>
-                    <option value="미식">미식</option>
-                    <option value="VIP 의전">VIP 의전</option>
-                    <option value="가족 여행">가족 여행</option>
-                    <option value="비즈니스 출장">비즈니스 출장</option>
-                </select>
-
-                <button onclick="addSchedule()">일정 저장</button>
-                <p id="msg" style="color:red;"></p>
-            </div>
-
-            <div class="card">
-                <h2>등록된 일정</h2>
-                <div id="scheduleList">불러오는 중...</div>
-            </div>
-
-            <div class="card">
-                <h2>AI 추천 일정</h2>
-                <p>가이드 전문 분야와 활동 지역 기반 추천 기능 준비 중</p>
-            </div>
-        `;
-
-        loadSchedule();
+    
+    function formatDateDisplay(dateStr) {
+        if (!dateStr) return '';
+        const parts = dateStr.split('-');
+        return `${parts[0]}년 ${parseInt(parts[1])}월 ${parseInt(parts[2])}일`;
     }
-
-    async function addSchedule() {
-        if (!currentUser) {
-            document.getElementById("msg").innerText = "로그인 정보를 불러오는 중입니다.";
-            return;
-        }
-
-        const scheduleData = {
-            date: document.getElementById("date").value,
-            time: document.getElementById("time").value,
-            title: document.getElementById("title").value,
-            description: document.getElementById("description").value,
-            region: document.getElementById("region").value,
-            specialty: document.getElementById("specialty").value,
-            createdAt: new Date()
+    
+    function getStatusText(status) {
+        const map = {
+            'confirmed': '✅ 예약완료',
+            'pending': '⏳ 대기중',
+            'completed': '✔️ 완료',
+            'cancelled': '❌ 취소'
         };
-
-        try {
-            await addDoc(collection(db, "guides", currentUser.uid, "schedule"), scheduleData);
-            document.getElementById("msg").innerText = "일정이 저장되었습니다.";
-            loadSchedule(); // 즉시 반영
-        } catch (err) {
-            document.getElementById("msg").innerText = err.message;
-        }
+        return map[status] || status;
     }
-
-    async function loadSchedule() {
-        const scheduleList = document.getElementById("scheduleList");
-
-        if (!currentUser) {
-            scheduleList.innerHTML = "로그인 정보를 불러오는 중입니다...";
-            return;
+    
+    function getStatusClass(status) {
+        return `status-${status}`;
+    }
+    
+    function getDayScheduleCount(dateStr) {
+        return schedules.filter(s => s.date === dateStr).length;
+    }
+    
+    function getSchedulesByDate(dateStr) {
+        return schedules.filter(s => s.date === dateStr);
+    }
+    
+    // ===== 초기 데이터 로드 =====
+    function loadSchedules() {
+        // 실제 Firebase 연동 시 여기서 데이터를 불러옵니다
+        // 현재는 샘플 데이터 사용
+        if (schedules.length === 0) {
+            schedules = JSON.parse(JSON.stringify(sampleSchedules));
         }
-
-        scheduleList.innerHTML = "";
-
-        const querySnapshot = await getDocs(collection(db, "guides", currentUser.uid, "schedule"));
-
-        querySnapshot.forEach(doc => {
-            const s = doc.data();
-            scheduleList.innerHTML += `
-                <div class="schedule-item">
-                    <strong>${s.date} ${s.time}</strong><br>
-                    ${s.title}<br>
-                    <em>${s.region} / ${s.specialty}</em><br>
-                    ${s.description}
+        renderCalendar();
+        renderScheduleList();
+    }
+    
+    // ===== 캘린더 렌더링 =====
+    function renderCalendar() {
+        const grid = document.getElementById('calendarGrid');
+        const title = document.getElementById('calendarTitle');
+        
+        const year = currentViewDate.getFullYear();
+        const month = currentViewDate.getMonth();
+        
+        title.textContent = `${year}년 ${month + 1}월`;
+        
+        // 요일 헤더
+        const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
+        let html = weekdays.map(day => 
+            `<div class="calendar-weekday">${day}</div>`
+        ).join('');
+        
+        // 첫 날과 마지막 날
+        const firstDay = new Date(year, month, 1).getDay();
+        const lastDate = new Date(year, month + 1, 0).getDate();
+        const today = getDateString(new Date());
+        const selected = getDateString(selectedDate);
+        
+        // 이전 달 빈 칸
+        for (let i = 0; i < firstDay; i++) {
+            html += `<div class="calendar-day other-month"></div>`;
+        }
+        
+        // 날짜
+        for (let day = 1; day <= lastDate; day++) {
+            const dateObj = new Date(year, month, day);
+            const dateStr = getDateString(dateObj);
+            const isToday = dateStr === today;
+            const isSelected = dateStr === selected;
+            const count = getDayScheduleCount(dateStr);
+            
+            html += `
+                <div class="calendar-day ${isToday ? 'today' : ''} ${isSelected ? 'selected' : ''}" 
+                     onclick="selectDate('${dateStr}')">
+                    <div class="day-number">${day}</div>
+                    ${count > 0 ? `<div class="event-count">${count}건</div>` : ''}
+                    ${count > 0 ? `<div class="event-dots">${'<div class="event-dot confirmed"></div>'.repeat(Math.min(count, 3))}</div>` : ''}
                 </div>
             `;
+        }
+        
+        grid.innerHTML = html;
+    }
+    
+    // ===== 일정 리스트 렌더링 =====
+    function renderScheduleList() {
+        const list = document.getElementById('scheduleList');
+        const badge = document.getElementById('dateBadge');
+        const dateStr = getDateString(selectedDate);
+        
+        badge.textContent = formatDateDisplay(dateStr);
+        
+        const daySchedules = getSchedulesByDate(dateStr);
+        
+        if (daySchedules.length === 0) {
+            list.innerHTML = `
+                <div class="schedule-empty">
+                    <span class="empty-icon">📭</span>
+                    <p>이 날짜에는 일정이 없습니다.</p>
+                    <p style="font-size:13px; margin-top:4px;">새 일정을 추가해보세요!</p>
+                </div>
+            `;
+            return;
+        }
+        
+        // 시간순 정렬
+        daySchedules.sort((a, b) => (a.time || '00:00').localeCompare(b.time || '00:00'));
+        
+        list.innerHTML = daySchedules.map(s => `
+            <div class="schedule-item" onclick="editSchedule('${s.id}')">
+                <div class="item-header">
+                    <span class="item-title">${s.title}</span>
+                    <span class="item-time">${s.time || '시간 미정'}</span>
+                </div>
+                <div class="item-details">
+                    <span>👤 ${s.customer || '미정'}</span>
+                    <span>👥 ${s.count || 0}명</span>
+                    <span>📍 ${s.location || '미정'}</span>
+                    <span class="item-status ${getStatusClass(s.status)}">${getStatusText(s.status)}</span>
+                </div>
+            </div>
+        `).join('');
+    }
+    
+    // ===== 날짜 선택 =====
+    function selectDate(dateStr) {
+        const parts = dateStr.split('-');
+        selectedDate = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+        renderCalendar();
+        renderScheduleList();
+    }
+    
+    // ===== 월 변경 =====
+    function changeMonth(delta) {
+        currentViewDate.setMonth(currentViewDate.getMonth() + delta);
+        renderCalendar();
+    }
+    
+    // ===== 오늘로 이동 =====
+    function goToday() {
+        const today = new Date();
+        currentViewDate = new Date(today.getFullYear(), today.getMonth(), 1);
+        selectDate(getDateString(today));
+    }
+    
+    // ===== 일정 추가 모달 =====
+    function openAddScheduleModal() {
+        document.getElementById('modalTitle').textContent = '✏️ 새 일정 추가';
+        document.getElementById('editScheduleId').value = '';
+        document.getElementById('schedTitle').value = '';
+        document.getElementById('schedDate').value = getDateString(selectedDate);
+        document.getElementById('schedTime').value = '';
+        document.getElementById('schedCustomer').value = '';
+        document.getElementById('schedCount').value = '';
+        document.getElementById('schedLocation').value = '';
+        document.getElementById('schedStatus').value = 'confirmed';
+        document.getElementById('schedMemo').value = '';
+        document.getElementById('deleteBtn').style.display = 'none';
+        
+        document.getElementById('scheduleModal').classList.add('active');
+    }
+    
+    // ===== 일정 수정 =====
+    function editSchedule(id) {
+        const s = schedules.find(item => item.id === id);
+        if (!s) return;
+        
+        document.getElementById('modalTitle').textContent = '✏️ 일정 수정';
+        document.getElementById('editScheduleId').value = id;
+        document.getElementById('schedTitle').value = s.title || '';
+        document.getElementById('schedDate').value = s.date || '';
+        document.getElementById('schedTime').value = s.time || '';
+        document.getElementById('schedCustomer').value = s.customer || '';
+        document.getElementById('schedCount').value = s.count || '';
+        document.getElementById('schedLocation').value = s.location || '';
+        document.getElementById('schedStatus').value = s.status || 'confirmed';
+        document.getElementById('schedMemo').value = s.memo || '';
+        document.getElementById('deleteBtn').style.display = 'block';
+        
+        document.getElementById('scheduleModal').classList.add('active');
+    }
+    
+    // ===== 모달 닫기 =====
+    function closeScheduleModal() {
+        document.getElementById('scheduleModal').classList.remove('active');
+    }
+    
+    // ===== 일정 저장 =====
+    function saveSchedule() {
+        const id = document.getElementById('editScheduleId').value;
+        const title = document.getElementById('schedTitle').value.trim();
+        const date = document.getElementById('schedDate').value;
+        const time = document.getElementById('schedTime').value;
+        const customer = document.getElementById('schedCustomer').value.trim();
+        const count = parseInt(document.getElementById('schedCount').value) || 0;
+        const location = document.getElementById('schedLocation').value.trim();
+        const status = document.getElementById('schedStatus').value;
+        const memo = document.getElementById('schedMemo').value.trim();
+        
+        // 필수 필드 검증
+        if (!title) {
+            alert('⚠️ 투어 제목을 입력해주세요.');
+            document.getElementById('schedTitle').focus();
+            return;
+        }
+        if (!date) {
+            alert('⚠️ 날짜를 선택해주세요.');
+            document.getElementById('schedDate').focus();
+            return;
+        }
+        
+        const scheduleData = {
+            title,
+            date,
+            time,
+            customer: customer || '미정',
+            count,
+            location: location || '미정',
+            status,
+            memo
+        };
+        
+        if (id) {
+            // 수정
+            const index = schedules.findIndex(s => s.id === id);
+            if (index !== -1) {
+                schedules[index] = { ...schedules[index], ...scheduleData };
+            }
+        } else {
+            // 새로 추가
+            const newId = Date.now().toString();
+            schedules.push({ id: newId, ...scheduleData });
+        }
+        
+        closeScheduleModal();
+        renderCalendar();
+        renderScheduleList();
+        
+        // 저장 완료 메시지 (실제 Firebase 연동 시 추가)
+        console.log('✅ 일정 저장 완료:', scheduleData);
+    }
+    
+    // ===== 일정 삭제 =====
+    function deleteSchedule() {
+        const id = document.getElementById('editScheduleId').value;
+        if (!id) return;
+        
+        if (!confirm('정말 이 일정을 삭제하시겠습니까?')) return;
+        
+        schedules = schedules.filter(s => s.id !== id);
+        closeScheduleModal();
+        renderCalendar();
+        renderScheduleList();
+        
+        console.log('🗑️ 일정 삭제 완료:', id);
+    }
+    
+    // ===== Firebase 연동 (준비) =====
+    // 실제 Firebase 연동 시 아래 함수들을 구현하세요
+    
+    /*
+    async function loadSchedulesFromFirebase() {
+        const user = auth.currentUser;
+        if (!user) return;
+        
+        const q = query(collection(db, 'schedules'), where('guideId', '==', user.uid));
+        const snapshot = await getDocs(q);
+        schedules = [];
+        snapshot.forEach(doc => {
+            schedules.push({ id: doc.id, ...doc.data() });
         });
-
-        if (scheduleList.innerHTML === "") {
-            scheduleList.innerHTML = "등록된 일정이 없습니다.";
+        renderCalendar();
+        renderScheduleList();
+    }
+    
+    async function saveScheduleToFirebase(scheduleData) {
+        const user = auth.currentUser;
+        if (!user) return;
+        
+        const data = { ...scheduleData, guideId: user.uid, updatedAt: new Date() };
+        if (scheduleData.id) {
+            await updateDoc(doc(db, 'schedules', scheduleData.id), data);
+        } else {
+            await addDoc(collection(db, 'schedules'), data);
         }
     }
+    */
+    
+    // ===== ESC 키로 모달 닫기 =====
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeScheduleModal();
+        }
+    });
+    
+    // ===== 모달 외부 클릭 시 닫기 =====
+    document.getElementById('scheduleModal')?.addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeScheduleModal();
+        }
+    });
+    
+    // ===== 초기화 =====
+    // 페이지 로드 시 오늘 날짜 선택
+    const today = new Date();
+    currentViewDate = new Date(today.getFullYear(), today.getMonth(), 1);
+    selectedDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    
+    loadSchedules();
+    
+    console.log('📅 Schedule Management loaded');
+    console.log('📌 현재 선택된 날짜:', getDateString(selectedDate));
 </script>
-
 </body>
 </html>
