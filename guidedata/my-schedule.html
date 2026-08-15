@@ -5,927 +5,310 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Team One Tour – 일정 관리</title>
 
-    <!-- Google Fonts Inter -->
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
-
-    <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
+    <!-- ======================================== -->
+    <!-- 🔥 1. Firebase SDK 추가 (CDN) -->
+    <!-- ======================================== -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
     <style>
         /* ============================================================
-                   RESET & BASE
-                   ============================================================ */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: #f0f2f5;
-            color: #1a1a2e;
-            line-height: 1.5;
-            -webkit-font-smoothing: antialiased;
-            padding: 20px;
-        }
-
-        /* ============================================================
-                   LAYOUT
-                   ============================================================ */
-        .app-container {
-            max-width: 1280px;
-            margin: 0 auto;
-            background: #ffffff;
-            border-radius: 24px;
-            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.06);
-            overflow: hidden;
-            min-height: 90vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* ============================================================
-                   HEADER (상단 바)
-                   ============================================================ */
-        .app-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 18px 32px;
-            border-bottom: 1px solid #edf2f7;
-            flex-wrap: wrap;
-            gap: 12px;
-            background: #ffffff;
-        }
-
-        .app-header .logo-area {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .app-header .logo-area .logo-icon {
-            font-size: 24px;
-            color: #2563eb;
-        }
-
-        .app-header .logo-area h1 {
-            font-size: 20px;
-            font-weight: 700;
-            color: #1a1a2e;
-            letter-spacing: -0.3px;
-        }
-
-        .app-header .logo-area h1 span {
-            color: #2563eb;
-        }
-
-        .app-header .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        /* 버튼 스타일 */
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 20px;
-            border-radius: 10px;
-            font-size: 14px;
-            font-weight: 600;
-            border: none;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-family: inherit;
-        }
-
-        .btn-primary {
-            background: #2563eb;
-            color: #ffffff;
-        }
-
-        .btn-primary:hover {
-            background: #1d4ed8;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 16px rgba(37, 99, 235, 0.3);
-        }
-
-        .btn-outline {
-            background: transparent;
-            color: #4b5563;
-            border: 1px solid #d1d5db;
-        }
-
-        .btn-outline:hover {
-            background: #f9fafb;
-            border-color: #9ca3af;
-        }
-
-        .btn-success {
-            background: #059669;
-            color: #ffffff;
-        }
-
-        .btn-success:hover {
-            background: #047857;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 16px rgba(5, 150, 105, 0.3);
-        }
-
-        .btn-sm {
-            padding: 6px 14px;
-            font-size: 12px;
-            border-radius: 8px;
-        }
-
-        .btn-icon {
-            width: 36px;
-            height: 36px;
-            padding: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 10px;
-            background: transparent;
-            border: 1px solid #e5e7eb;
-            color: #6b7280;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .btn-icon:hover {
-            background: #f3f4f6;
-            border-color: #d1d5db;
-        }
-
-        /* ============================================================
-                   MAIN CONTENT (2컬럼)
-                   ============================================================ */
-        .main-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0;
-            flex: 1;
-            min-height: 600px;
-        }
-
-        /* ============================================================
-                   LEFT PANEL - 달력 + 일정 목록
-                   ============================================================ */
-        .left-panel {
-            padding: 28px 32px;
-            border-right: 1px solid #edf2f7;
-            background: #fafbfc;
-        }
-
-        /* 달력 헤더 */
-        .calendar-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
-
-        .calendar-header .month-year {
-            font-size: 18px;
-            font-weight: 700;
-            color: #1a1a2e;
-        }
-
-        .calendar-header .nav-buttons {
-            display: flex;
-            gap: 6px;
-        }
-
-        .calendar-header .nav-buttons button {
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            border: 1px solid #e5e7eb;
-            background: #ffffff;
-            color: #4b5563;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-size: 14px;
-        }
-
-        .calendar-header .nav-buttons button:hover {
-            background: #f3f4f6;
-            border-color: #d1d5db;
-        }
-
-        /* 달력 그리드 */
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 4px;
-            margin-bottom: 24px;
-        }
-
-        .calendar-grid .weekday {
-            text-align: center;
-            font-size: 12px;
-            font-weight: 600;
-            color: #9ca3af;
-            padding: 8px 0;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .calendar-grid .day {
-            text-align: center;
-            padding: 10px 0;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 500;
-            color: #4b5563;
-            cursor: pointer;
-            transition: all 0.15s ease;
-            position: relative;
-        }
-
-        .calendar-grid .day:hover {
-            background: #e5e7eb;
-        }
-
-        .calendar-grid .day.today {
-            background: #2563eb;
-            color: #ffffff;
-            font-weight: 700;
-        }
-
-        .calendar-grid .day.other-month {
-            color: #d1d5db;
-        }
-
-        .calendar-grid .day.has-event::after {
-            content: '';
-            position: absolute;
-            bottom: 4px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 5px;
-            height: 5px;
-            border-radius: 50%;
-            background: #2563eb;
-        }
-
-        .calendar-grid .day.today.has-event::after {
-            background: #ffffff;
-        }
-
-        /* 일정 목록 */
-        .schedule-list {
-            margin-top: 8px;
-        }
-
-        .schedule-list .list-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 14px;
-        }
-
-        .schedule-list .list-header h3 {
-            font-size: 15px;
-            font-weight: 600;
-            color: #1a1a2e;
-        }
-
-        .schedule-list .list-header .count {
-            font-size: 13px;
-            color: #9ca3af;
-            font-weight: 500;
-        }
-
-        .schedule-item {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 12px 16px;
-            background: #ffffff;
-            border-radius: 10px;
-            margin-bottom: 8px;
-            border: 1px solid #edf2f7;
-            transition: all 0.2s ease;
-            cursor: pointer;
-        }
-
-        .schedule-item:hover {
-            border-color: #2563eb;
-            box-shadow: 0 2px 12px rgba(37, 99, 235, 0.06);
-        }
-
-        .schedule-item .time {
-            font-size: 13px;
-            font-weight: 600;
-            color: #2563eb;
-            min-width: 52px;
-        }
-
-        .schedule-item .info {
-            flex: 1;
-        }
-
-        .schedule-item .info .title {
-            font-size: 14px;
-            font-weight: 600;
-            color: #1a1a2e;
-        }
-
-        .schedule-item .info .desc {
-            font-size: 12px;
-            color: #9ca3af;
-        }
-
-        .schedule-item .status {
-            font-size: 11px;
-            font-weight: 600;
-            padding: 2px 12px;
-            border-radius: 100px;
-        }
-
-        .schedule-item .status.confirmed {
-            background: #d1fae5;
-            color: #065f46;
-        }
-
-        .schedule-item .status.pending {
-            background: #fef3c7;
-            color: #92400e;
-        }
-
-        .schedule-item .status.cancelled {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-
-        .schedule-empty {
-            text-align: center;
-            padding: 32px 0;
-            color: #9ca3af;
-        }
-
-        .schedule-empty i {
-            font-size: 32px;
-            display: block;
-            margin-bottom: 8px;
-            opacity: 0.5;
-        }
-
-        /* ============================================================
-                   RIGHT PANEL - 일정 조회 + 상세
-                   ============================================================ */
-        .right-panel {
-            padding: 28px 32px;
-            background: #ffffff;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .right-panel .panel-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
-
-        .right-panel .panel-header h2 {
-            font-size: 18px;
-            font-weight: 700;
-            color: #1a1a2e;
-        }
-
-        .right-panel .panel-header .sub {
-            font-size: 13px;
-            color: #9ca3af;
-        }
-
-        /* 조회 필터 */
-        .filter-section {
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-            margin-bottom: 24px;
-        }
-
-        .filter-row {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .filter-row .filter-group {
-            flex: 1;
-            min-width: 120px;
-        }
-
-        .filter-row .filter-group label {
-            display: block;
-            font-size: 12px;
-            font-weight: 600;
-            color: #6b7280;
-            margin-bottom: 4px;
-        }
-
-        .filter-row .filter-group select,
-        .filter-row .filter-group input {
-            width: 100%;
-            padding: 8px 12px;
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            font-size: 13px;
-            font-family: inherit;
-            background: #fafbfc;
-            transition: border-color 0.2s ease;
-            color: #1a1a2e;
-        }
-
-        .filter-row .filter-group select:focus,
-        .filter-row .filter-group input:focus {
-            outline: none;
-            border-color: #2563eb;
-            background: #ffffff;
-        }
-
-        .filter-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 4px;
-        }
-
-        /* 조회 결과 */
-        .result-area {
-            flex: 1;
-            min-height: 200px;
-        }
-
-        .result-area .result-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding-bottom: 12px;
-            border-bottom: 1px solid #edf2f7;
-            margin-bottom: 16px;
-        }
-
-        .result-area .result-header .result-count {
-            font-size: 14px;
-            color: #6b7280;
-        }
-
-        .result-area .result-header .result-count strong {
-            color: #1a1a2e;
-        }
-
-        .result-item {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            padding: 14px 16px;
-            border-radius: 10px;
-            border: 1px solid #edf2f7;
-            margin-bottom: 10px;
-            transition: all 0.2s ease;
-        }
-
-        .result-item:hover {
-            border-color: #2563eb;
-            background: #f8faff;
-        }
-
-        .result-item .result-date {
-            font-size: 13px;
-            font-weight: 600;
-            color: #2563eb;
-            min-width: 60px;
-        }
-
-        .result-item .result-info {
-            flex: 1;
-        }
-
-        .result-item .result-info .result-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: #1a1a2e;
-        }
-
-        .result-item .result-info .result-meta {
-            font-size: 12px;
-            color: #9ca3af;
-        }
-
-        .result-item .result-status {
-            font-size: 11px;
-            font-weight: 600;
-            padding: 2px 12px;
-            border-radius: 100px;
-        }
-
-        .result-item .result-status.confirmed {
-            background: #d1fae5;
-            color: #065f46;
-        }
-
-        .result-item .result-status.pending {
-            background: #fef3c7;
-            color: #92400e;
-        }
-
-        .result-item .result-status.cancelled {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-
-        .result-empty {
-            text-align: center;
-            padding: 48px 0;
-            color: #9ca3af;
-        }
-
-        .result-empty i {
-            font-size: 40px;
-            display: block;
-            margin-bottom: 12px;
-            opacity: 0.3;
-        }
-
-        /* ============================================================
-                   RESPONSIVE
-                   ============================================================ */
-        @media (max-width: 992px) {
-            .main-content {
-                grid-template-columns: 1fr;
-            }
-
-            .left-panel {
-                border-right: none;
-                border-bottom: 1px solid #edf2f7;
-            }
-
-            .app-header {
-                padding: 14px 20px;
-            }
-
-            .left-panel,
-            .right-panel {
-                padding: 20px;
-            }
-        }
-
-        @media (max-width: 640px) {
-            body {
-                padding: 10px;
-            }
-
-            .app-container {
-                border-radius: 16px;
-            }
-
-            .app-header .logo-area h1 {
-                font-size: 16px;
-            }
-
-            .app-header .header-actions .btn span {
-                display: none;
-            }
-
-            .filter-row {
-                flex-direction: column;
-            }
-
-            .filter-row .filter-group {
-                min-width: 100%;
-            }
-
-            .calendar-grid .day {
-                padding: 8px 0;
-                font-size: 12px;
-            }
-
-            .schedule-item {
-                flex-wrap: wrap;
-                gap: 8px;
-            }
-
-            .schedule-item .time {
-                min-width: 40px;
-                font-size: 12px;
-            }
-
-            .result-item {
-                flex-wrap: wrap;
-                gap: 8px;
-            }
-
-            .result-item .result-date {
-                min-width: 50px;
-                font-size: 12px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .app-header {
-                padding: 12px 16px;
-            }
-
-            .app-header .logo-area .logo-icon {
-                font-size: 18px;
-            }
-
-            .app-header .logo-area h1 {
-                font-size: 14px;
-            }
-
-            .btn {
-                padding: 6px 12px;
-                font-size: 12px;
-            }
-
-            .btn-sm {
-                padding: 4px 10px;
-                font-size: 11px;
-            }
-
-            .left-panel,
-            .right-panel {
-                padding: 16px;
-            }
-
-            .calendar-header .month-year {
-                font-size: 15px;
-            }
-        }
+           (CSS는 그대로 유지 - 생략)
+           ============================================================ */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #f0f2f5; color: #1a1a2e; padding: 20px; }
+        .app-container { max-width: 1280px; margin: 0 auto; background: #ffffff; border-radius: 24px; box-shadow: 0 8px 40px rgba(0,0,0,0.06); overflow: hidden; min-height: 90vh; display: flex; flex-direction: column; }
+        .app-header { display: flex; align-items: center; justify-content: space-between; padding: 18px 32px; border-bottom: 1px solid #edf2f7; flex-wrap: wrap; gap: 12px; background: #ffffff; }
+        .app-header .logo-area { display: flex; align-items: center; gap: 12px; }
+        .app-header .logo-area .logo-icon { font-size: 24px; color: #2563eb; }
+        .app-header .logo-area h1 { font-size: 20px; font-weight: 700; color: #1a1a2e; letter-spacing: -0.3px; }
+        .app-header .logo-area h1 span { color: #2563eb; }
+        .app-header .header-actions { display: flex; align-items: center; gap: 10px; }
+        .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 10px; font-size: 14px; font-weight: 600; border: none; cursor: pointer; transition: all 0.2s ease; font-family: inherit; }
+        .btn-primary { background: #2563eb; color: #ffffff; }
+        .btn-primary:hover { background: #1d4ed8; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(37,99,235,0.3); }
+        .btn-outline { background: transparent; color: #4b5563; border: 1px solid #d1d5db; }
+        .btn-outline:hover { background: #f9fafb; border-color: #9ca3af; }
+        .btn-success { background: #059669; color: #ffffff; }
+        .btn-success:hover { background: #047857; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(5,150,105,0.3); }
+        .btn-danger { background: #dc2626; color: #ffffff; }
+        .btn-danger:hover { background: #b91c1c; transform: translateY(-1px); }
+        .btn-sm { padding: 6px 14px; font-size: 12px; border-radius: 8px; }
+        .btn-icon { width: 36px; height: 36px; padding: 0; display: flex; align-items: center; justify-content: center; border-radius: 10px; background: transparent; border: 1px solid #e5e7eb; color: #6b7280; cursor: pointer; transition: all 0.2s ease; }
+        .btn-icon:hover { background: #f3f4f6; border-color: #d1d5db; }
+        .main-content { display: grid; grid-template-columns: 1fr 1fr; gap: 0; flex: 1; min-height: 600px; }
+        .left-panel { padding: 28px 32px; border-right: 1px solid #edf2f7; background: #fafbfc; }
+        .calendar-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+        .calendar-header .month-year { font-size: 18px; font-weight: 700; color: #1a1a2e; }
+        .calendar-header .nav-buttons { display: flex; gap: 6px; }
+        .calendar-header .nav-buttons button { width: 32px; height: 32px; border-radius: 8px; border: 1px solid #e5e7eb; background: #ffffff; color: #4b5563; cursor: pointer; transition: all 0.2s ease; font-size: 14px; }
+        .calendar-header .nav-buttons button:hover { background: #f3f4f6; border-color: #d1d5db; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 24px; }
+        .calendar-grid .weekday { text-align: center; font-size: 12px; font-weight: 600; color: #9ca3af; padding: 8px 0; text-transform: uppercase; letter-spacing: 0.5px; }
+        .calendar-grid .day { text-align: center; padding: 10px 0; border-radius: 8px; font-size: 14px; font-weight: 500; color: #4b5563; cursor: pointer; transition: all 0.15s ease; position: relative; }
+        .calendar-grid .day:hover { background: #e5e7eb; }
+        .calendar-grid .day.today { background: #2563eb; color: #ffffff; font-weight: 700; }
+        .calendar-grid .day.other-month { color: #d1d5db; }
+        .calendar-grid .day.has-event::after { content: ''; position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%); width: 5px; height: 5px; border-radius: 50%; background: #2563eb; }
+        .calendar-grid .day.today.has-event::after { background: #ffffff; }
+        .schedule-list { margin-top: 8px; }
+        .schedule-list .list-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+        .schedule-list .list-header h3 { font-size: 15px; font-weight: 600; color: #1a1a2e; }
+        .schedule-list .list-header .count { font-size: 13px; color: #9ca3af; font-weight: 500; }
+        .schedule-item { display: flex; align-items: center; gap: 14px; padding: 12px 16px; background: #ffffff; border-radius: 10px; margin-bottom: 8px; border: 1px solid #edf2f7; transition: all 0.2s ease; cursor: pointer; }
+        .schedule-item:hover { border-color: #2563eb; box-shadow: 0 2px 12px rgba(37,99,235,0.06); }
+        .schedule-item .time { font-size: 13px; font-weight: 600; color: #2563eb; min-width: 52px; }
+        .schedule-item .info { flex: 1; }
+        .schedule-item .info .title { font-size: 14px; font-weight: 600; color: #1a1a2e; }
+        .schedule-item .info .desc { font-size: 12px; color: #9ca3af; }
+        .schedule-item .status { font-size: 11px; font-weight: 600; padding: 2px 12px; border-radius: 100px; }
+        .schedule-item .status.confirmed { background: #d1fae5; color: #065f46; }
+        .schedule-item .status.pending { background: #fef3c7; color: #92400e; }
+        .schedule-item .status.cancelled { background: #fee2e2; color: #991b1b; }
+        .right-panel { padding: 28px 32px; background: #ffffff; display: flex; flex-direction: column; }
+        .right-panel .panel-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+        .right-panel .panel-header h2 { font-size: 18px; font-weight: 700; color: #1a1a2e; }
+        .right-panel .panel-header .sub { font-size: 13px; color: #9ca3af; }
+        .filter-section { display: flex; flex-direction: column; gap: 14px; margin-bottom: 24px; }
+        .filter-row { display: flex; gap: 12px; flex-wrap: wrap; }
+        .filter-row .filter-group { flex: 1; min-width: 120px; }
+        .filter-row .filter-group label { display: block; font-size: 12px; font-weight: 600; color: #6b7280; margin-bottom: 4px; }
+        .filter-row .filter-group select, .filter-row .filter-group input { width: 100%; padding: 8px 12px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 13px; font-family: inherit; background: #fafbfc; transition: border-color 0.2s ease; color: #1a1a2e; }
+        .filter-row .filter-group select:focus, .filter-row .filter-group input:focus { outline: none; border-color: #2563eb; background: #ffffff; }
+        .filter-actions { display: flex; gap: 10px; margin-top: 4px; }
+        .result-area { flex: 1; min-height: 200px; }
+        .result-area .result-header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 12px; border-bottom: 1px solid #edf2f7; margin-bottom: 16px; }
+        .result-area .result-header .result-count { font-size: 14px; color: #6b7280; }
+        .result-area .result-header .result-count strong { color: #1a1a2e; }
+        .result-item { display: flex; align-items: center; gap: 16px; padding: 14px 16px; border-radius: 10px; border: 1px solid #edf2f7; margin-bottom: 10px; transition: all 0.2s ease; }
+        .result-item:hover { border-color: #2563eb; background: #f8faff; }
+        .result-item .result-date { font-size: 13px; font-weight: 600; color: #2563eb; min-width: 60px; }
+        .result-item .result-info { flex: 1; }
+        .result-item .result-info .result-title { font-size: 14px; font-weight: 600; color: #1a1a2e; }
+        .result-item .result-info .result-meta { font-size: 12px; color: #9ca3af; }
+        .result-item .result-status { font-size: 11px; font-weight: 600; padding: 2px 12px; border-radius: 100px; }
+        .result-item .result-status.confirmed { background: #d1fae5; color: #065f46; }
+        .result-item .result-status.pending { background: #fef3c7; color: #92400e; }
+        .result-item .result-status.cancelled { background: #fee2e2; color: #991b1b; }
+        /* 모달 */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); z-index: 9999; align-items: center; justify-content: center; }
+        .modal-overlay.active { display: flex; }
+        .modal { background: #ffffff; border-radius: 20px; padding: 32px; max-width: 520px; width: 90%; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
+        .modal .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .modal .modal-header h2 { font-size: 20px; font-weight: 700; }
+        .modal .modal-close { background: none; border: none; font-size: 24px; color: #9ca3af; cursor: pointer; padding: 4px; }
+        .modal .modal-close:hover { color: #1a1a2e; }
+        .modal .form-group { margin-bottom: 16px; }
+        .modal .form-group label { display: block; font-size: 13px; font-weight: 600; color: #4b5563; margin-bottom: 4px; }
+        .modal .form-group input, .modal .form-group select, .modal .form-group textarea { width: 100%; padding: 10px 14px; border: 1px solid #e5e7eb; border-radius: 10px; font-size: 14px; font-family: inherit; background: #fafbfc; transition: border-color 0.2s ease; }
+        .modal .form-group input:focus, .modal .form-group select:focus, .modal .form-group textarea:focus { outline: none; border-color: #2563eb; background: #ffffff; }
+        .modal .form-group textarea { resize: vertical; min-height: 60px; }
+        .modal .form-actions { display: flex; gap: 10px; margin-top: 20px; justify-content: flex-end; }
+        .schedule-empty { text-align: center; padding: 32px 0; color: #9ca3af; }
+        .schedule-empty i { font-size: 32px; display: block; margin-bottom: 8px; opacity: 0.5; }
+        .result-empty { text-align: center; padding: 48px 0; color: #9ca3af; }
+        .result-empty i { font-size: 40px; display: block; margin-bottom: 12px; opacity: 0.3; }
+        .toast { position: fixed; bottom: 30px; right: 30px; background: #1a1a2e; color: #fff; padding: 14px 24px; border-radius: 12px; font-size: 14px; font-weight: 500; box-shadow: 0 8px 30px rgba(0,0,0,0.2); z-index: 10000; opacity: 0; transform: translateY(20px); transition: all 0.3s ease; }
+        .toast.show { opacity: 1; transform: translateY(0); }
+        .toast.success { background: #059669; }
+        .toast.error { background: #dc2626; }
+        @media (max-width: 992px) { .main-content { grid-template-columns: 1fr; } .left-panel { border-right: none; border-bottom: 1px solid #edf2f7; } .app-header { padding: 14px 20px; } .left-panel, .right-panel { padding: 20px; } }
+        @media (max-width: 640px) { body { padding: 10px; } .app-container { border-radius: 16px; } .app-header .logo-area h1 { font-size: 16px; } .app-header .header-actions .btn span { display: none; } .filter-row { flex-direction: column; } .filter-row .filter-group { min-width: 100%; } .calendar-grid .day { padding: 8px 0; font-size: 12px; } .schedule-item { flex-wrap: wrap; gap: 8px; } .result-item { flex-wrap: wrap; gap: 8px; } }
+        @media (max-width: 480px) { .app-header { padding: 12px 16px; } .app-header .logo-area .logo-icon { font-size: 18px; } .app-header .logo-area h1 { font-size: 14px; } .btn { padding: 6px 12px; font-size: 12px; } .left-panel, .right-panel { padding: 16px; } .calendar-header .month-year { font-size: 15px; } }
     </style>
 </head>
 
 <body>
 
+    <!-- ============================================================
+    토스트 메시지 (알림)
+    ============================================================ -->
+    <div class="toast" id="toast"></div>
+
+    <!-- ============================================================
+    입력 모달 (팝업)
+    ============================================================ -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>✏️ 새 일정 입력</h2>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <form id="scheduleForm" onsubmit="saveSchedule(event)">
+                <div class="form-group">
+                    <label>📅 날짜</label>
+                    <input type="date" id="inputDate" required />
+                </div>
+                <div class="form-group">
+                    <label>⏰ 시간</label>
+                    <input type="time" id="inputTime" required />
+                </div>
+                <div class="form-group">
+                    <label>📌 제목</label>
+                    <input type="text" id="inputTitle" placeholder="예: 두바이 시티 투어" required />
+                </div>
+                <div class="form-group">
+                    <label>👤 가이드</label>
+                    <select id="inputGuide">
+                        <option value="김현지">김현지</option>
+                        <option value="아흐메드 알리">아흐메드 알리</option>
+                        <option value="박소연">박소연</option>
+                        <option value="카림 하산">카림 하산</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>📍 지역</label>
+                    <select id="inputRegion">
+                        <option value="두바이">두바이</option>
+                        <option value="아부다비">아부다비</option>
+                        <option value="샤르자">샤르자</option>
+                        <option value="라스알카이마">라스알카이마</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>👥 인원</label>
+                    <input type="number" id="inputPeople" value="2" min="1" required />
+                </div>
+                <div class="form-group">
+                    <label>📝 메모</label>
+                    <textarea id="inputMemo" placeholder="추가 정보를 입력하세요"></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-outline" onclick="closeModal()">취소</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> 저장하기</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ============================================================
+    메인 컨테이너
+    ============================================================ -->
     <div class="app-container">
 
-        <!-- ============================================================
-        HEADER - 상단 (로고 + 새로 입력하기 버튼)
-        ============================================================ -->
+        <!-- 상단 헤더 -->
         <header class="app-header">
             <div class="logo-area">
                 <span class="logo-icon"><i class="fas fa-compass"></i></span>
                 <h1>Team One <span>Tour</span></h1>
             </div>
             <div class="header-actions">
-                <button class="btn btn-primary">
+                <button class="btn btn-primary" onclick="openModal()">
                     <i class="fas fa-plus"></i>
                     <span>새로 입력하기</span>
                 </button>
-                <button class="btn-icon" title="알림">
-                    <i class="fas fa-bell"></i>
-                </button>
-                <button class="btn-icon" title="프로필">
-                    <i class="fas fa-user-circle"></i>
-                </button>
+                <button class="btn-icon" title="알림"><i class="fas fa-bell"></i></button>
+                <button class="btn-icon" title="프로필"><i class="fas fa-user-circle"></i></button>
             </div>
         </header>
 
-        <!-- ============================================================
-        MAIN - 2컬럼 (왼쪽: 달력+일정, 오른쪽: 조회)
-        ============================================================ -->
+        <!-- 메인 2컬럼 -->
         <div class="main-content">
 
-            <!-- ============================================================
-            LEFT PANEL - 달력 + 일정 목록
-            ============================================================ -->
+            <!-- 왼쪽: 달력 + 일정 목록 -->
             <div class="left-panel">
-
-                <!-- 달력 헤더 -->
                 <div class="calendar-header">
-                    <span class="month-year">2026년 8월</span>
+                    <span class="month-year" id="monthYear">2026년 8월</span>
                     <div class="nav-buttons">
-                        <button><i class="fas fa-chevron-left"></i></button>
-                        <button><i class="fas fa-chevron-right"></i></button>
+                        <button onclick="changeMonth(-1)"><i class="fas fa-chevron-left"></i></button>
+                        <button onclick="changeMonth(1)"><i class="fas fa-chevron-right"></i></button>
                     </div>
                 </div>
+                <div class="calendar-grid" id="calendarGrid"></div>
 
-                <!-- 달력 그리드 -->
-                <div class="calendar-grid">
-                    <div class="weekday">일</div>
-                    <div class="weekday">월</div>
-                    <div class="weekday">화</div>
-                    <div class="weekday">수</div>
-                    <div class="weekday">목</div>
-                    <div class="weekday">금</div>
-                    <div class="weekday">토</div>
-
-                    <!-- 2026년 8월 1일은 토요일 -->
-                    <div class="day other-month">27</div>
-                    <div class="day other-month">28</div>
-                    <div class="day other-month">29</div>
-                    <div class="day other-month">30</div>
-                    <div class="day other-month">31</div>
-                    <div class="day">1</div>
-                    <div class="day">2</div>
-
-                    <div class="day">3</div>
-                    <div class="day">4</div>
-                    <div class="day">5</div>
-                    <div class="day">6</div>
-                    <div class="day">7</div>
-                    <div class="day">8</div>
-                    <div class="day">9</div>
-
-                    <div class="day">10</div>
-                    <div class="day">11</div>
-                    <div class="day">12</div>
-                    <div class="day">13</div>
-                    <div class="day">14</div>
-                    <div class="day">15</div>
-                    <div class="day">16</div>
-
-                    <div class="day">17</div>
-                    <div class="day">18</div>
-                    <div class="day">19</div>
-                    <div class="day">20</div>
-                    <div class="day">21</div>
-                    <div class="day">22</div>
-                    <div class="day">23</div>
-
-                    <div class="day">24</div>
-                    <div class="day">25</div>
-                    <div class="day">26</div>
-                    <div class="day">27</div>
-                    <div class="day">28</div>
-                    <div class="day">29</div>
-                    <div class="day">30</div>
-
-                    <div class="day">31</div>
-                    <div class="day other-month">1</div>
-                    <div class="day other-month">2</div>
-                    <div class="day other-month">3</div>
-                    <div class="day other-month">4</div>
-                    <div class="day other-month">5</div>
-                    <div class="day other-month">6</div>
-                </div>
-
-                <!-- 일정 목록 -->
                 <div class="schedule-list">
                     <div class="list-header">
                         <h3>📋 오늘의 일정</h3>
-                        <span class="count">3개</span>
+                        <span class="count" id="todayCount">0개</span>
                     </div>
-
-                    <div class="schedule-item">
-                        <span class="time">09:00</span>
-                        <div class="info">
-                            <div class="title">두바이 시티 투어</div>
-                            <div class="desc">가이드: 김현지 · 4명</div>
+                    <div id="todayScheduleList">
+                        <div class="schedule-empty">
+                            <i class="fas fa-calendar-day"></i>
+                            오늘 일정이 없습니다
                         </div>
-                        <span class="status confirmed">확정</span>
-                    </div>
-
-                    <div class="schedule-item">
-                        <span class="time">14:00</span>
-                        <div class="info">
-                            <div class="title">사막 사파리</div>
-                            <div class="desc">가이드: 아흐메드 · 6명</div>
-                        </div>
-                        <span class="status pending">대기</span>
-                    </div>
-
-                    <div class="schedule-item">
-                        <span class="time">19:30</span>
-                        <div class="info">
-                            <div class="title">부르즈 할리파 전망대</div>
-                            <div class="desc">가이드: 박소연 · 2명</div>
-                        </div>
-                        <span class="status confirmed">확정</span>
                     </div>
                 </div>
-
             </div>
 
-            <!-- ============================================================
-            RIGHT PANEL - 일정 조회
-            ============================================================ -->
+            <!-- 오른쪽: 일정 조회 -->
             <div class="right-panel">
-
                 <div class="panel-header">
                     <div>
                         <h2>🔍 일정 조회</h2>
                         <span class="sub">날짜와 조건으로 일정을 검색하세요</span>
                     </div>
-                    <button class="btn btn-outline btn-sm">
+                    <button class="btn btn-outline btn-sm" onclick="exportData()">
                         <i class="fas fa-download"></i> 내보내기
                     </button>
                 </div>
 
-                <!-- 필터 -->
                 <div class="filter-section">
                     <div class="filter-row">
                         <div class="filter-group">
                             <label><i class="far fa-calendar-alt"></i> 시작일</label>
-                            <input type="date" value="2026-08-01" />
+                            <input type="date" id="filterStartDate" />
                         </div>
                         <div class="filter-group">
                             <label><i class="far fa-calendar-alt"></i> 종료일</label>
-                            <input type="date" value="2026-08-31" />
+                            <input type="date" id="filterEndDate" />
                         </div>
                         <div class="filter-group">
                             <label><i class="fas fa-user"></i> 가이드</label>
-                            <select>
-                                <option>전체</option>
-                                <option>김현지</option>
-                                <option>아흐메드 알리</option>
-                                <option>박소연</option>
-                                <option>카림 하산</option>
+                            <select id="filterGuide">
+                                <option value="">전체</option>
+                                <option value="김현지">김현지</option>
+                                <option value="아흐메드 알리">아흐메드 알리</option>
+                                <option value="박소연">박소연</option>
+                                <option value="카림 하산">카림 하산</option>
                             </select>
                         </div>
                     </div>
                     <div class="filter-row">
                         <div class="filter-group">
                             <label><i class="fas fa-tag"></i> 상태</label>
-                            <select>
-                                <option>전체</option>
-                                <option>확정</option>
-                                <option>대기</option>
-                                <option>취소</option>
+                            <select id="filterStatus">
+                                <option value="">전체</option>
+                                <option value="confirmed">확정</option>
+                                <option value="pending">대기</option>
+                                <option value="cancelled">취소</option>
                             </select>
                         </div>
                         <div class="filter-group">
                             <label><i class="fas fa-map-pin"></i> 지역</label>
-                            <select>
-                                <option>전체</option>
-                                <option>두바이</option>
-                                <option>아부다비</option>
-                                <option>샤르자</option>
+                            <select id="filterRegion">
+                                <option value="">전체</option>
+                                <option value="두바이">두바이</option>
+                                <option value="아부다비">아부다비</option>
+                                <option value="샤르자">샤르자</option>
                             </select>
                         </div>
                         <div class="filter-actions">
-                            <button class="btn btn-primary">
+                            <button class="btn btn-primary" onclick="searchSchedules()">
                                 <i class="fas fa-search"></i> 조회
                             </button>
-                            <button class="btn btn-outline">
+                            <button class="btn btn-outline" onclick="resetFilter()">
                                 <i class="fas fa-redo"></i> 초기화
                             </button>
                         </div>
                     </div>
                 </div>
 
-                <!-- 조회 결과 -->
                 <div class="result-area">
                     <div class="result-header">
-                        <span class="result-count">총 <strong>8</strong>건의 일정이 조회되었습니다</span>
+                        <span class="result-count" id="resultCount">총 <strong>0</strong>건의 일정이 조회되었습니다</span>
                         <span style="font-size:13px; color:#9ca3af;">최신순</span>
                     </div>
-
-                    <div class="result-item">
-                        <span class="result-date">08/15</span>
-                        <div class="result-info">
-                            <div class="result-title">아부다비 루브르 투어</div>
-                            <div class="result-meta">가이드: 아흐메드 알리 · 3명 · 10:00</div>
+                    <div id="searchResultList">
+                        <div class="result-empty">
+                            <i class="fas fa-search"></i>
+                            조회 조건을 입력하고 검색하세요
                         </div>
-                        <span class="result-status confirmed">확정</span>
                     </div>
-
-                    <div class="result-item">
-                        <span class="result-date">08/14</span>
-                        <div class="result-info">
-                            <div class="result-title">두바이 골드소크 &amp; 스파이스 시장</div>
-                            <div class="result-meta">가이드: 카림 하산 · 5명 · 16:00</div>
-                        </div>
-                        <span class="result-status confirmed">확정</span>
-                    </div>
-
-                    <div class="result-item">
-                        <span class="result-date">08/13</span>
-                        <div class="result-info">
-                            <div class="result-title">셰이크 자이드 모스크 방문</div>
-                            <div class="result-meta">가이드: 아흐메드 알리 · 8명 · 09:30</div>
-                        </div>
-                        <span class="result-status pending">대기</span>
-                    </div>
-
-                    <div class="result-item">
-                        <span class="result-date">08/12</span>
-                        <div class="result-info">
-                            <div class="result-title">팜 주메이라 모노레일 &amp; 아쿠아리움</div>
-                            <div class="result-meta">가이드: 김현지 · 4명 · 13:00</div>
-                        </div>
-                        <span class="result-status cancelled">취소</span>
-                    </div>
-
-                    <div class="result-item">
-                        <span class="result-date">08/11</span>
-                        <div class="result-info">
-                            <div class="result-title">두바이 프레임 &amp; 올드 두바이</div>
-                            <div class="result-meta">가이드: 박소연 · 2명 · 11:00</div>
-                        </div>
-                        <span class="result-status confirmed">확정</span>
-                    </div>
-
                 </div>
-
             </div>
 
         </div>
@@ -933,36 +316,375 @@
     </div>
 
     <!-- ============================================================
-    JAVASCRIPT
+    🔥 2. Firebase 설정 (여기에 여러분의 설정을 넣으세요!)
     ============================================================ -->
     <script>
-        // 날짜 선택 시 이벤트 (데모용)
-        document.querySelectorAll('.day:not(.other-month)').forEach(day => {
-            day.addEventListener('click', function() {
-                document.querySelectorAll('.day').forEach(d => d.style.background = '');
-                this.style.background = '#dbeafe';
-                this.style.borderRadius = '8px';
+        // ============================================================
+        // ⚠️ 중요: 여기에 1단계에서 복사한 여러분의 Firebase 설정을 넣으세요!
+        // ============================================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyXXXXXXXXXXXXXXXXXXXXX",  // ← 여러분의 API 키
+            authDomain: "team-one-tour.firebaseapp.com",
+            projectId: "team-one-tour",
+            storageBucket: "team-one-tour.appspot.com",
+            messagingSenderId: "123456789012",
+            appId: "1:123456789012:web:abcdef123456"
+        };
+
+        // ============================================================
+        // 🔥 3. Firebase 초기화
+        // ============================================================
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // ============================================================
+        // 4. 전역 변수
+        // ============================================================
+        let currentYear = 2026;
+        let currentMonth = 8; // 8월
+        let allSchedules = [];
+
+        // ============================================================
+        // 5. 토스트 메시지
+        // ============================================================
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = 'toast ' + type;
+            setTimeout(() => toast.classList.add('show'), 10);
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // ============================================================
+        // 6. 모달 (새 일정 입력 팝업)
+        // ============================================================
+        function openModal() {
+            document.getElementById('modalOverlay').classList.add('active');
+            // 오늘 날짜 기본값
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('inputDate').value = today;
+            document.getElementById('inputTime').value = '10:00';
+        }
+
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.remove('active');
+            document.getElementById('scheduleForm').reset();
+        }
+
+        // ============================================================
+        // 7. 🔥 데이터 저장 (Firebase에 입력)
+        // ============================================================
+        async function saveSchedule(event) {
+            event.preventDefault();
+
+            const date = document.getElementById('inputDate').value;
+            const time = document.getElementById('inputTime').value;
+            const title = document.getElementById('inputTitle').value;
+            const guide = document.getElementById('inputGuide').value;
+            const region = document.getElementById('inputRegion').value;
+            const people = parseInt(document.getElementById('inputPeople').value);
+            const memo = document.getElementById('inputMemo').value;
+
+            // 데이터 객체
+            const data = {
+                date: date,
+                time: time,
+                title: title,
+                guide: guide,
+                region: region,
+                people: people,
+                memo: memo,
+                status: 'pending', // 기본 상태: 대기
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            };
+
+            try {
+                // Firebase에 저장
+                await db.collection('schedules').add(data);
+
+                showToast('✅ 일정이 저장되었습니다!', 'success');
+                closeModal();
+
+                // 화면 새로고침
+                loadTodaySchedules();
+                searchSchedules();
+                renderCalendar();
+
+            } catch (error) {
+                console.error('저장 오류:', error);
+                showToast('❌ 저장 실패: ' + error.message, 'error');
+            }
+        }
+
+        // ============================================================
+        // 8. 🔥 데이터 조회 (Firebase에서 읽기)
+        // ============================================================
+
+        // 8-1. 오늘의 일정 불러오기
+        async function loadTodaySchedules() {
+            const today = new Date().toISOString().split('T')[0];
+
+            try {
+                const snapshot = await db.collection('schedules')
+                    .where('date', '==', today)
+                    .orderBy('time')
+                    .get();
+
+                const list = document.getElementById('todayScheduleList');
+                const countEl = document.getElementById('todayCount');
+
+                if (snapshot.empty) {
+                    list.innerHTML = `
+                        <div class="schedule-empty">
+                            <i class="fas fa-calendar-day"></i>
+                            오늘 일정이 없습니다
+                        </div>
+                    `;
+                    countEl.textContent = '0개';
+                    return;
+                }
+
+                let html = '';
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const statusClass = data.status || 'pending';
+                    const statusLabel = {
+                        'confirmed': '확정',
+                        'pending': '대기',
+                        'cancelled': '취소'
+                    } [statusClass] || '대기';
+
+                    html += `
+                        <div class="schedule-item" onclick="viewDetail('${doc.id}')">
+                            <span class="time">${data.time}</span>
+                            <div class="info">
+                                <div class="title">${data.title}</div>
+                                <div class="desc">가이드: ${data.guide} · ${data.people}명</div>
+                            </div>
+                            <span class="status ${statusClass}">${statusLabel}</span>
+                        </div>
+                    `;
+                });
+
+                list.innerHTML = html;
+                countEl.textContent = snapshot.size + '개';
+
+            } catch (error) {
+                console.error('조회 오류:', error);
+            }
+        }
+
+        // 8-2. 검색 조건으로 조회
+        async function searchSchedules() {
+            const startDate = document.getElementById('filterStartDate').value;
+            const endDate = document.getElementById('filterEndDate').value;
+            const guide = document.getElementById('filterGuide').value;
+            const status = document.getElementById('filterStatus').value;
+            const region = document.getElementById('filterRegion').value;
+
+            try {
+                // 기본 쿼리 (전체)
+                let query = db.collection('schedules');
+
+                // 날짜 필터
+                if (startDate) {
+                    query = query.where('date', '>=', startDate);
+                }
+                if (endDate) {
+                    query = query.where('date', '<=', endDate);
+                }
+
+                // 가이드 필터
+                if (guide) {
+                    query = query.where('guide', '==', guide);
+                }
+
+                // 지역 필터
+                if (region) {
+                    query = query.where('region', '==', region);
+                }
+
+                // 상태 필터
+                if (status) {
+                    query = query.where('status', '==', status);
+                }
+
+                const snapshot = await query.orderBy('date', 'desc').orderBy('time').get();
+
+                const resultList = document.getElementById('searchResultList');
+                const countEl = document.getElementById('resultCount');
+
+                if (snapshot.empty) {
+                    resultList.innerHTML = `
+                        <div class="result-empty">
+                            <i class="fas fa-search"></i>
+                            검색 결과가 없습니다
+                        </div>
+                    `;
+                    countEl.innerHTML = '총 <strong>0</strong>건의 일정이 조회되었습니다';
+                    return;
+                }
+
+                let html = '';
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const statusClass = data.status || 'pending';
+                    const statusLabel = {
+                        'confirmed': '확정',
+                        'pending': '대기',
+                        'cancelled': '취소'
+                    } [statusClass] || '대기';
+
+                    // 날짜 표시 형식
+                    const displayDate = data.date.replace(/-/g, '/');
+
+                    html += `
+                        <div class="result-item" onclick="viewDetail('${doc.id}')">
+                            <span class="result-date">${displayDate}</span>
+                            <div class="result-info">
+                                <div class="result-title">${data.title}</div>
+                                <div class="result-meta">가이드: ${data.guide} · ${data.people}명 · ${data.time} · ${data.region}</div>
+                            </div>
+                            <span class="result-status ${statusClass}">${statusLabel}</span>
+                        </div>
+                    `;
+                });
+
+                resultList.innerHTML = html;
+                countEl.innerHTML = `총 <strong>${snapshot.size}</strong>건의 일정이 조회되었습니다`;
+
+            } catch (error) {
+                console.error('검색 오류:', error);
+                showToast('❌ 검색 실패: ' + error.message, 'error');
+            }
+        }
+
+        // 8-3. 상세 보기 (데모)
+        function viewDetail(id) {
+            alert('📌 일정 상세 페이지로 이동합니다.\n(문서 ID: ' + id + ')');
+        }
+
+        // ============================================================
+        // 9. 필터 초기화
+        // ============================================================
+        function resetFilter() {
+            document.getElementById('filterStartDate').value = '';
+            document.getElementById('filterEndDate').value = '';
+            document.getElementById('filterGuide').value = '';
+            document.getElementById('filterStatus').value = '';
+            document.getElementById('filterRegion').value = '';
+            searchSchedules();
+        }
+
+        // ============================================================
+        // 10. 달력 렌더링
+        // ============================================================
+        function renderCalendar() {
+            const grid = document.getElementById('calendarGrid');
+            const monthYear = document.getElementById('monthYear');
+
+            const monthNames = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
+            monthYear.textContent = `${currentYear}년 ${monthNames[currentMonth - 1]}`;
+
+            const firstDay = new Date(currentYear, currentMonth - 1, 1).getDay();
+            const daysInMonth = new Date(currentYear, currentMonth, 0).getDate();
+            const daysInPrevMonth = new Date(currentYear, currentMonth - 1, 0).getDate();
+
+            const today = new Date().toISOString().split('T')[0];
+
+            let html = '';
+            const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
+            weekdays.forEach(d => {
+                html += `<div class="weekday">${d}</div>`;
             });
-        });
 
-        // 조회 버튼 클릭 시 (데모)
-        document.querySelector('.filter-actions .btn-primary')?.addEventListener('click', function() {
-            alert('조회 기능이 실행됩니다.\n(데모 화면입니다)');
-        });
+            // 이전 달 날짜
+            for (let i = firstDay - 1; i >= 0; i--) {
+                const day = daysInPrevMonth - i;
+                html += `<div class="day other-month">${day}</div>`;
+            }
 
-        // 새로 입력하기 버튼
-        document.querySelector('.header-actions .btn-primary')?.addEventListener('click', function() {
-            alert('새 일정 입력 페이지로 이동합니다.\n(데모 화면입니다)');
-        });
+            // 현재 달 날짜
+            for (let d = 1; d <= daysInMonth; d++) {
+                const dateStr = `${currentYear}-${String(currentMonth).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+                const isToday = dateStr === today;
+                const hasEvent = allSchedules.some(s => s.date === dateStr);
 
-        // 일정 아이템 클릭 시
-        document.querySelectorAll('.schedule-item, .result-item').forEach(item => {
-            item.addEventListener('click', function() {
-                const title = this.querySelector('.title')?.textContent || this.querySelector('.result-title')
-                    ?.textContent || '일정';
-                alert(`📌 "${title}"\n상세 페이지로 이동합니다.`);
-            });
-        });
+                let classes = 'day';
+                if (isToday) classes += ' today';
+                if (hasEvent) classes += ' has-event';
+
+                html += `<div class="${classes}" onclick="selectDate('${dateStr}')">${d}</div>`;
+            }
+
+            // 다음 달 날짜
+            const totalCells = firstDay + daysInMonth;
+            const remaining = 7 - (totalCells % 7);
+            if (remaining < 7) {
+                for (let d = 1; d <= remaining; d++) {
+                    html += `<div class="day other-month">${d}</div>`;
+                }
+            }
+
+            grid.innerHTML = html;
+        }
+
+        // ============================================================
+        // 11. 달력 월 이동
+        // ============================================================
+        function changeMonth(delta) {
+            currentMonth += delta;
+            if (currentMonth > 12) {
+                currentMonth = 1;
+                currentYear++;
+            } else if (currentMonth < 1) {
+                currentMonth = 12;
+                currentYear--;
+            }
+            renderCalendar();
+        }
+
+        // ============================================================
+        // 12. 날짜 선택
+        // ============================================================
+        function selectDate(dateStr) {
+            document.getElementById('filterStartDate').value = dateStr;
+            document.getElementById('filterEndDate').value = dateStr;
+            searchSchedules();
+            showToast(`📅 ${dateStr} 일정을 조회합니다`, 'success');
+        }
+
+        // ============================================================
+        // 13. 데이터 내보내기 (데모)
+        // ============================================================
+        function exportData() {
+            alert('📥 일정 데이터를 CSV로 내보냅니다.\n(데모 기능입니다)');
+        }
+
+        // ============================================================
+        // 14. 🔥 초기 실행 (페이지 로드 시)
+        // ============================================================
+        async function init() {
+            // 모든 일정 데이터를 한 번에 가져와서 달력에 표시
+            try {
+                const snapshot = await db.collection('schedules').get();
+                allSchedules = [];
+                snapshot.forEach(doc => {
+                    allSchedules.push({ id: doc.id, ...doc.data() });
+                });
+            } catch (error) {
+                console.log('데이터 로드 오류 (초기 실행):', error);
+            }
+
+            renderCalendar();
+            loadTodaySchedules();
+            searchSchedules();
+        }
+
+        // 페이지 로드 후 실행
+        document.addEventListener('DOMContentLoaded', init);
     </script>
 
 </body>
