@@ -8,8 +8,514 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
 <style>
-/* ===== 모든 스타일은 이전과 동일 ===== */
-/* (생략 - 기존 스타일 그대로 사용) */
+/* ===== 일정 관리 전용 스타일 ===== */
+.schedule-container {
+    display: flex;
+    gap: 32px;
+    margin-top: 16px;
+}
+
+/* ===== 캘린더 영역 ===== */
+.calendar-wrapper {
+    flex: 1.2;
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.calendar-header h2 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1a1a2e;
+}
+
+.calendar-nav {
+    display: flex;
+    gap: 8px;
+}
+
+.calendar-nav button {
+    padding: 8px 16px;
+    border: 1px solid #e5e7eb;
+    background: white;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.2s;
+    color: #4b5563;
+}
+
+.calendar-nav button:hover {
+    background: #f0f7ff;
+    border-color: #0078ff;
+    color: #0078ff;
+}
+
+.calendar-nav .today-btn {
+    background: #0078ff;
+    color: white;
+    border-color: #0078ff;
+}
+
+.calendar-nav .today-btn:hover {
+    background: #0066dd;
+}
+
+/* ===== 캘린더 그리드 ===== */
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+}
+
+.calendar-weekday {
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: #6b7280;
+    padding: 10px 0;
+    border-bottom: 2px solid #f0f2f5;
+}
+
+.calendar-day {
+    min-height: 80px;
+    padding: 6px 8px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: #f9fafb;
+    border: 1px solid transparent;
+    position: relative;
+}
+
+.calendar-day:hover {
+    background: #f0f7ff;
+    border-color: #0078ff;
+}
+
+.calendar-day.other-month {
+    opacity: 0.3;
+}
+
+.calendar-day.today {
+    background: #e8f0fe;
+    border-color: #0078ff;
+}
+
+.calendar-day.selected {
+    background: #0078ff;
+    color: white;
+    border-color: #0078ff;
+}
+
+.calendar-day.selected .day-number {
+    color: white;
+}
+
+.calendar-day .day-number {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1a1a2e;
+}
+
+.calendar-day .event-dots {
+    display: flex;
+    gap: 3px;
+    margin-top: 4px;
+    flex-wrap: wrap;
+}
+
+.calendar-day .event-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #0078ff;
+}
+
+.calendar-day .event-dot.confirmed {
+    background: #10b981;
+}
+
+.calendar-day .event-dot.pending {
+    background: #f59e0b;
+}
+
+.calendar-day .event-dot.completed {
+    background: #6b7280;
+}
+
+.calendar-day .event-count {
+    font-size: 11px;
+    font-weight: 600;
+    color: #0078ff;
+    margin-top: 2px;
+}
+
+.calendar-day.selected .event-count {
+    color: rgba(255,255,255,0.9);
+}
+
+/* ===== 일정 리스트 영역 ===== */
+.schedule-list-wrapper {
+    flex: 1;
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+.schedule-list-wrapper::-webkit-scrollbar {
+    width: 4px;
+}
+
+.schedule-list-wrapper::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.schedule-list-wrapper::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+.schedule-list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.schedule-list-header h3 {
+    font-size: 17px;
+    font-weight: 700;
+    color: #1a1a2e;
+}
+
+.schedule-list-header .date-badge {
+    font-size: 13px;
+    color: #6b7280;
+    background: #f0f4f9;
+    padding: 4px 12px;
+    border-radius: 12px;
+}
+
+.schedule-item {
+    padding: 14px 16px;
+    border-radius: 12px;
+    border: 1px solid #f0f2f5;
+    margin-bottom: 10px;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.schedule-item:hover {
+    border-color: #0078ff;
+    box-shadow: 0 4px 12px rgba(0,120,255,0.08);
+}
+
+.schedule-item .item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    margin-bottom: 6px;
+}
+
+.schedule-item .item-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1a1a2e;
+}
+
+.schedule-item .item-time {
+    font-size: 13px;
+    color: #0078ff;
+    font-weight: 600;
+}
+
+.schedule-item .item-details {
+    font-size: 13px;
+    color: #6b7280;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.schedule-item .item-details span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.schedule-item .item-status {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 2px 10px;
+    border-radius: 12px;
+    display: inline-block;
+}
+
+.status-confirmed {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.status-pending {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.status-completed {
+    background: #f0f4f9;
+    color: #6b7280;
+}
+
+.status-cancelled {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.schedule-empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: #9ca3af;
+}
+
+.schedule-empty .empty-icon {
+    font-size: 48px;
+    display: block;
+    margin-bottom: 12px;
+}
+
+/* ===== 일정 추가 버튼 ===== */
+.add-schedule-btn {
+    width: 100%;
+    padding: 12px;
+    background: #0078ff;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 16px;
+}
+
+.add-schedule-btn:hover {
+    background: #0066dd;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,120,255,0.3);
+}
+
+/* ===== 일정 추가 모달 ===== */
+.schedule-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(4px);
+    z-index: 99999;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.schedule-modal-overlay.active {
+    display: flex;
+}
+
+.schedule-modal {
+    background: white;
+    border-radius: 20px;
+    max-width: 500px;
+    width: 100%;
+    padding: 32px;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.2);
+    animation: modalSlideIn 0.3s ease;
+}
+
+.schedule-modal h2 {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: #1a1a2e;
+}
+
+.schedule-modal .form-group {
+    margin-bottom: 16px;
+}
+
+.schedule-modal .form-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 4px;
+}
+
+.schedule-modal .form-group input,
+.schedule-modal .form-group select,
+.schedule-modal .form-group textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1.5px solid #e5e7eb;
+    font-size: 14px;
+    font-family: inherit;
+    transition: all 0.2s;
+    background: #f9fafb;
+}
+
+.schedule-modal .form-group input:focus,
+.schedule-modal .form-group select:focus,
+.schedule-modal .form-group textarea:focus {
+    outline: none;
+    border-color: #0078ff;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(0,120,255,0.1);
+}
+
+.schedule-modal .form-group textarea {
+    height: 80px;
+    resize: vertical;
+}
+
+.schedule-modal .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.schedule-modal .btn-group {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.schedule-modal .btn {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.schedule-modal .btn-primary {
+    background: #0078ff;
+    color: white;
+}
+
+.schedule-modal .btn-primary:hover {
+    background: #0066dd;
+}
+
+.schedule-modal .btn-secondary {
+    background: #f0f4f9;
+    color: #4b5563;
+}
+
+.schedule-modal .btn-secondary:hover {
+    background: #e5e9f0;
+}
+
+.schedule-modal .btn-danger {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.schedule-modal .btn-danger:hover {
+    background: #fecaca;
+}
+
+/* ===== 로딩 오버레이 ===== */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(4px);
+    z-index: 999999;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.loading-overlay.active {
+    display: flex;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #e5e7eb;
+    border-top-color: #0078ff;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ===== 반응형 ===== */
+@media (max-width: 992px) {
+    .schedule-container {
+        flex-direction: column;
+    }
+
+    .calendar-wrapper,
+    .schedule-list-wrapper {
+        flex: 1;
+        max-height: none;
+    }
+
+    .calendar-day {
+        min-height: 60px;
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 640px) {
+    .calendar-day {
+        min-height: 50px;
+        padding: 4px 6px;
+        font-size: 12px;
+    }
+
+    .calendar-day .day-number {
+        font-size: 12px;
+    }
+
+    .calendar-nav button {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+
+    .schedule-modal .form-row {
+        grid-template-columns: 1fr;
+    }
+}
 </style>
 </head>
 <body>
@@ -22,6 +528,8 @@
 
 <!-- ===== 일정 컨테이너 ===== -->
 <div class="schedule-container">
+    
+    <!-- ===== 캘린더 영역 ===== -->
     <div class="calendar-wrapper">
         <div class="calendar-header">
             <h2 id="calendarTitle">2026년 8월</h2>
@@ -31,17 +539,24 @@
                 <button onclick="changeMonth(1)">▶</button>
             </div>
         </div>
-        <div class="calendar-grid" id="calendarGrid"></div>
+        
+        <div class="calendar-grid" id="calendarGrid">
+            <!-- JavaScript로 생성 -->
+        </div>
     </div>
 
+    <!-- ===== 일정 리스트 영역 ===== -->
     <div class="schedule-list-wrapper">
         <div class="schedule-list-header">
             <h3 id="listTitle">📋 일정</h3>
             <span class="date-badge" id="dateBadge">2026년 8월 15일</span>
         </div>
-        <div id="scheduleList"></div>
+        <div id="scheduleList">
+            <!-- JavaScript로 생성 -->
+        </div>
         <button class="add-schedule-btn" onclick="openAddScheduleModal()">➕ 새 일정 추가</button>
     </div>
+
 </div>
 
 <!-- ===== 일정 추가/수정 모달 ===== -->
@@ -123,6 +638,7 @@
         deleteDoc,
         query, 
         where,
+        orderBy,
         Timestamp 
     } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
@@ -208,10 +724,10 @@
     }
 
     // ============================================
-    //  🔥 FIREBASE CRUD (orderBy 제거)
+    //  🔥 FIREBASE CRUD (UID 기반)
     // ============================================
 
-    // 1. 일정 불러오기 (orderBy 제거 → 인덱스 불필요)
+    // 1. 일정 불러오기 (현재 사용자의 UID로 필터링)
     async function loadSchedulesFromFirebase() {
         if (!currentUser) {
             console.log('⚠️ 로그인이 필요합니다.');
@@ -222,10 +738,11 @@
             isLoading = true;
             showLoading('일정을 불러오는 중...');
 
-            // 🔥 orderBy 제거 (인덱스 불필요)
+            // 🔥 현재 사용자(UID)의 일정만 조회
             const q = query(
                 collection(db, 'schedules'),
-                where('guideId', '==', currentUser.uid)
+                where('guideId', '==', currentUser.uid),
+                orderBy('date', 'asc')
             );
             
             const querySnapshot = await getDocs(q);
@@ -249,9 +766,6 @@
                 });
             });
 
-            // 🔥 클라이언트에서 날짜순 정렬
-            schedules.sort((a, b) => (a.date || '').localeCompare(b.date || ''));
-
             console.log(`✅ ${schedules.length}개의 일정을 불러왔습니다. (UID: ${currentUser.uid})`);
             
             renderCalendar();
@@ -259,20 +773,14 @@
             
         } catch (error) {
             console.error('❌ 일정 불러오기 실패:', error);
-            
-            // 에러 메시지 표시
-            let errorMsg = '일정을 불러오는데 실패했습니다.';
-            if (error.message && error.message.includes('index')) {
-                errorMsg += '\n\n⚠️ Firebase 인덱스가 필요합니다.\n에러 메시지의 링크를 클릭하여 인덱스를 생성하세요.';
-            }
-            alert(errorMsg);
+            alert('일정을 불러오는데 실패했습니다: ' + error.message);
         } finally {
             isLoading = false;
             hideLoading();
         }
     }
 
-    // 2. 일정 저장하기
+    // 2. 일정 저장하기 (UID 포함)
     async function saveScheduleToFirebase(scheduleData) {
         if (!currentUser) {
             alert('⚠️ 로그인이 필요합니다.');
@@ -282,6 +790,7 @@
         try {
             showLoading('저장 중...');
             
+            // 🔥 guideId에 현재 사용자 UID 저장
             const data = {
                 guideId: currentUser.uid,
                 title: scheduleData.title,
@@ -298,6 +807,8 @@
             let docRef;
             
             if (scheduleData.id) {
+                // 수정 - 해당 문서가 현재 사용자의 것인지 확인
+                const docRef_check = doc(db, 'schedules', scheduleData.id);
                 const docSnap = await getDocs(query(
                     collection(db, 'schedules'),
                     where('guideId', '==', currentUser.uid),
@@ -313,12 +824,14 @@
                 await updateDoc(docRef, data);
                 console.log('✅ 일정 수정 완료:', scheduleData.id);
             } else {
+                // 새로 추가
                 data.createdAt = Timestamp.now();
                 docRef = await addDoc(collection(db, 'schedules'), data);
                 console.log('✅ 새 일정 추가 완료:', docRef.id);
                 scheduleData.id = docRef.id;
             }
 
+            // 데이터 다시 불러오기
             await loadSchedulesFromFirebase();
             return scheduleData;
 
@@ -331,7 +844,7 @@
         }
     }
 
-    // 3. 일정 삭제하기
+    // 3. 일정 삭제하기 (UID 확인)
     async function deleteScheduleFromFirebase(scheduleId) {
         if (!currentUser) {
             alert('⚠️ 로그인이 필요합니다.');
@@ -345,6 +858,7 @@
         try {
             showLoading('삭제 중...');
             
+            // 🔥 삭제 권한 확인 (해당 UID의 일정인지)
             const docSnap = await getDocs(query(
                 collection(db, 'schedules'),
                 where('guideId', '==', currentUser.uid),
@@ -458,7 +972,7 @@
     }
 
     // ============================================
-    //  전역 함수
+    //  전역 함수 (window에 노출)
     // ============================================
     
     window.selectDate = function(dateStr) {
@@ -518,6 +1032,7 @@
         document.getElementById('scheduleModal').classList.remove('active');
     };
     
+    // ===== 🔥 Firebase 저장 함수 =====
     window.saveSchedule = async function() {
         const id = document.getElementById('editScheduleId').value;
         const title = document.getElementById('schedTitle').value.trim();
@@ -556,6 +1071,7 @@
         window.closeScheduleModal();
     };
     
+    // ===== 🔥 Firebase 삭제 함수 =====
     window.deleteSchedule = async function() {
         const id = document.getElementById('editScheduleId').value;
         if (!id) return;
@@ -580,7 +1096,7 @@
     });
 
     // ============================================
-    //  INIT
+    //  INIT - Firebase 인증
     // ============================================
     onAuthStateChanged(auth, async user => {
         if (!user) {
@@ -591,6 +1107,7 @@
                     message: '로그인이 필요합니다.'
                 }, '*');
             }
+            // 로그인 페이지로 리다이렉트 (iframe이 아닐 경우)
             if (window.parent === window) {
                 window.location.href = '/login/guidelogin.html';
             }
@@ -601,6 +1118,7 @@
         console.log('✅ 로그인 사용자:', currentUser.email);
         console.log('🔑 UID:', currentUser.uid);
         
+        // 🔥 Firebase에서 현재 사용자의 일정 로드
         await loadSchedulesFromFirebase();
         
         if (window.parent !== window) {
@@ -612,7 +1130,7 @@
         }
     });
 
-    console.log('📅 Schedule Management with Firebase loaded');
+    console.log('📅 Schedule Management with Firebase (UID based) loaded');
 </script>
 </body>
 </html>
