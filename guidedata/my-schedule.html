@@ -14,73 +14,20 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 
     <style>
-        /* ===== 상태 표시줄 (로그인 정보 표시) ===== */
-        .status-bar {
-            background: #f8fafc;
-            padding: 10px 32px;
-            border-bottom: 1px solid #edf2f7;
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 16px 24px;
-            font-size: 13px;
-            color: #475569;
-        }
-        .status-bar .status-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .status-bar .status-item .dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            display: inline-block;
-        }
-        .status-bar .status-item .dot.online { background: #22c55e; }
-        .status-bar .status-item .dot.offline { background: #ef4444; }
-        .status-bar .status-item .dot.warning { background: #f59e0b; }
-        .status-bar .status-item .label { color: #94a3b8; font-weight: 500; }
-        .status-bar .status-item .value { font-weight: 600; color: #1e293b; }
-        .status-bar .status-item .value.error { color: #ef4444; }
-        .status-bar .status-item .value.success { color: #22c55e; }
-        .status-bar .status-item .value.warning { color: #f59e0b; }
-        .status-bar .collection-badge {
-            background: #e2e8f0;
-            padding: 2px 12px;
-            border-radius: 100px;
-            font-size: 12px;
-            font-weight: 600;
-            color: #475569;
-            font-family: 'Courier New', monospace;
-        }
-
-        /* ===== 로그인/로그아웃 버튼 ===== */
-        .btn-logout {
-            background: #ef4444;
-            color: #ffffff;
-            padding: 6px 14px;
-            border-radius: 8px;
-            font-size: 12px;
-            font-weight: 600;
-            border: none;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .btn-logout:hover {
-            background: #dc2626;
-        }
-
-        /* ===== 나머지 스타일 (이전과 동일) ===== */
+        /* ===== 리셋 & 기본 ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background: #f0f2f5; color: #1a1a2e; padding: 20px; }
         .app-container { max-width: 1280px; margin: 0 auto; background: #ffffff; border-radius: 24px; box-shadow: 0 8px 40px rgba(0,0,0,0.06); overflow: hidden; min-height: 90vh; display: flex; flex-direction: column; }
+
+        /* ===== 헤더 ===== */
         .app-header { display: flex; align-items: center; justify-content: space-between; padding: 18px 32px; border-bottom: 1px solid #edf2f7; flex-wrap: wrap; gap: 12px; background: #ffffff; }
         .app-header .logo-area { display: flex; align-items: center; gap: 12px; }
         .app-header .logo-area .logo-icon { font-size: 24px; color: #2563eb; }
         .app-header .logo-area h1 { font-size: 20px; font-weight: 700; color: #1a1a2e; }
         .app-header .logo-area h1 span { color: #2563eb; }
         .app-header .header-actions { display: flex; align-items: center; gap: 10px; }
+
+        /* ===== 버튼 ===== */
         .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 10px; font-size: 14px; font-weight: 600; border: none; cursor: pointer; transition: all 0.2s ease; font-family: inherit; }
         .btn-primary { background: #2563eb; color: #ffffff; }
         .btn-primary:hover { background: #1d4ed8; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(37,99,235,0.3); }
@@ -89,8 +36,13 @@
         .btn-sm { padding: 6px 14px; font-size: 12px; border-radius: 8px; }
         .btn-icon { width: 36px; height: 36px; border-radius: 10px; background: transparent; border: 1px solid #e5e7eb; color: #6b7280; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; }
         .btn-icon:hover { background: #f3f4f6; }
+
+        /* ===== 메인 2컬럼 ===== */
         .main-content { display: grid; grid-template-columns: 1fr 1fr; gap: 0; flex: 1; min-height: 600px; }
         .left-panel { padding: 28px 32px; border-right: 1px solid #edf2f7; background: #fafbfc; }
+        .right-panel { padding: 28px 32px; background: #ffffff; display: flex; flex-direction: column; }
+
+        /* ===== 달력 ===== */
         .calendar-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
         .calendar-header .month-year { font-size: 18px; font-weight: 700; color: #1a1a2e; }
         .calendar-header .nav-buttons { display: flex; gap: 6px; }
@@ -104,6 +56,8 @@
         .calendar-grid .day.other-month { color: #d1d5db; }
         .calendar-grid .day.has-event::after { content: ''; position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%); width: 5px; height: 5px; border-radius: 50%; background: #2563eb; }
         .calendar-grid .day.today.has-event::after { background: #ffffff; }
+
+        /* ===== 일정 목록 ===== */
         .schedule-list { margin-top: 8px; }
         .schedule-list .list-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
         .schedule-list .list-header h3 { font-size: 15px; font-weight: 600; color: #1a1a2e; }
@@ -118,10 +72,14 @@
         .schedule-item .status.confirmed { background: #d1fae5; color: #065f46; }
         .schedule-item .status.pending { background: #fef3c7; color: #92400e; }
         .schedule-item .status.cancelled { background: #fee2e2; color: #991b1b; }
-        .right-panel { padding: 28px 32px; background: #ffffff; display: flex; flex-direction: column; }
-        .right-panel .panel-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
-        .right-panel .panel-header h2 { font-size: 18px; font-weight: 700; color: #1a1a2e; }
-        .right-panel .panel-header .sub { font-size: 13px; color: #9ca3af; }
+
+        .schedule-empty { text-align: center; padding: 32px 0; color: #9ca3af; }
+        .schedule-empty i { font-size: 32px; display: block; margin-bottom: 8px; opacity: 0.5; }
+
+        /* ===== 조회 필터 ===== */
+        .panel-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+        .panel-header h2 { font-size: 18px; font-weight: 700; color: #1a1a2e; }
+        .panel-header .sub { font-size: 13px; color: #9ca3af; }
         .filter-section { display: flex; flex-direction: column; gap: 14px; margin-bottom: 24px; }
         .filter-row { display: flex; gap: 12px; flex-wrap: wrap; }
         .filter-row .filter-group { flex: 1; min-width: 120px; }
@@ -129,6 +87,8 @@
         .filter-row .filter-group select, .filter-row .filter-group input { width: 100%; padding: 8px 12px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 13px; font-family: inherit; background: #fafbfc; transition: border-color 0.2s ease; color: #1a1a2e; }
         .filter-row .filter-group select:focus, .filter-row .filter-group input:focus { outline: none; border-color: #2563eb; }
         .filter-actions { display: flex; gap: 10px; margin-top: 4px; }
+
+        /* ===== 결과 목록 ===== */
         .result-area { flex: 1; min-height: 200px; }
         .result-area .result-header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 12px; border-bottom: 1px solid #edf2f7; margin-bottom: 16px; }
         .result-area .result-header .result-count { font-size: 14px; color: #6b7280; }
@@ -143,10 +103,11 @@
         .result-item .result-status.confirmed { background: #d1fae5; color: #065f46; }
         .result-item .result-status.pending { background: #fef3c7; color: #92400e; }
         .result-item .result-status.cancelled { background: #fee2e2; color: #991b1b; }
-        .schedule-empty, .result-empty { text-align: center; padding: 32px 0; color: #9ca3af; }
-        .schedule-empty i, .result-empty i { font-size: 32px; display: block; margin-bottom: 8px; opacity: 0.5; }
-        .result-empty i { font-size: 40px; }
 
+        .result-empty { text-align: center; padding: 48px 0; color: #9ca3af; }
+        .result-empty i { font-size: 40px; display: block; margin-bottom: 12px; opacity: 0.3; }
+
+        /* ===== 모달 ===== */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); z-index: 9999; align-items: center; justify-content: center; }
         .modal-overlay.active { display: flex; }
         .modal { background: #ffffff; border-radius: 20px; padding: 32px; max-width: 520px; width: 90%; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
@@ -161,15 +122,38 @@
         .modal .form-group textarea { resize: vertical; min-height: 60px; }
         .modal .form-actions { display: flex; gap: 10px; margin-top: 20px; justify-content: flex-end; }
 
+        /* ===== 토스트 ===== */
         .toast { position: fixed; bottom: 30px; right: 30px; background: #1a1a2e; color: #fff; padding: 14px 24px; border-radius: 12px; font-size: 14px; font-weight: 500; box-shadow: 0 8px 30px rgba(0,0,0,0.2); z-index: 10000; opacity: 0; transform: translateY(20px); transition: all 0.3s ease; }
         .toast.show { opacity: 1; transform: translateY(0); }
         .toast.success { background: #059669; }
         .toast.error { background: #dc2626; }
         .toast.info { background: #2563eb; }
 
-        @media (max-width: 992px) { .main-content { grid-template-columns: 1fr; } .left-panel { border-right: none; border-bottom: 1px solid #edf2f7; } .app-header { padding: 14px 20px; } .left-panel, .right-panel { padding: 20px; } .status-bar { padding: 8px 20px; font-size: 12px; gap: 10px; } }
-        @media (max-width: 640px) { body { padding: 10px; } .app-container { border-radius: 16px; } .app-header .logo-area h1 { font-size: 16px; } .app-header .header-actions .btn span { display: none; } .filter-row { flex-direction: column; } .filter-row .filter-group { min-width: 100%; } .calendar-grid .day { padding: 8px 0; font-size: 12px; } .schedule-item, .result-item { flex-wrap: wrap; gap: 8px; } .status-bar { flex-direction: column; align-items: flex-start; gap: 6px; } }
-        @media (max-width: 480px) { .app-header { padding: 12px 16px; } .app-header .logo-area .logo-icon { font-size: 18px; } .app-header .logo-area h1 { font-size: 14px; } .btn { padding: 6px 12px; font-size: 12px; } .left-panel, .right-panel { padding: 16px; } .calendar-header .month-year { font-size: 15px; } }
+        /* ===== 반응형 ===== */
+        @media (max-width: 992px) {
+            .main-content { grid-template-columns: 1fr; }
+            .left-panel { border-right: none; border-bottom: 1px solid #edf2f7; }
+            .app-header { padding: 14px 20px; }
+            .left-panel, .right-panel { padding: 20px; }
+        }
+        @media (max-width: 640px) {
+            body { padding: 10px; }
+            .app-container { border-radius: 16px; }
+            .app-header .logo-area h1 { font-size: 16px; }
+            .app-header .header-actions .btn span { display: none; }
+            .filter-row { flex-direction: column; }
+            .filter-row .filter-group { min-width: 100%; }
+            .calendar-grid .day { padding: 8px 0; font-size: 12px; }
+            .schedule-item, .result-item { flex-wrap: wrap; gap: 8px; }
+        }
+        @media (max-width: 480px) {
+            .app-header { padding: 12px 16px; }
+            .app-header .logo-area .logo-icon { font-size: 18px; }
+            .app-header .logo-area h1 { font-size: 14px; }
+            .btn { padding: 6px 12px; font-size: 12px; }
+            .left-panel, .right-panel { padding: 16px; }
+            .calendar-header .month-year { font-size: 15px; }
+        }
     </style>
 </head>
 
@@ -214,13 +198,6 @@
                     <label>📝 메모</label>
                     <textarea id="inputMemo" placeholder="추가 정보를 입력하세요"></textarea>
                 </div>
-                <div class="form-group" style="background:#f8fafc; padding:12px 16px; border-radius:10px; border:1px solid #e5e7eb;">
-                    <div style="font-size:12px; color:#6b7280; margin-bottom:4px;">👤 연결된 가이드</div>
-                    <div id="guideDisplay" style="font-size:14px; font-weight:500; color:#1a1a2e;">
-                        <span id="guideNameDisplay">로그인 필요</span>
-                        <span id="guideEmailDisplay" style="font-size:12px; color:#9ca3af; font-weight:400; margin-left:8px;"></span>
-                    </div>
-                </div>
                 <div class="form-actions">
                     <button type="button" class="btn btn-outline" onclick="closeModal()">취소</button>
                     <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> 저장하기</button>
@@ -232,34 +209,7 @@
     <!-- ===== 메인 ===== -->
     <div class="app-container">
 
-        <!-- ===== 상단 상태 표시줄 (로그인 정보 표시) ===== -->
-        <div class="status-bar" id="statusBar">
-            <div class="status-item">
-                <span class="dot" id="statusDot"></span>
-                <span class="label">Firebase:</span>
-                <span class="value" id="statusText">연결 중...</span>
-            </div>
-            <div class="status-item">
-                <span class="label">UID:</span>
-                <span class="value" id="statusUid">-</span>
-            </div>
-            <div class="status-item">
-                <span class="label">가이드:</span>
-                <span class="value" id="statusGuide">-</span>
-            </div>
-            <div class="status-item">
-                <span class="label">컬렉션:</span>
-                <span class="collection-badge">schedules</span>
-                <span style="color:#94a3b8;">/</span>
-                <span class="collection-badge" style="background:#dbeafe; color:#2563eb;">guides</span>
-            </div>
-            <div class="status-item" style="margin-left:auto;">
-                <button class="btn-logout" onclick="logout()" id="logoutBtn" style="display:none;">
-                    <i class="fas fa-sign-out-alt"></i> 로그아웃
-                </button>
-            </div>
-        </div>
-
+        <!-- ===== 헤더 ===== -->
         <header class="app-header">
             <div class="logo-area">
                 <span class="logo-icon"><i class="fas fa-compass"></i></span>
@@ -274,8 +224,10 @@
             </div>
         </header>
 
+        <!-- ===== 메인 콘텐츠 ===== -->
         <div class="main-content">
-            <!-- 왼쪽 -->
+
+            <!-- 왼쪽: 달력 + 오늘 일정 -->
             <div class="left-panel">
                 <div class="calendar-header">
                     <span class="month-year" id="monthYear">2026년 8월</span>
@@ -297,7 +249,7 @@
                 </div>
             </div>
 
-            <!-- 오른쪽 -->
+            <!-- 오른쪽: 일정 조회 -->
             <div class="right-panel">
                 <div class="panel-header">
                     <div>
@@ -360,22 +312,23 @@
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 
     <script>
         // ============================================================
-        // 🔥 Firebase 설정 (여러분의 실제 값으로 바꾸세요!)
+        // 🔥 Firebase 설정
         // ============================================================
         const firebaseConfig = {
-      apiKey: "AIzaSyCgOSQsv_MRdaqrW4wJw0q2QY6wXZ-azQs",
-      authDomain: "guidelogin-b0053.firebaseapp.com",
-      projectId: "guidelogin-b0053",
-      storageBucket: "guidelogin-b0053.firebasestorage.app",
-      messagingSenderId: "981519805247",
-      appId: "1:981519805247:web:cc32682b177a4957c0818a",
-      measurementId: "G-2VR4TS6JND"
-    };
+            apiKey: "AIzaSyCgOSQsv_MRdaqrW4wJw0q2QY6wXZ-azQs",
+            authDomain: "guidelogin-b0053.firebaseapp.com",
+            projectId: "guidelogin-b0053",
+            storageBucket: "guidelogin-b0053.firebasestorage.app",
+            messagingSenderId: "981519805247",
+            appId: "1:981519805247:web:cc32682b177a4957c0818a",
+            measurementId: "G-2VR4TS6JND"
+        };
 
         // ============================================================
         // 🔥 Firebase 초기화
@@ -388,37 +341,16 @@
         // 🔥 컬렉션 이름
         // ============================================================
         const SCHEDULES_COLLECTION = 'schedules';
-        const GUIDES_COLLECTION = 'guides';  // ⚠️ 소문자 g
+        const GUIDES_COLLECTION = 'guides';
 
         // ============================================================
-        // 🔥 전역 변수 (UID는 로그인 후 할당)
+        // 🔥 전역 변수
         // ============================================================
-        let CURRENT_UID = null;          // ← 하드코딩 제거! 로그인 후 할당됨
+        let CURRENT_UID = null;
         let currentGuideInfo = null;
         let currentYear = 2026;
         let currentMonth = 8;
         let allSchedules = [];
-
-        // ============================================================
-        // 🔥 상태 표시줄 업데이트 함수
-        // ============================================================
-        function updateStatus(dotState, text, className = '') {
-            const dot = document.getElementById('statusDot');
-            const textEl = document.getElementById('statusText');
-            dot.className = 'dot ' + dotState;
-            textEl.textContent = text;
-            textEl.className = 'value' + (className ? ' ' + className : '');
-        }
-
-        function updateGuideStatus(name, className = '') {
-            const el = document.getElementById('statusGuide');
-            el.textContent = name || '-';
-            el.className = 'value' + (className ? ' ' + className : '');
-        }
-
-        function updateUid(uid) {
-            document.getElementById('statusUid').textContent = uid || '-';
-        }
 
         // ============================================================
         // 🔥 토스트 메시지
@@ -432,39 +364,21 @@
         }
 
         // ============================================================
-        // 🔥 현재 가이드 정보 불러오기 (UID 기반)
+        // 🔥 현재 가이드 정보 불러오기
         // ============================================================
         async function loadCurrentGuide() {
-            if (!CURRENT_UID) {
-                updateGuideStatus('로그인 필요', 'warning');
-                document.getElementById('guideNameDisplay').textContent = '로그인 필요';
-                document.getElementById('guideEmailDisplay').textContent = '';
-                return;
-            }
+            if (!CURRENT_UID) return;
 
             try {
                 const doc = await db.collection(GUIDES_COLLECTION).doc(CURRENT_UID).get();
                 if (doc.exists) {
                     currentGuideInfo = { uid: CURRENT_UID, ...doc.data() };
                     console.log('✅ 가이드 정보 로드 성공:', currentGuideInfo);
-
-                    updateGuideStatus(currentGuideInfo.name || '이름 없음', 'success');
-                    document.getElementById('guideNameDisplay').textContent = currentGuideInfo.name || '이름 없음';
-                    document.getElementById('guideEmailDisplay').textContent = currentGuideInfo.email || '';
-                    showToast('✅ 가이드 정보를 불러왔습니다!', 'success');
                 } else {
                     console.warn('⚠️ guides 컬렉션에 문서 없음. UID:', CURRENT_UID);
-                    updateGuideStatus('❌ guides 컬렉션에 문서 없음', 'error');
-                    document.getElementById('guideNameDisplay').textContent = '❌ 가이드 정보 없음';
-                    document.getElementById('guideEmailDisplay').textContent = '(guides 컬렉션에 추가 필요)';
-                    showToast('⚠️ guides 컬렉션에 가이드 문서를 추가해주세요!', 'error');
                 }
             } catch (error) {
                 console.error('❌ 가이드 정보 로드 오류:', error);
-                updateGuideStatus('❌ 로드 실패', 'error');
-                document.getElementById('guideNameDisplay').textContent = '❌ 로드 실패';
-                document.getElementById('guideEmailDisplay').textContent = '';
-                showToast('❌ 가이드 정보를 불러오지 못했습니다', 'error');
             }
         }
 
@@ -492,17 +406,13 @@
         }
 
         // ============================================================
-        // 🔥 저장 (UID 기반)
+        // 🔥 저장
         // ============================================================
         async function saveSchedule(event) {
             event.preventDefault();
 
-            if (!CURRENT_UID) {
+            if (!CURRENT_UID || !currentGuideInfo) {
                 showToast('⚠️ 로그인이 필요합니다!', 'error');
-                return;
-            }
-            if (!currentGuideInfo) {
-                showToast('⚠️ 가이드 정보가 없습니다.', 'error');
                 return;
             }
 
@@ -733,122 +643,55 @@
         }
 
         // ============================================================
-        // 🔥 로그아웃 함수
-        // ============================================================
-        function logout() {
-            auth.signOut().then(() => {
-                showToast('👋 로그아웃 되었습니다.', 'info');
-                // 상태 초기화
-                CURRENT_UID = null;
-                currentGuideInfo = null;
-                updateUid('-');
-                updateGuideStatus('로그아웃', 'warning');
-                document.getElementById('guideNameDisplay').textContent = '로그아웃';
-                document.getElementById('guideEmailDisplay').textContent = '';
-                document.getElementById('logoutBtn').style.display = 'none';
-                // 화면 초기화
-                document.getElementById('todayScheduleList').innerHTML =
-                    `<div class="schedule-empty"><i class="fas fa-calendar-day"></i>로그인이 필요합니다</div>`;
-                document.getElementById('searchResultList').innerHTML =
-                    `<div class="result-empty"><i class="fas fa-search"></i>로그인이 필요합니다</div>`;
-                document.getElementById('todayCount').textContent = '0개';
-                document.getElementById('resultCount').innerHTML = '총 <strong>0</strong>건';
-                allSchedules = [];
-                renderCalendar();
-            }).catch((error) => {
-                console.error('로그아웃 오류:', error);
-                showToast('❌ 로그아웃 실패: ' + error.message, 'error');
-            });
-        }
-
-        // ============================================================
-        // 🔥 초기화 함수 (로그인 후 실행)
-        // ============================================================
-        async function init() {
-            // UID 표시
-            updateUid(CURRENT_UID);
-
-            // 가이드 정보 로드
-            await loadCurrentGuide();
-
-            // 일정 데이터 로드
-            try {
-                const snapshot = await db.collection(SCHEDULES_COLLECTION).get();
-                allSchedules = [];
-                snapshot.forEach(doc => {
-                    allSchedules.push({ id: doc.id, ...doc.data() });
-                });
-            } catch (error) {
-                console.log('데이터 로드 오류:', error);
-            }
-
-            renderCalendar();
-            await loadTodaySchedules();
-            await searchSchedules();
-
-            // 로그아웃 버튼 표시
-            document.getElementById('logoutBtn').style.display = 'inline-block';
-
-            updateStatus('online', '연결됨', 'success');
-            showToast('✅ 로그인 성공!', 'success');
-        }
-
-        // ============================================================
-        // 🔥🔥🔥 가장 중요! Firebase Auth 상태 감지 🔥🔥🔥
-        // ============================================================
-        // 페이지 로드 시 자동으로 실행되며, 로그인 상태 변화를 감지합니다.
+        // 🔥 Firebase Auth 상태 감지
         // ============================================================
         auth.onAuthStateChanged(async (user) => {
             if (user) {
-                // ✅ 로그인 성공! 실제 사용자 UID 할당
                 CURRENT_UID = user.uid;
                 console.log('✅ 로그인 성공! UID:', CURRENT_UID);
 
-                // Firebase 연결 상태 업데이트
-                updateStatus('online', '연결됨 (로그인)', 'success');
+                // 가이드 정보 로드
+                await loadCurrentGuide();
 
-                // 🔥 데이터 초기화 실행
-                await init();
+                // 데이터 초기화
+                try {
+                    const snapshot = await db.collection(SCHEDULES_COLLECTION).get();
+                    allSchedules = [];
+                    snapshot.forEach(doc => {
+                        allSchedules.push({ id: doc.id, ...doc.data() });
+                    });
+                } catch (error) {
+                    console.log('데이터 로드 오류:', error);
+                }
+
+                renderCalendar();
+                await loadTodaySchedules();
+                await searchSchedules();
+                showToast('✅ 로그인 성공!', 'success');
 
             } else {
-                // ❌ 로그아웃 상태 또는 로그인 안됨
-                console.log('⚠️ 로그인되지 않음. 로그인이 필요합니다.');
-
+                console.log('⚠️ 로그인되지 않음');
                 CURRENT_UID = null;
                 currentGuideInfo = null;
-                updateStatus('warning', '로그인 필요', 'warning');
-                updateUid('-');
-                updateGuideStatus('로그인 필요', 'warning');
 
-                document.getElementById('guideNameDisplay').textContent = '로그인 필요';
-                document.getElementById('guideEmailDisplay').textContent = '';
-                document.getElementById('logoutBtn').style.display = 'none';
-
-                // 화면에 로그인 필요 메시지 표시
+                // 화면 초기화
                 document.getElementById('todayScheduleList').innerHTML =
                     `<div class="schedule-empty"><i class="fas fa-lock"></i>로그인이 필요합니다</div>`;
                 document.getElementById('searchResultList').innerHTML =
                     `<div class="result-empty"><i class="fas fa-lock"></i>로그인이 필요합니다</div>`;
                 document.getElementById('todayCount').textContent = '0개';
                 document.getElementById('resultCount').innerHTML = '총 <strong>0</strong>건';
-
-                // TODO: 여기에 로그인 화면으로 이동하는 코드 추가 가능
-                // 예: window.location.href = '/login.html';
-                // 또는 로그인 모달 표시
-                showToast('🔑 로그인이 필요합니다. Firebase Authentication에 등록된 계정으로 로그인해주세요.', 'info');
+                allSchedules = [];
+                renderCalendar();
             }
         });
 
         // ============================================================
-        // 🔥 페이지 로드 시 초기 연결 상태 표시
+        // 🔥 페이지 로드 시 초기화
         // ============================================================
         document.addEventListener('DOMContentLoaded', function() {
-            // Firebase 연결 상태 확인
-            if (firebase.apps.length > 0) {
-                updateStatus('online', '연결됨 (인증 대기 중)', 'success');
-            } else {
-                updateStatus('offline', '연결 실패', 'error');
-            }
+            // 초기 달력 렌더링
+            renderCalendar();
         });
     </script>
 
