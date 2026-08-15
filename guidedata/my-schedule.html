@@ -13,624 +13,114 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #f0f2f5;
-            color: #1a1a2e;
-            padding: 20px;
-        }
-        .app-container {
-            max-width: 1280px;
-            margin: 0 auto;
-            background: #ffffff;
-            border-radius: 24px;
-            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.06);
-            overflow: hidden;
-            min-height: 90vh;
-            display: flex;
-            flex-direction: column;
-        }
-        .app-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 18px 32px;
-            border-bottom: 1px solid #edf2f7;
-            flex-wrap: wrap;
-            gap: 12px;
-            background: #ffffff;
-        }
-        .app-header .logo-area {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .app-header .logo-area .logo-icon {
-            font-size: 24px;
-            color: #2563eb;
-        }
-        .app-header .logo-area h1 {
-            font-size: 20px;
-            font-weight: 700;
-            color: #1a1a2e;
-        }
-        .app-header .logo-area h1 span {
-            color: #2563eb;
-        }
-        .app-header .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 20px;
-            border-radius: 10px;
-            font-size: 14px;
-            font-weight: 600;
-            border: none;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-family: inherit;
-        }
-        .btn-primary {
-            background: #2563eb;
-            color: #ffffff;
-        }
-        .btn-primary:hover {
-            background: #1d4ed8;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 16px rgba(37, 99, 235, 0.3);
-        }
-        .btn-outline {
-            background: transparent;
-            color: #4b5563;
-            border: 1px solid #d1d5db;
-        }
-        .btn-outline:hover {
-            background: #f9fafb;
-        }
-        .btn-danger {
-            background: #dc2626;
-            color: #ffffff;
-        }
-        .btn-danger:hover {
-            background: #b91c1c;
-        }
-        .btn-sm {
-            padding: 6px 14px;
-            font-size: 12px;
-            border-radius: 8px;
-        }
-        .btn-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
-            background: transparent;
-            border: 1px solid #e5e7eb;
-            color: #6b7280;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .btn-icon:hover {
-            background: #f3f4f6;
-        }
-        .main-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0;
-            flex: 1;
-            min-height: 600px;
-        }
-        .left-panel {
-            padding: 28px 32px;
-            border-right: 1px solid #edf2f7;
-            background: #fafbfc;
-        }
-        .calendar-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
-        .calendar-header .month-year {
-            font-size: 18px;
-            font-weight: 700;
-            color: #1a1a2e;
-        }
-        .calendar-header .nav-buttons {
-            display: flex;
-            gap: 6px;
-        }
-        .calendar-header .nav-buttons button {
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            border: 1px solid #e5e7eb;
-            background: #ffffff;
-            color: #4b5563;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .calendar-header .nav-buttons button:hover {
-            background: #f3f4f6;
-        }
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 4px;
-            margin-bottom: 24px;
-        }
-        .calendar-grid .weekday {
-            text-align: center;
-            font-size: 12px;
-            font-weight: 600;
-            color: #9ca3af;
-            padding: 8px 0;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .calendar-grid .day {
-            text-align: center;
-            padding: 10px 0;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 500;
-            color: #4b5563;
-            cursor: pointer;
-            transition: all 0.15s ease;
-            position: relative;
-        }
-        .calendar-grid .day:hover {
-            background: #e5e7eb;
-        }
-        .calendar-grid .day.today {
-            background: #2563eb;
-            color: #ffffff;
-            font-weight: 700;
-        }
-        .calendar-grid .day.other-month {
-            color: #d1d5db;
-        }
-        .calendar-grid .day.has-event::after {
-            content: '';
-            position: absolute;
-            bottom: 4px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 5px;
-            height: 5px;
-            border-radius: 50%;
-            background: #2563eb;
-        }
-        .calendar-grid .day.today.has-event::after {
-            background: #ffffff;
-        }
-        .schedule-list {
-            margin-top: 8px;
-        }
-        .schedule-list .list-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 14px;
-        }
-        .schedule-list .list-header h3 {
-            font-size: 15px;
-            font-weight: 600;
-            color: #1a1a2e;
-        }
-        .schedule-list .list-header .count {
-            font-size: 13px;
-            color: #9ca3af;
-            font-weight: 500;
-        }
-        .schedule-item {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 12px 16px;
-            background: #ffffff;
-            border-radius: 10px;
-            margin-bottom: 8px;
-            border: 1px solid #edf2f7;
-            transition: all 0.2s ease;
-            cursor: pointer;
-        }
-        .schedule-item:hover {
-            border-color: #2563eb;
-            box-shadow: 0 2px 12px rgba(37, 99, 235, 0.06);
-        }
-        .schedule-item .time {
-            font-size: 13px;
-            font-weight: 600;
-            color: #2563eb;
-            min-width: 52px;
-        }
-        .schedule-item .info {
-            flex: 1;
-        }
-        .schedule-item .info .title {
-            font-size: 14px;
-            font-weight: 600;
-            color: #1a1a2e;
-        }
-        .schedule-item .info .desc {
-            font-size: 12px;
-            color: #9ca3af;
-        }
-        .schedule-item .status {
-            font-size: 11px;
-            font-weight: 600;
-            padding: 2px 12px;
-            border-radius: 100px;
-        }
-        .schedule-item .status.confirmed {
-            background: #d1fae5;
-            color: #065f46;
-        }
-        .schedule-item .status.pending {
-            background: #fef3c7;
-            color: #92400e;
-        }
-        .schedule-item .status.cancelled {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-        .right-panel {
-            padding: 28px 32px;
-            background: #ffffff;
-            display: flex;
-            flex-direction: column;
-        }
-        .right-panel .panel-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
-        .right-panel .panel-header h2 {
-            font-size: 18px;
-            font-weight: 700;
-            color: #1a1a2e;
-        }
-        .right-panel .panel-header .sub {
-            font-size: 13px;
-            color: #9ca3af;
-        }
-        .filter-section {
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-            margin-bottom: 24px;
-        }
-        .filter-row {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-        .filter-row .filter-group {
-            flex: 1;
-            min-width: 120px;
-        }
-        .filter-row .filter-group label {
-            display: block;
-            font-size: 12px;
-            font-weight: 600;
-            color: #6b7280;
-            margin-bottom: 4px;
-        }
-        .filter-row .filter-group select,
-        .filter-row .filter-group input {
-            width: 100%;
-            padding: 8px 12px;
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            font-size: 13px;
-            font-family: inherit;
-            background: #fafbfc;
-            transition: border-color 0.2s ease;
-            color: #1a1a2e;
-        }
-        .filter-row .filter-group select:focus,
-        .filter-row .filter-group input:focus {
-            outline: none;
-            border-color: #2563eb;
-        }
-        .filter-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 4px;
-        }
-        .result-area {
-            flex: 1;
-            min-height: 200px;
-        }
-        .result-area .result-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding-bottom: 12px;
-            border-bottom: 1px solid #edf2f7;
-            margin-bottom: 16px;
-        }
-        .result-area .result-header .result-count {
-            font-size: 14px;
-            color: #6b7280;
-        }
-        .result-area .result-header .result-count strong {
-            color: #1a1a2e;
-        }
-        .result-item {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            padding: 14px 16px;
-            border-radius: 10px;
-            border: 1px solid #edf2f7;
-            margin-bottom: 10px;
-            transition: all 0.2s ease;
-            cursor: pointer;
-        }
-        .result-item:hover {
-            border-color: #2563eb;
-            background: #f8faff;
-        }
-        .result-item .result-date {
-            font-size: 13px;
-            font-weight: 600;
-            color: #2563eb;
-            min-width: 60px;
-        }
-        .result-item .result-info {
-            flex: 1;
-        }
-        .result-item .result-info .result-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: #1a1a2e;
-        }
-        .result-item .result-info .result-meta {
-            font-size: 12px;
-            color: #9ca3af;
-        }
-        .result-item .result-status {
-            font-size: 11px;
-            font-weight: 600;
-            padding: 2px 12px;
-            border-radius: 100px;
-        }
-        .result-item .result-status.confirmed {
-            background: #d1fae5;
-            color: #065f46;
-        }
-        .result-item .result-status.pending {
-            background: #fef3c7;
-            color: #92400e;
-        }
-        .result-item .result-status.cancelled {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-        .schedule-empty,
-        .result-empty {
-            text-align: center;
-            padding: 32px 0;
-            color: #9ca3af;
-        }
-        .schedule-empty i,
-        .result-empty i {
-            font-size: 32px;
-            display: block;
-            margin-bottom: 8px;
-            opacity: 0.5;
-        }
-        .result-empty i {
-            font-size: 40px;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #f0f2f5; color: #1a1a2e; padding: 20px; }
+        .app-container { max-width: 1280px; margin: 0 auto; background: #ffffff; border-radius: 24px; box-shadow: 0 8px 40px rgba(0,0,0,0.06); overflow: hidden; min-height: 90vh; display: flex; flex-direction: column; }
+        .app-header { display: flex; align-items: center; justify-content: space-between; padding: 18px 32px; border-bottom: 1px solid #edf2f7; flex-wrap: wrap; gap: 12px; background: #ffffff; }
+        .app-header .logo-area { display: flex; align-items: center; gap: 12px; }
+        .app-header .logo-area .logo-icon { font-size: 24px; color: #2563eb; }
+        .app-header .logo-area h1 { font-size: 20px; font-weight: 700; color: #1a1a2e; }
+        .app-header .logo-area h1 span { color: #2563eb; }
+        .app-header .header-actions { display: flex; align-items: center; gap: 10px; }
+        .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 10px; font-size: 14px; font-weight: 600; border: none; cursor: pointer; transition: all 0.2s ease; font-family: inherit; }
+        .btn-primary { background: #2563eb; color: #ffffff; }
+        .btn-primary:hover { background: #1d4ed8; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(37,99,235,0.3); }
+        .btn-outline { background: transparent; color: #4b5563; border: 1px solid #d1d5db; }
+        .btn-outline:hover { background: #f9fafb; }
+        .btn-danger { background: #dc2626; color: #ffffff; }
+        .btn-danger:hover { background: #b91c1c; }
+        .btn-sm { padding: 6px 14px; font-size: 12px; border-radius: 8px; }
+        .btn-icon { width: 36px; height: 36px; border-radius: 10px; background: transparent; border: 1px solid #e5e7eb; color: #6b7280; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; }
+        .btn-icon:hover { background: #f3f4f6; }
+        .main-content { display: grid; grid-template-columns: 1fr 1fr; gap: 0; flex: 1; min-height: 600px; }
+        .left-panel { padding: 28px 32px; border-right: 1px solid #edf2f7; background: #fafbfc; }
+        .calendar-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+        .calendar-header .month-year { font-size: 18px; font-weight: 700; color: #1a1a2e; }
+        .calendar-header .nav-buttons { display: flex; gap: 6px; }
+        .calendar-header .nav-buttons button { width: 32px; height: 32px; border-radius: 8px; border: 1px solid #e5e7eb; background: #ffffff; color: #4b5563; cursor: pointer; transition: all 0.2s ease; }
+        .calendar-header .nav-buttons button:hover { background: #f3f4f6; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 24px; }
+        .calendar-grid .weekday { text-align: center; font-size: 12px; font-weight: 600; color: #9ca3af; padding: 8px 0; text-transform: uppercase; letter-spacing: 0.5px; }
+        .calendar-grid .day { text-align: center; padding: 10px 0; border-radius: 8px; font-size: 14px; font-weight: 500; color: #4b5563; cursor: pointer; transition: all 0.15s ease; position: relative; }
+        .calendar-grid .day:hover { background: #e5e7eb; }
+        .calendar-grid .day.today { background: #2563eb; color: #ffffff; font-weight: 700; }
+        .calendar-grid .day.other-month { color: #d1d5db; }
+        .calendar-grid .day.has-event::after { content: ''; position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%); width: 5px; height: 5px; border-radius: 50%; background: #2563eb; }
+        .calendar-grid .day.today.has-event::after { background: #ffffff; }
+        .schedule-list { margin-top: 8px; }
+        .schedule-list .list-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+        .schedule-list .list-header h3 { font-size: 15px; font-weight: 600; color: #1a1a2e; }
+        .schedule-list .list-header .count { font-size: 13px; color: #9ca3af; font-weight: 500; }
+        .schedule-item { display: flex; align-items: center; gap: 14px; padding: 12px 16px; background: #ffffff; border-radius: 10px; margin-bottom: 8px; border: 1px solid #edf2f7; transition: all 0.2s ease; cursor: pointer; }
+        .schedule-item:hover { border-color: #2563eb; box-shadow: 0 2px 12px rgba(37,99,235,0.06); }
+        .schedule-item .time { font-size: 13px; font-weight: 600; color: #2563eb; min-width: 52px; }
+        .schedule-item .info { flex: 1; }
+        .schedule-item .info .title { font-size: 14px; font-weight: 600; color: #1a1a2e; }
+        .schedule-item .info .desc { font-size: 12px; color: #9ca3af; }
+        .schedule-item .status { font-size: 11px; font-weight: 600; padding: 2px 12px; border-radius: 100px; }
+        .schedule-item .status.confirmed { background: #d1fae5; color: #065f46; }
+        .schedule-item .status.pending { background: #fef3c7; color: #92400e; }
+        .schedule-item .status.cancelled { background: #fee2e2; color: #991b1b; }
+        .right-panel { padding: 28px 32px; background: #ffffff; display: flex; flex-direction: column; }
+        .right-panel .panel-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+        .right-panel .panel-header h2 { font-size: 18px; font-weight: 700; color: #1a1a2e; }
+        .right-panel .panel-header .sub { font-size: 13px; color: #9ca3af; }
+        .filter-section { display: flex; flex-direction: column; gap: 14px; margin-bottom: 24px; }
+        .filter-row { display: flex; gap: 12px; flex-wrap: wrap; }
+        .filter-row .filter-group { flex: 1; min-width: 120px; }
+        .filter-row .filter-group label { display: block; font-size: 12px; font-weight: 600; color: #6b7280; margin-bottom: 4px; }
+        .filter-row .filter-group select, .filter-row .filter-group input { width: 100%; padding: 8px 12px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 13px; font-family: inherit; background: #fafbfc; transition: border-color 0.2s ease; color: #1a1a2e; }
+        .filter-row .filter-group select:focus, .filter-row .filter-group input:focus { outline: none; border-color: #2563eb; }
+        .filter-actions { display: flex; gap: 10px; margin-top: 4px; }
+        .result-area { flex: 1; min-height: 200px; }
+        .result-area .result-header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 12px; border-bottom: 1px solid #edf2f7; margin-bottom: 16px; }
+        .result-area .result-header .result-count { font-size: 14px; color: #6b7280; }
+        .result-area .result-header .result-count strong { color: #1a1a2e; }
+        .result-item { display: flex; align-items: center; gap: 16px; padding: 14px 16px; border-radius: 10px; border: 1px solid #edf2f7; margin-bottom: 10px; transition: all 0.2s ease; cursor: pointer; }
+        .result-item:hover { border-color: #2563eb; background: #f8faff; }
+        .result-item .result-date { font-size: 13px; font-weight: 600; color: #2563eb; min-width: 60px; }
+        .result-item .result-info { flex: 1; }
+        .result-item .result-info .result-title { font-size: 14px; font-weight: 600; color: #1a1a2e; }
+        .result-item .result-info .result-meta { font-size: 12px; color: #9ca3af; }
+        .result-item .result-status { font-size: 11px; font-weight: 600; padding: 2px 12px; border-radius: 100px; }
+        .result-item .result-status.confirmed { background: #d1fae5; color: #065f46; }
+        .result-item .result-status.pending { background: #fef3c7; color: #92400e; }
+        .result-item .result-status.cancelled { background: #fee2e2; color: #991b1b; }
+        .schedule-empty, .result-empty { text-align: center; padding: 32px 0; color: #9ca3af; }
+        .schedule-empty i, .result-empty i { font-size: 32px; display: block; margin-bottom: 8px; opacity: 0.5; }
+        .result-empty i { font-size: 40px; }
 
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(4px);
-            z-index: 9999;
-            align-items: center;
-            justify-content: center;
-        }
-        .modal-overlay.active {
-            display: flex;
-        }
-        .modal {
-            background: #ffffff;
-            border-radius: 20px;
-            padding: 32px;
-            max-width: 520px;
-            width: 90%;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-        }
-        .modal .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        .modal .modal-header h2 {
-            font-size: 20px;
-            font-weight: 700;
-        }
-        .modal .modal-close {
-            background: none;
-            border: none;
-            font-size: 24px;
-            color: #9ca3af;
-            cursor: pointer;
-            padding: 4px;
-        }
-        .modal .modal-close:hover {
-            color: #1a1a2e;
-        }
-        .modal .form-group {
-            margin-bottom: 16px;
-        }
-        .modal .form-group label {
-            display: block;
-            font-size: 13px;
-            font-weight: 600;
-            color: #4b5563;
-            margin-bottom: 4px;
-        }
-        .modal .form-group input,
-        .modal .form-group select,
-        .modal .form-group textarea {
-            width: 100%;
-            padding: 10px 14px;
-            border: 1px solid #e5e7eb;
-            border-radius: 10px;
-            font-size: 14px;
-            font-family: inherit;
-            background: #fafbfc;
-            transition: border-color 0.2s ease;
-        }
-        .modal .form-group input:focus,
-        .modal .form-group select:focus,
-        .modal .form-group textarea:focus {
-            outline: none;
-            border-color: #2563eb;
-            background: #ffffff;
-        }
-        .modal .form-group textarea {
-            resize: vertical;
-            min-height: 60px;
-        }
-        .modal .form-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-            justify-content: flex-end;
-        }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); z-index: 9999; align-items: center; justify-content: center; }
+        .modal-overlay.active { display: flex; }
+        .modal { background: #ffffff; border-radius: 20px; padding: 32px; max-width: 520px; width: 90%; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
+        .modal .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .modal .modal-header h2 { font-size: 20px; font-weight: 700; }
+        .modal .modal-close { background: none; border: none; font-size: 24px; color: #9ca3af; cursor: pointer; padding: 4px; }
+        .modal .modal-close:hover { color: #1a1a2e; }
+        .modal .form-group { margin-bottom: 16px; }
+        .modal .form-group label { display: block; font-size: 13px; font-weight: 600; color: #4b5563; margin-bottom: 4px; }
+        .modal .form-group input, .modal .form-group select, .modal .form-group textarea { width: 100%; padding: 10px 14px; border: 1px solid #e5e7eb; border-radius: 10px; font-size: 14px; font-family: inherit; background: #fafbfc; transition: border-color 0.2s ease; }
+        .modal .form-group input:focus, .modal .form-group select:focus, .modal .form-group textarea:focus { outline: none; border-color: #2563eb; background: #ffffff; }
+        .modal .form-group textarea { resize: vertical; min-height: 60px; }
+        .modal .form-actions { display: flex; gap: 10px; margin-top: 20px; justify-content: flex-end; }
 
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: #1a1a2e;
-            color: #fff;
-            padding: 14px 24px;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: 500;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
-            z-index: 10000;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.3s ease;
-        }
-        .toast.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        .toast.success {
-            background: #059669;
-        }
-        .toast.error {
-            background: #dc2626;
-        }
+        .toast { position: fixed; bottom: 30px; right: 30px; background: #1a1a2e; color: #fff; padding: 14px 24px; border-radius: 12px; font-size: 14px; font-weight: 500; box-shadow: 0 8px 30px rgba(0,0,0,0.2); z-index: 10000; opacity: 0; transform: translateY(20px); transition: all 0.3s ease; }
+        .toast.show { opacity: 1; transform: translateY(0); }
+        .toast.success { background: #059669; }
+        .toast.error { background: #dc2626; }
+        .toast.info { background: #2563eb; }
 
-        .guide-info-badge {
-            display: inline-block;
-            background: #eff6ff;
-            color: #2563eb;
-            padding: 6px 14px;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: 500;
-            margin-top: 4px;
-        }
+        .debug-panel { background: #1e293b; color: #e2e8f0; padding: 14px 20px; border-radius: 8px; margin-bottom: 16px; font-size: 13px; font-family: 'Courier New', monospace; line-height: 1.8; overflow-x: auto; }
+        .debug-panel .label { color: #94a3b8; }
+        .debug-panel .value { color: #60a5fa; font-weight: 600; }
+        .debug-panel .value.success { color: #34d399; }
+        .debug-panel .value.error { color: #f87171; }
+        .debug-panel .value.warning { color: #fbbf24; }
+        .debug-row { display: flex; gap: 8px; flex-wrap: wrap; }
 
-        @media (max-width: 992px) {
-            .main-content {
-                grid-template-columns: 1fr;
-            }
-            .left-panel {
-                border-right: none;
-                border-bottom: 1px solid #edf2f7;
-            }
-            .app-header {
-                padding: 14px 20px;
-            }
-            .left-panel,
-            .right-panel {
-                padding: 20px;
-            }
-        }
-        @media (max-width: 640px) {
-            body {
-                padding: 10px;
-            }
-            .app-container {
-                border-radius: 16px;
-            }
-            .app-header .logo-area h1 {
-                font-size: 16px;
-            }
-            .app-header .header-actions .btn span {
-                display: none;
-            }
-            .filter-row {
-                flex-direction: column;
-            }
-            .filter-row .filter-group {
-                min-width: 100%;
-            }
-            .calendar-grid .day {
-                padding: 8px 0;
-                font-size: 12px;
-            }
-            .schedule-item,
-            .result-item {
-                flex-wrap: wrap;
-                gap: 8px;
-            }
-        }
-        @media (max-width: 480px) {
-            .app-header {
-                padding: 12px 16px;
-            }
-            .app-header .logo-area .logo-icon {
-                font-size: 18px;
-            }
-            .app-header .logo-area h1 {
-                font-size: 14px;
-            }
-            .btn {
-                padding: 6px 12px;
-                font-size: 12px;
-            }
-            .left-panel,
-            .right-panel {
-                padding: 16px;
-            }
-            .calendar-header .month-year {
-                font-size: 15px;
-            }
-        }
+        @media (max-width: 992px) { .main-content { grid-template-columns: 1fr; } .left-panel { border-right: none; border-bottom: 1px solid #edf2f7; } .app-header { padding: 14px 20px; } .left-panel, .right-panel { padding: 20px; } }
+        @media (max-width: 640px) { body { padding: 10px; } .app-container { border-radius: 16px; } .app-header .logo-area h1 { font-size: 16px; } .app-header .header-actions .btn span { display: none; } .filter-row { flex-direction: column; } .filter-row .filter-group { min-width: 100%; } .calendar-grid .day { padding: 8px 0; font-size: 12px; } .schedule-item, .result-item { flex-wrap: wrap; gap: 8px; } }
+        @media (max-width: 480px) { .app-header { padding: 12px 16px; } .app-header .logo-area .logo-icon { font-size: 18px; } .app-header .logo-area h1 { font-size: 14px; } .btn { padding: 6px 12px; font-size: 12px; } .left-panel, .right-panel { padding: 16px; } .calendar-header .month-year { font-size: 15px; } }
     </style>
 </head>
 
@@ -638,7 +128,22 @@
 
     <div class="toast" id="toast"></div>
 
-    <!-- ===== 모달 (가이드 선택 필드 제거됨) ===== -->
+    <!-- ===== 디버그 패널 ===== -->
+    <div class="app-container" style="margin-bottom: 20px; padding: 16px 24px; background: #1e293b; border-radius: 12px;">
+        <div class="debug-panel" id="debugPanel">
+            <div class="debug-row">
+                <span>🔍 <span class="label">Firebase:</span> <span class="value" id="debugStatus">확인 중...</span></span>
+                <span style="margin-left:16px;">📌 <span class="label">UID:</span> <span class="value" id="debugUid">-</span></span>
+                <span style="margin-left:16px;">👤 <span class="label">가이드:</span> <span class="value" id="debugGuide">-</span></span>
+                <span style="margin-left:16px;">📁 <span class="label">컬렉션:</span> <span class="value" style="color:#fbbf24;">schedules / guides</span></span>
+            </div>
+            <div class="debug-row" style="margin-top:4px; font-size:12px; color:#64748b;">
+                <span>💡 guides 컬렉션에 UID로 문서를 추가하세요 (소문자 g)</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 모달 ===== -->
     <div class="modal-overlay" id="modalOverlay">
         <div class="modal">
             <div class="modal-header">
@@ -675,11 +180,10 @@
                     <label>📝 메모</label>
                     <textarea id="inputMemo" placeholder="추가 정보를 입력하세요"></textarea>
                 </div>
-                <!-- 가이드 정보는 UID로 자동 연결 (표시용) -->
                 <div class="form-group" style="background:#f8fafc; padding:12px 16px; border-radius:10px; border:1px solid #e5e7eb;">
                     <div style="font-size:12px; color:#6b7280; margin-bottom:4px;">👤 연결된 가이드</div>
                     <div id="guideDisplay" style="font-size:14px; font-weight:500; color:#1a1a2e;">
-                        <span id="guideNameDisplay">로그인 필요</span>
+                        <span id="guideNameDisplay">로딩 중...</span>
                         <span id="guideEmailDisplay" style="font-size:12px; color:#9ca3af; font-weight:400; margin-left:8px;"></span>
                     </div>
                 </div>
@@ -809,20 +313,34 @@
             appId: "1:123456789012:web:abcdef123456"
         };
 
-        firebase.initializeApp(firebaseConfig);
+        // ============================================================
+        // 🔥 사용자 UID (Firebase Authentication에서 복사)
+        // ============================================================
+        // koinco1@gmail.com의 UID: 3oFdsbDOSwNIAcBYIDzGb2x13PN2
+        const CURRENT_UID = '3oFdsbDOSwNIAcBYIDzGb2x13PN2';
+
+        // ============================================================
+        // 🔥 컬렉션 이름 (Firestore 실제 이름과 정확히 일치해야 함)
+        // ============================================================
+        // ⚠️ Firestore는 대소문자를 구분합니다!
+        const SCHEDULES_COLLECTION = 'schedules';  // 소문자 s
+        const GUIDES_COLLECTION = 'guides';        // ✅ 소문자 g (Firestore 실제 이름과 일치)
+
+        // ============================================================
+        // Firebase 초기화
+        // ============================================================
+        try {
+            firebase.initializeApp(firebaseConfig);
+            console.log('✅ Firebase 초기화 성공');
+            document.getElementById('debugStatus').textContent = '✅ 연결됨';
+            document.getElementById('debugStatus').className = 'value success';
+        } catch (error) {
+            console.error('❌ Firebase 초기화 실패:', error);
+            document.getElementById('debugStatus').textContent = '❌ 실패: ' + error.message;
+            document.getElementById('debugStatus').className = 'value error';
+        }
+
         const db = firebase.firestore();
-
-        // ============================================================
-        // 🔥 컬렉션 이름 설정
-        // ============================================================
-        const SCHEDULES_COLLECTION = 'schedules';
-        const GUIDES_COLLECTION = 'Guides';
-
-        // ============================================================
-        // 🔥 테스트용 UID (실제로는 Firebase Auth에서 가져옴)
-        // ============================================================
-        // ⚠️ 실제 서비스에서는 firebase.auth().currentUser.uid 사용
-        const CURRENT_UID = '3oFdsbDOSwNIAcBYIDzGb2x13PN2'; // ← 스크린샷의 UID
 
         // ============================================================
         // 전역 변수
@@ -830,7 +348,7 @@
         let currentYear = 2026;
         let currentMonth = 8;
         let allSchedules = [];
-        let currentGuideInfo = null; // 현재 로그인한 가이드 정보
+        let currentGuideInfo = null;
 
         // ============================================================
         // 토스트
@@ -844,25 +362,57 @@
         }
 
         // ============================================================
-        // 🔥 현재 가이드 정보 불러오기 (UID 기반)
+        // 🔥 현재 가이드 정보 불러오기 (UID 기반 - 소문자 guides 컬렉션)
         // ============================================================
         async function loadCurrentGuide() {
+            const uidDisplay = document.getElementById('debugUid');
+            const guideDisplay = document.getElementById('debugGuide');
+
+            uidDisplay.textContent = CURRENT_UID;
+
+            if (!CURRENT_UID || CURRENT_UID === 'YOUR_UID_HERE') {
+                uidDisplay.className = 'value error';
+                guideDisplay.textContent = '⚠️ UID 설정 필요';
+                guideDisplay.className = 'value error';
+                document.getElementById('guideNameDisplay').textContent = '⚠️ UID 설정 필요';
+                showToast('⚠️ UID를 설정해주세요!', 'error');
+                return;
+            }
+
             try {
+                console.log(`🔍 guides/${CURRENT_UID} 조회 중... (소문자 g)`);
                 const doc = await db.collection(GUIDES_COLLECTION).doc(CURRENT_UID).get();
+
                 if (doc.exists) {
                     currentGuideInfo = { uid: CURRENT_UID, ...doc.data() };
-                    console.log('✅ 현재 가이드 정보:', currentGuideInfo);
+                    console.log('✅ 가이드 정보:', currentGuideInfo);
 
-                    // 모달에 표시
+                    guideDisplay.textContent = `${currentGuideInfo.name || '이름 없음'} (${currentGuideInfo.email || ''})`;
+                    guideDisplay.className = 'value success';
+
                     document.getElementById('guideNameDisplay').textContent = currentGuideInfo.name || '이름 없음';
                     document.getElementById('guideEmailDisplay').textContent = currentGuideInfo.email || '';
+
+                    showToast('✅ 가이드 정보를 불러왔습니다!', 'success');
+
                 } else {
-                    console.log('⚠️ 가이드 정보가 없습니다. UID:', CURRENT_UID);
-                    document.getElementById('guideNameDisplay').textContent = '⚠️ 가이드 정보 없음';
+                    console.warn('⚠️ guides 컬렉션에 문서 없음. UID:', CURRENT_UID);
+                    guideDisplay.textContent = '❌ guides 컬렉션에 문서 없음!';
+                    guideDisplay.className = 'value error';
+                    document.getElementById('guideNameDisplay').textContent = '❌ 가이드 정보 없음';
+                    document.getElementById('guideEmailDisplay').textContent = '(guides 컬렉션에 추가 필요)';
+
+                    showToast('⚠️ guides 컬렉션에 가이드 문서를 추가해주세요!', 'error');
                 }
+
             } catch (error) {
                 console.error('❌ 가이드 정보 로드 오류:', error);
+                guideDisplay.textContent = '❌ 로드 실패: ' + error.message;
+                guideDisplay.className = 'value error';
                 document.getElementById('guideNameDisplay').textContent = '❌ 로드 실패';
+                document.getElementById('guideEmailDisplay').textContent = '';
+
+                showToast('❌ 가이드 정보를 불러오지 못했습니다', 'error');
             }
         }
 
@@ -870,6 +420,10 @@
         // 모달
         // ============================================================
         function openModal() {
+            if (!currentGuideInfo) {
+                showToast('⚠️ 가이드 정보가 없습니다. guides 컬렉션에 문서를 추가해주세요.', 'error');
+                return;
+            }
             document.getElementById('modalOverlay').classList.add('active');
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('inputDate').value = today;
@@ -882,13 +436,13 @@
         }
 
         // ============================================================
-        // 🔥 저장 (UID 기반으로 가이드 자동 연결)
+        // 🔥 저장 (schedules 컬렉션에 저장)
         // ============================================================
         async function saveSchedule(event) {
             event.preventDefault();
 
             if (!currentGuideInfo) {
-                showToast('⚠️ 가이드 정보가 없습니다. 먼저 로그인해주세요.', 'error');
+                showToast('⚠️ 가이드 정보가 없습니다.', 'error');
                 return;
             }
 
@@ -896,7 +450,7 @@
                 date: document.getElementById('inputDate').value,
                 time: document.getElementById('inputTime').value,
                 title: document.getElementById('inputTitle').value,
-                guideUid: CURRENT_UID, // 🔥 Guides 컬렉션의 문서 ID (UID)
+                guideUid: CURRENT_UID,
                 guideName: currentGuideInfo.name || '',
                 guideEmail: currentGuideInfo.email || '',
                 region: document.getElementById('inputRegion').value,
@@ -910,8 +464,6 @@
                 await db.collection(SCHEDULES_COLLECTION).add(data);
                 showToast('✅ 일정이 저장되었습니다!', 'success');
                 closeModal();
-
-                // 🔥 모든 화면 새로고침
                 await refreshAll();
 
             } catch (error) {
@@ -921,7 +473,7 @@
         }
 
         // ============================================================
-        // 🔥 모든 데이터 다시 불러오기
+        // 🔥 데이터 새로고침
         // ============================================================
         async function refreshAll() {
             try {
@@ -940,7 +492,7 @@
         }
 
         // ============================================================
-        // 🔥 오늘 일정 불러오기
+        // 🔥 오늘 일정
         // ============================================================
         async function loadTodaySchedules() {
             const today = new Date().toISOString().split('T')[0];
@@ -1123,17 +675,20 @@
             document.getElementById('filterStartDate').value = dateStr;
             document.getElementById('filterEndDate').value = dateStr;
             searchSchedules();
-            showToast(`📅 ${dateStr} 일정을 조회합니다`, 'success');
+            showToast(`📅 ${dateStr} 일정을 조회합니다`, 'info');
         }
 
         // ============================================================
         // 🔥 초기 실행
         // ============================================================
         async function init() {
-            // 1. 현재 가이드 정보 불러오기 (UID 기반)
+            // UID 표시
+            document.getElementById('debugUid').textContent = CURRENT_UID;
+
+            // 가이드 정보 로드 (소문자 guides 컬렉션 사용)
             await loadCurrentGuide();
 
-            // 2. 모든 일정 데이터 가져오기
+            // 일정 데이터 로드
             try {
                 const snapshot = await db.collection(SCHEDULES_COLLECTION).get();
                 allSchedules = [];
@@ -1144,7 +699,6 @@
                 console.log('데이터 로드 오류:', error);
             }
 
-            // 3. 화면 렌더링
             renderCalendar();
             await loadTodaySchedules();
             await searchSchedules();
