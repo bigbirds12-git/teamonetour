@@ -368,13 +368,17 @@
         // 🔥 Firebase 설정 (여러분의 실제 값으로 바꾸세요!)
         // ============================================================
         const firebaseConfig = {
-            apiKey: "AIzaSyXXXXXXXXXXXXXXXXXXXXX",  // ← 실제 API 키
-            authDomain: "team-one-tour.firebaseapp.com",
-            projectId: "team-one-tour",
-            storageBucket: "team-one-tour.appspot.com",
-            messagingSenderId: "123456789012",
-            appId: "1:123456789012:web:abcdef123456"
-        };
+      apiKey: "AIzaSyCgOSQsv_MRdaqrW4wJw0q2QY6wXZ-azQs",
+      authDomain: "guidelogin-b0053.firebaseapp.com",
+      projectId: "guidelogin-b0053",
+      storageBucket: "guidelogin-b0053.firebasestorage.app",
+      messagingSenderId: "981519805247",
+      appId: "1:981519805247:web:cc32682b177a4957c0818a",
+      measurementId: "G-2VR4TS6JND"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
 
         // ============================================================
         // 🔥 Firebase 초기화
