@@ -638,7 +638,6 @@
         deleteDoc,
         query, 
         where,
-        orderBy,
         Timestamp 
     } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
@@ -724,10 +723,10 @@
     }
 
     // ============================================
-    //  🔥 FIREBASE CRUD (UID 기반)
+    //  🔥 FIREBASE CRUD (orderBy 제거)
     // ============================================
 
-    // 1. 일정 불러오기 (현재 사용자의 UID로 필터링)
+    // 1. 일정 불러오기 (orderBy 제거 → 인덱스 불필요)
     async function loadSchedulesFromFirebase() {
         if (!currentUser) {
             console.log('⚠️ 로그인이 필요합니다.');
@@ -738,11 +737,10 @@
             isLoading = true;
             showLoading('일정을 불러오는 중...');
 
-            // 🔥 현재 사용자(UID)의 일정만 조회
+            // 🔥 orderBy 제거 (인덱스 불필요)
             const q = query(
                 collection(db, 'schedules'),
-                where('guideId', '==', currentUser.uid),
-                orderBy('date', 'asc')
+                where('guideId', '==', currentUser.uid)
             );
             
             const querySnapshot = await getDocs(q);
@@ -765,6 +763,9 @@
                     updatedAt: data.updatedAt
                 });
             });
+
+            // 🔥 클라이언트에서 날짜순 정렬
+            schedules.sort((a, b) => (a.date || '').localeCompare(b.date || ''));
 
             console.log(`✅ ${schedules.length}개의 일정을 불러왔습니다. (UID: ${currentUser.uid})`);
             
@@ -808,7 +809,6 @@
             
             if (scheduleData.id) {
                 // 수정 - 해당 문서가 현재 사용자의 것인지 확인
-                const docRef_check = doc(db, 'schedules', scheduleData.id);
                 const docSnap = await getDocs(query(
                     collection(db, 'schedules'),
                     where('guideId', '==', currentUser.uid),
@@ -1107,7 +1107,6 @@
                     message: '로그인이 필요합니다.'
                 }, '*');
             }
-            // 로그인 페이지로 리다이렉트 (iframe이 아닐 경우)
             if (window.parent === window) {
                 window.location.href = '/login/guidelogin.html';
             }
@@ -1118,19 +1117,6 @@
         console.log('✅ 로그인 사용자:', currentUser.email);
         console.log('🔑 UID:', currentUser.uid);
         
-        // 🔥 Firebase에서 현재 사용자의 일정 로드
         await loadSchedulesFromFirebase();
         
-        if (window.parent !== window) {
-            window.parent.postMessage({
-                type: 'IFRAME_READY',
-                uid: user.uid,
-                email: user.email
-            }, '*');
-        }
-    });
-
-    console.log('📅 Schedule Management with Firebase (UID based) loaded');
-</script>
-</body>
-</html>
+        if (
