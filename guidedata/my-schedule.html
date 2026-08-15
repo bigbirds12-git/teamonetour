@@ -353,14 +353,21 @@
         let allSchedules = [];
 
         // ============================================================
-        // 🔥 토스트 메시지
+        // 🔥 토스트 메시지 (수정됨: 자동 사라짐 및 중복 방지)
         // ============================================================
         function showToast(msg, type = 'success') {
             const t = document.getElementById('toast');
             t.textContent = msg;
             t.className = 'toast ' + type;
             setTimeout(() => t.classList.add('show'), 10);
-            setTimeout(() => t.classList.remove('show'), 3000);
+
+            // 기존 타이머가 있다면 제거 (여러 번 뜨는 현상 방지)
+            if (window.toastTimeout) clearTimeout(window.toastTimeout);
+
+            // 2.5초 후 자동으로 사라짐
+            window.toastTimeout = setTimeout(() => {
+                t.classList.remove('show');
+            }, 2500);
         }
 
         // ============================================================
@@ -506,72 +513,69 @@
         }
 
         // ============================================================
-        // 🔥 검색
+        // 🔥 검색 (클라이언트 측 필터링 방식)
         // ============================================================
-       // ============================================================
-// 🔥 검색 (클라이언트 측 필터링 방식으로 수정)
-// ============================================================
-async function searchSchedules() {
-    const startDate = document.getElementById('filterStartDate').value;
-    const endDate = document.getElementById('filterEndDate').value;
-    const status = document.getElementById('filterStatus').value;
-    const region = document.getElementById('filterRegion').value;
+        async function searchSchedules() {
+            const startDate = document.getElementById('filterStartDate').value;
+            const endDate = document.getElementById('filterEndDate').value;
+            const status = document.getElementById('filterStatus').value;
+            const region = document.getElementById('filterRegion').value;
 
-    try {
-        // 1. 전체 데이터 조회 (복합 색인 오류 방지)
-        const snapshot = await db.collection(SCHEDULES_COLLECTION).get();
-        let results = [];
+            try {
+                // 1. 전체 데이터 조회 (복합 색인 오류 방지)
+                const snapshot = await db.collection(SCHEDULES_COLLECTION).get();
+                let results = [];
 
-        snapshot.forEach(doc => {
-            results.push({ id: doc.id, ...doc.data() });
-        });
+                snapshot.forEach(doc => {
+                    results.push({ id: doc.id, ...doc.data() });
+                });
 
-        // 2. 조건별 필터링
-        if (startDate) results = results.filter(item => item.date >= startDate);
-        if (endDate) results = results.filter(item => item.date <= endDate);
-        if (region) results = results.filter(item => item.region === region);
-        if (status) results = results.filter(item => item.status === status);
+                // 2. 조건별 필터링
+                if (startDate) results = results.filter(item => item.date >= startDate);
+                if (endDate) results = results.filter(item => item.date <= endDate);
+                if (region) results = results.filter(item => item.region === region);
+                if (status) results = results.filter(item => item.status === status);
 
-        // 3. 날짜 내림차순 및 시간 오름차순 정렬
-        results.sort((a, b) => {
-            if (a.date !== b.date) return b.date.localeCompare(a.date);
-            return (a.time || '').localeCompare(b.time || '');
-        });
+                // 3. 날짜 내림차순 및 시간 오름차순 정렬
+                results.sort((a, b) => {
+                    if (a.date !== b.date) return b.date.localeCompare(a.date);
+                    return (a.time || '').localeCompare(b.time || '');
+                });
 
-        const list = document.getElementById('searchResultList');
-        const countEl = document.getElementById('resultCount');
+                const list = document.getElementById('searchResultList');
+                const countEl = document.getElementById('resultCount');
 
-        if (results.length === 0) {
-            list.innerHTML = `<div class="result-empty"><i class="fas fa-search"></i>검색 결과가 없습니다</div>`;
-            countEl.innerHTML = '총 <strong>0</strong>건';
-            return;
+                if (results.length === 0) {
+                    list.innerHTML = `<div class="result-empty"><i class="fas fa-search"></i>검색 결과가 없습니다</div>`;
+                    countEl.innerHTML = '총 <strong>0</strong>건';
+                    return;
+                }
+
+                let html = '';
+                results.forEach(d => {
+                    const statusClass = d.status || 'pending';
+                    const statusLabel = { 'confirmed': '확정', 'pending': '대기', 'cancelled': '취소' }[statusClass] || '대기';
+                    const displayDate = d.date ? d.date.replace(/-/g, '/') : '';
+
+                    html += `
+                        <div class="result-item" onclick="viewDetail('${d.id}')">
+                            <span class="result-date">${displayDate}</span>
+                            <div class="result-info">
+                                <div class="result-title">${d.title}</div>
+                                <div class="result-meta">${d.guideName || d.guideEmail || '-'} · ${d.people || 0}명 · ${d.time || ''} · ${d.region || ''}</div>
+                            </div>
+                            <span class="result-status ${statusClass}">${statusLabel}</span>
+                        </div>
+                    `;
+                });
+
+                list.innerHTML = html;
+                countEl.innerHTML = `총 <strong>${results.length}</strong>건`;
+            } catch (error) {
+                console.error('검색 오류:', error);
+                showToast('❌ 조회 중 오류 발생: ' + error.message, 'error');
+            }
         }
-
-        let html = '';
-        results.forEach(d => {
-            const statusClass = d.status || 'pending';
-            const statusLabel = { 'confirmed': '확정', 'pending': '대기', 'cancelled': '취소' }[statusClass] || '대기';
-            const displayDate = d.date ? d.date.replace(/-/g, '/') : '';
-
-            html += `
-                <div class="result-item" onclick="viewDetail('${d.id}')">
-                    <span class="result-date">${displayDate}</span>
-                    <div class="result-info">
-                        <div class="result-title">${d.title}</div>
-                        <div class="result-meta">${d.guideName || d.guideEmail || '-'} · ${d.people || 0}명 · ${d.time || ''} · ${d.region || ''}</div>
-                    </div>
-                    <span class="result-status ${statusClass}">${statusLabel}</span>
-                </div>
-            `;
-        });
-
-        list.innerHTML = html;
-        countEl.innerHTML = `총 <strong>${results.length}</strong>건`;
-    } catch (error) {
-        console.error('검색 오류:', error);
-        showToast('❌ 조회 중 오류 발생: ' + error.message, 'error');
-    }
-}
 
         // ============================================================
         // 기타 함수
@@ -656,7 +660,7 @@ async function searchSchedules() {
         }
 
         // ============================================================
-        // 🔥 Firebase Auth 상태 감지
+        // 🔥 Firebase Auth 상태 감지 (수정됨: 메시지 문구 변경)
         // ============================================================
         auth.onAuthStateChanged(async (user) => {
             if (user) {
@@ -680,7 +684,9 @@ async function searchSchedules() {
                 renderCalendar();
                 await loadTodaySchedules();
                 await searchSchedules();
-                showToast('✅ 로그인 성공!', 'success');
+                
+                // 👇 "로그인 성공" 대신 "데이터 로딩 중"으로 변경
+                showToast('⏳ 데이터를 불러오는 중입니다...', 'info');
 
             } else {
                 console.log('⚠️ 로그인되지 않음');
