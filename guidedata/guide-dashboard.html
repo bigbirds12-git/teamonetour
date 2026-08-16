@@ -143,39 +143,62 @@ body {
     }
 
     /* ---------------- DASHBOARD 화면 ---------------- */
-    async function loadDashboard() {
-        document.getElementById("app").innerHTML = `
-            <div class="card">
-                <h2>가이드 정보</h2>
-                <div id="guideInfo">불러오는 중...</div>
+   /* ---------------- DASHBOARD 화면 ---------------- */
+async function loadDashboard() {
+    document.getElementById("app").innerHTML = `
+        <div class="card">
+            <h2>가이드 정보</h2>
+            <div id="guideInfo">불러오는 중...</div>
+        </div>
+
+        <div class="card">
+            <h2>오늘 일정</h2>
+            <div id="todaySchedule">불러오는 중...</div>
+        </div>
+
+        <div class="card">
+            <h2>수익 요약</h2>
+            <div id="revenueSummary">불러오는 중...</div>
+        </div>
+
+        <div class="card">
+            <h2>빠른 이동</h2>
+            <div class="quick-links">
+                <a onclick="navigate('schedule')">일정 관리</a>
+                <a onclick="navigate('bookings')">예약 관리</a>
+                <a onclick="navigate('messages')">메시지</a>
+                <a onclick="navigate('revenue')">수익</a>
+                <a onclick="navigate('profile')">프로필 수정</a>
+            </div>
+        </div>
+
+        <!-- ⭐ AI Assistant UI 추가 -->
+        <div class="card">
+            <h2>AI Assistant</h2>
+
+            <!-- AI 로그 출력 영역 -->
+            <div id="aiLog"
+                 style="height:150px; overflow-y:auto; background:#f1f1f1; padding:10px; border-radius:8px; margin-bottom:10px;">
             </div>
 
-            <div class="card">
-                <h2>오늘 일정</h2>
-                <div id="todaySchedule">불러오는 중...</div>
-            </div>
+            <!-- 명령어 입력창 -->
+            <input id="aiCommandInput"
+                   placeholder="명령어 입력 (예: Dubai Frame 관광지 정보 입력해줘)"
+                   style="width:70%; padding:10px;">
 
-            <div class="card">
-                <h2>수익 요약</h2>
-                <div id="revenueSummary">불러오는 중...</div>
-            </div>
+            <!-- 전송 버튼 -->
+            <button id="aiSendButton"
+                    style="padding:10px 20px; background:#0078ff; color:white; border:none; border-radius:8px; margin-left:10px;">
+                전송
+            </button>
+        </div>
+    `;
 
-            <div class="card">
-                <h2>빠른 이동</h2>
-                <div class="quick-links">
-                    <a onclick="navigate('schedule')">일정 관리</a>
-                    <a onclick="navigate('bookings')">예약 관리</a>
-                    <a onclick="navigate('messages')">메시지</a>
-                    <a onclick="navigate('revenue')">수익</a>
-                    <a onclick="navigate('profile')">프로필 수정</a>
-                </div>
-            </div>
-        `;
+    loadGuideInfo();
+    loadTodaySchedule();
+    loadRevenueSummary();
+}
 
-        loadGuideInfo();
-        loadTodaySchedule();
-        loadRevenueSummary();
-    }
 
     /* ---------------- 데이터 로딩 ---------------- */
     async function loadGuideInfo() {
@@ -213,8 +236,8 @@ body {
         revenueSummary.innerHTML = "이번 주 수익 데이터가 없습니다.";
     }
 </script>
-<!-- ⭐ AI Assistant Script는 여기! -->
-<script src="js/ai-assistant.js"></script>
+<script src="../js/ai-assistant.js"></script>
+<script type="module" src="../js/ai-place-generator.js"></script>
     
 </body>
 </html>
