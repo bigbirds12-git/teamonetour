@@ -143,7 +143,6 @@ body {
     }
 
     /* ---------------- DASHBOARD 화면 ---------------- */
-   /* ---------------- DASHBOARD 화면 ---------------- */
 async function loadDashboard() {
     document.getElementById("app").innerHTML = `
         <div class="card">
@@ -155,23 +154,13 @@ async function loadDashboard() {
             <h2>오늘 일정</h2>
             <div id="todaySchedule">불러오는 중...</div>
         </div>
+
         <div class="card">
             <h2>수익 요약</h2>
             <div id="revenueSummary">불러오는 중...</div>
         </div>
-       
-        <div class="card">
-            <h2>빠른 이동</h2>
-            <div class="quick-links">
-                <a onclick="navigate('schedule')">일정 관리</a>
-                <a onclick="navigate('bookings')">예약 관리</a>
-                <a onclick="navigate('messages')">메시지</a>
-                <a onclick="navigate('revenue')">수익</a>
-                <a onclick="navigate('profile')">프로필 수정</a>
-            </div>
-        </div>
 
-        <!-- ⭐ 장소 등록 UI 추가 -->
+        <!-- ⭐ 장소 등록 UI -->
         <div class="card">
             <h2>장소 등록</h2>
 
@@ -182,24 +171,21 @@ async function loadDashboard() {
             <input type="text" id="placeAddress" placeholder="예: Zabeel Park"><br><br>
 
             <button id="submitBtn" onclick="submitData()">장소 등록하기</button>
-            <div id="statusMessage"></div>
+            <div id="statusMessage" style="margin-top:10px;"></div>
         </div>
 
-        <!-- ⭐ AI Assistant UI 추가 -->
+        <!-- ⭐ AI Assistant UI -->
         <div class="card">
             <h2>AI Assistant</h2>
 
-            <!-- AI 로그 출력 영역 -->
             <div id="aiLog"
                  style="height:150px; overflow-y:auto; background:#f1f1f1; padding:10px; border-radius:8px; margin-bottom:10px;">
             </div>
 
-            <!-- 명령어 입력창 -->
             <input id="aiCommandInput"
                    placeholder="명령어 입력 (예: Dubai Frame 관광지 정보 입력해줘)"
                    style="width:70%; padding:10px;">
 
-            <!-- 전송 버튼 -->
             <button id="aiSendButton"
                     style="padding:10px 20px; background:#0078ff; color:white; border:none; border-radius:8px; margin-left:10px;">
                 전송
@@ -211,7 +197,6 @@ async function loadDashboard() {
     loadTodaySchedule();
     loadRevenueSummary();
 }
-
 
     /* ---------------- 데이터 로딩 ---------------- */
     async function loadGuideInfo() {
@@ -249,8 +234,58 @@ async function loadDashboard() {
         revenueSummary.innerHTML = "이번 주 수익 데이터가 없습니다.";
     }
 </script>
+
+<!-- AI Scripts -->
 <script src="../js/ai-assistant.js"></script>
 <script type="module" src="../js/ai-place-generator.js"></script>
-    
+
+<!-- 장소 등록 API 호출 스크립트 -->
+<script>
+async function handleAddPlace(placeData) {
+  const API_URL = "https://addplace-2ritcmzasq-uc.a.run.app";
+  const statusElement = document.getElementById("statusMessage");
+  const submitBtn = document.getElementById("submitBtn");
+
+  submitBtn.disabled = true;
+  submitBtn.innerText = "등록 중...";
+  statusElement.innerText = "";
+
+  try {
+    const response = await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(placeData),
+    });
+
+    if (!response.ok) {
+      const errorMsg = await response.text();
+      throw new Error(errorMsg || `요청 실패 (상태 코드: ${response.status})`);
+    }
+
+    const result = await response.json();
+    statusElement.innerText = "장소가 성공적으로 등록되었습니다!";
+    statusElement.style.color = "green";
+
+  } catch (error) {
+    statusElement.innerText = `오류 발생: ${error.message}`;
+    statusElement.style.color = "red";
+
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.innerText = "장소 등록하기";
+  }
+}
+
+function submitData() {
+  const name = document.getElementById("placeName").value;
+  const address = document.getElementById("placeAddress").value;
+
+  handleAddPlace({
+    name: name,
+    address: address
+  });
+}
+</script>
+
 </body>
 </html>
