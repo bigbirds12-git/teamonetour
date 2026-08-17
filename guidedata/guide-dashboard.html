@@ -155,12 +155,11 @@ async function loadDashboard() {
             <h2>오늘 일정</h2>
             <div id="todaySchedule">불러오는 중...</div>
         </div>
-
         <div class="card">
             <h2>수익 요약</h2>
             <div id="revenueSummary">불러오는 중...</div>
         </div>
-
+       
         <div class="card">
             <h2>빠른 이동</h2>
             <div class="quick-links">
@@ -170,6 +169,20 @@ async function loadDashboard() {
                 <a onclick="navigate('revenue')">수익</a>
                 <a onclick="navigate('profile')">프로필 수정</a>
             </div>
+        </div>
+
+        <!-- ⭐ 장소 등록 UI 추가 -->
+        <div class="card">
+            <h2>장소 등록</h2>
+
+            <label>장소 이름</label><br>
+            <input type="text" id="placeName" placeholder="예: Dubai Frame"><br><br>
+
+            <label>주소</label><br>
+            <input type="text" id="placeAddress" placeholder="예: Zabeel Park"><br><br>
+
+            <button id="submitBtn" onclick="submitData()">장소 등록하기</button>
+            <div id="statusMessage"></div>
         </div>
 
         <!-- ⭐ AI Assistant UI 추가 -->
