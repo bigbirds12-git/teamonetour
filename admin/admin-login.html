@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>Admin Login</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background: #f3f4f6;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.login-box {
+    width: 360px;
+    background: white;
+    padding: 30px;
+    border-radius: 14px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    text-align: center;
+}
+
+.login-box h2 {
+    margin-bottom: 20px;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 15px;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    background: #0078ff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #005fcc;
+}
+
+#statusMessage {
+    margin-top: 12px;
+    font-size: 14px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="login-box">
+    <h2>Admin Login</h2>
+
+    <input type="email" id="email" placeholder="관리자 이메일">
+    <input type="password" id="password" placeholder="비밀번호">
+
+    <button onclick="adminLogin()">로그인</button>
+
+    <div id="statusMessage"></div>
+</div>
+
+<!-- Firebase -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCgOSQsv_MRdaqrW4wJw0q2QY6wXZ-azQs",
+      authDomain: "guidelogin-b0053.firebaseapp.com",
+      projectId: "guidelogin-b0053",
+      storageBucket: "guidelogin-b0053.firebasestorage.app",
+      messagingSenderId: "981519805247",
+      appId: "1:981519805247:web:cc32682b177a4957c0818a",
+      measurementId: "G-2VR4TS6JND"
+    };
+
+    const appFirebase = initializeApp(firebaseConfig);
+    const auth = getAuth(appFirebase);
+
+    /* ---------------- Admin Login ---------------- */
+    window.adminLogin = async function () {
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+        const status = document.getElementById("statusMessage");
+
+        status.innerText = "로그인 중...";
+        status.style.color = "black";
+
+        try {
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+
+            // ⭐ 운영자 계정인지 확인 (이메일 기반)
+            if (!email.includes("admin")) {
+                status.innerText = "운영자 계정이 아닙니다.";
+                status.style.color = "red";
+                return;
+            }
+
+            status.innerText = "로그인 성공!";
+            status.style.color = "green";
+
+            // 관리자 대시보드로 이동
+            window.location.href = "admin-dashboard.html";
+
+        } catch (error) {
+            status.innerText = "로그인 실패: " + error.message;
+            status.style.color = "red";
+        }
+    }
+</script>
+
+</body>
+</html>
