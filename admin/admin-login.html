@@ -103,13 +103,17 @@ button:hover {
 
         try {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
+const user = userCredential.user;
 
-            // ⭐ 운영자 계정인지 확인 (이메일 기반)
-            if (!email.includes("admin")) {
-                status.innerText = "운영자 계정이 아닙니다.";
-                status.style.color = "red";
-                return;
-            }
+    // ⭐ Firestore에서 운영자 권한 확인
+    const docRef = doc(db, "roles", user.email);
+    const snap = await getDoc(docRef);
+
+    if (!snap.exists() || snap.data().role !== "admin") {
+        status.innerText = "운영자 권한이 없습니다.";
+        status.style.color = "red";
+        return;
+    }
 
             status.innerText = "로그인 성공!";
             status.style.color = "green";
