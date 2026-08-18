@@ -188,6 +188,59 @@ button:hover {
         loadPlaceList();
     }
 
+function editPlace(id, name, address, category) {
+    document.getElementById("app").innerHTML = `
+        <div class="card">
+            <h2>관광지 수정</h2>
+
+            <label>관광지 이름</label><br>
+            <input id="editName" value="${name}"><br>
+
+            <label>주소</label><br>
+            <input id="editAddress" value="${address}"><br>
+
+            <label>카테고리</label><br>
+            <select id="editCategory">
+                <option value="관광지" ${category === "관광지" ? "selected" : ""}>관광지</option>
+                <option value="식당" ${category === "식당" ? "selected" : ""}>식당</option>
+                <option value="쇼핑" ${category === "쇼핑" ? "selected" : ""}>쇼핑</option>
+                <option value="액티비티" ${category === "액티비티" ? "selected" : ""}>액티비티</option>
+            </select><br><br>
+
+            <button onclick="updatePlace('${id}')">수정 완료</button>
+            <button onclick="navigate('places')" style="background:#6b7280; margin-left:10px;">취소</button>
+
+            <div id="editStatus" style="margin-top:10px;"></div>
+        </div>
+    `;
+}
+
+async function updatePlace(id) {
+    const name = document.getElementById("editName").value;
+    const address = document.getElementById("editAddress").value;
+    const category = document.getElementById("editCategory").value;
+
+    const status = document.getElementById("editStatus");
+
+    try {
+        await updateDoc(doc(db, "places", id), {
+            name,
+            address,
+            category,
+            updatedAt: new Date()
+        });
+
+        status.innerText = "수정 완료!";
+        status.style.color = "green";
+
+        setTimeout(() => navigate("places"), 1000);
+
+    } catch (e) {
+        status.innerText = "수정 실패: " + e.message;
+        status.style.color = "red";
+    }
+}
+    
     async function submitPlace() {
         const name = document.getElementById("placeName").value;
         const address = document.getElementById("placeAddress").value;
@@ -220,16 +273,32 @@ button:hover {
         const querySnapshot = await getDocs(collection(db, "places"));
         querySnapshot.forEach(doc => {
             const p = doc.data();
-            listDiv.innerHTML += `
-                <div style="padding:10px; border-bottom:1px solid #ddd;">
-                    <strong>${p.name}</strong><br>
-                    ${p.address}<br>
-                    <span style="color:#555;">${p.category}</span>
-                </div>
-            `;
-        });
-    }
+           listDiv.innerHTML += `
+            <div style="padding:10px; border-bottom:1px solid #ddd;">
+                <strong>${p.name}</strong><br>
+                ${p.address}<br>
+                <span style="color:#555;">${p.category}</span><br><br>
 
+                <button onclick="editPlace('${id}', '${p.name}', '${p.address}', '${p.category}')"
+                        style="background:#10b981; margin-right:10px;">
+                    수정
+                </button>
+
+                <button onclick="deletePlace('${id}')"
+                        style="background:#ef4444;">
+                    삭제
+                </button>
+            </div>
+        `;
+    });
+}
+async function deletePlace(id) {
+    if (!confirm("정말 삭제하시겠습니까?")) return;
+
+    await deleteDoc(doc(db, "places", id));
+    loadPlaceList();
+}
+    
     /* ---------------- 가이드 관리 ---------------- */
     function loadGuides() {
         document.getElementById("app").innerHTML = `
