@@ -76,9 +76,10 @@ button:hover {
 
 <!-- Firebase -->
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    
     const firebaseConfig = {
       apiKey: "AIzaSyCgOSQsv_MRdaqrW4wJw0q2QY6wXZ-azQs",
       authDomain: "guidelogin-b0053.firebaseapp.com",
@@ -91,6 +92,7 @@ button:hover {
 
     const appFirebase = initializeApp(firebaseConfig);
     const auth = getAuth(appFirebase);
+    const db = getFirestore(appFirebase); 
 
     /* ---------------- Admin Login ---------------- */
     window.adminLogin = async function () {
