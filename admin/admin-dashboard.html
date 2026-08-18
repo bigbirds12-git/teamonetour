@@ -1,89 +1,27 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<title>Admin Dashboard</title>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-
-<style>
-body {
-    margin: 0;
-    font-family: 'Inter', sans-serif;
-    background: #f5f7fa;
-    display: flex;
-}
-
-/* Sidebar */
-.sidebar {
-    width: 240px;
-    height: 100vh;
-    background: #111827;
-    color: white;
-    padding: 30px 20px;
-    position: fixed;
-    left: 0;
-    top: 0;
-}
-
-.sidebar h2 {
-    font-size: 20px;
-    margin-bottom: 30px;
-}
-
-.sidebar a {
-    display: block;
-    color: #d1d5db;
-    text-decoration: none;
-    padding: 12px 0;
-    font-size: 16px;
-    font-weight: 500;
-    cursor: pointer;
-}
-
-.sidebar a:hover {
-    color: #ffffff;
-}
-
-/* Main */
-.main {
-    margin-left: 260px;
-    padding: 40px;
-    width: 100%;
-}
-
-/* Cards */
-.card {
-    background: white;
-    padding: 24px;
-    border-radius: 14px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-    margin-bottom: 30px;
-}
-
-.card h2 {
-    margin-bottom: 20px;
-}
-
-input, select {
-    padding: 10px;
-    width: 60%;
-    margin-bottom: 10px;
-}
-
-button {
-    padding: 10px 20px;
-    background: #0078ff;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-}
-
-button:hover {
-    background: #005fcc;
-}
-</style>
+    <style>
+        body { margin:0; font-family:Arial; display:flex; }
+        .sidebar {
+            width:220px; background:#1f2937; color:white; padding:20px;
+            height:100vh; box-sizing:border-box;
+        }
+        .sidebar a {
+            display:block; color:white; padding:10px 0; cursor:pointer;
+        }
+        .main {
+            flex:1; padding:20px;
+        }
+        .card {
+            background:white; padding:20px; border-radius:8px;
+            box-shadow:0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom:20px;
+        }
+    </style>
 </head>
 
 <body>
@@ -100,16 +38,15 @@ button:hover {
 </div>
 
 <!-- Main SPA Container -->
-<div class="main" id="app">
-    <!-- SPA 화면이 여기에 로드됨 -->
-</div>
+<div class="main" id="app"></div>
 
 <!-- Firebase -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+    /* ---------------- Firebase Init ---------------- */
     const firebaseConfig = {
       apiKey: "AIzaSyCgOSQsv_MRdaqrW4wJw0q2QY6wXZ-azQs",
       authDomain: "guidelogin-b0053.firebaseapp.com",
@@ -124,218 +61,110 @@ button:hover {
     const auth = getAuth(appFirebase);
     const db = getFirestore(appFirebase);
 
-    let currentUser = null;
-
     /* ---------------- 로그인 체크 ---------------- */
-    onAuthStateChanged(auth, async user => {
+    onAuthStateChanged(auth, user => {
         if (!user) {
             window.location.href = "admin-login.html";
             return;
         }
-        currentUser = user;
         navigate("dashboard");
     });
 
     /* ---------------- SPA ROUTER ---------------- */
-    function navigate(page) {
+    window.navigate = function(page) {
         if (page === "dashboard") loadDashboard();
         if (page === "places") loadPlaces();
         if (page === "guides") loadGuides();
         if (page === "bookings") loadBookings();
         if (page === "system") loadSystem();
-    }
+    };
 
     /* ---------------- Dashboard ---------------- */
-    function loadDashboard() {
+    window.loadDashboard = function() {
         document.getElementById("app").innerHTML = `
             <div class="card">
                 <h2>운영자 대시보드</h2>
                 <p>플랫폼 전체 운영 상태를 확인할 수 있습니다.</p>
             </div>
         `;
-    }
+    };
 
     /* ---------------- 관광지 관리 ---------------- */
-    function loadPlaces() {
+    window.loadPlaces = async function() {
         document.getElementById("app").innerHTML = `
             <div class="card">
                 <h2>관광지 등록</h2>
-
-                <label>관광지 이름</label><br>
-                <input id="placeName" placeholder="예: Dubai Frame"><br>
-
-                <label>주소</label><br>
-                <input id="placeAddress" placeholder="예: Zabeel Park"><br>
-
-                <label>카테고리</label><br>
-                <select id="placeCategory">
-                    <option value="관광지">관광지</option>
-                    <option value="식당">식당</option>
-                    <option value="쇼핑">쇼핑</option>
-                    <option value="액티비티">액티비티</option>
-                </select><br><br>
-
-                <button onclick="submitPlace()">관광지 등록하기</button>
-                <div id="placeStatus" style="margin-top:10px;"></div>
+                <input id="placeName" placeholder="이름"><br><br>
+                <input id="placeAddress" placeholder="주소"><br><br>
+                <button onclick="submitPlace()">등록</button>
+                <div id="placeStatus"></div>
             </div>
 
             <div class="card">
-                <h2>등록된 관광지 목록</h2>
+                <h2>관광지 목록</h2>
                 <div id="placeList">불러오는 중...</div>
             </div>
         `;
-
         loadPlaceList();
-    }
+    };
 
-function editPlace(id, name, address, category) {
-    document.getElementById("app").innerHTML = `
-        <div class="card">
-            <h2>관광지 수정</h2>
-
-            <label>관광지 이름</label><br>
-            <input id="editName" value="${name}"><br>
-
-            <label>주소</label><br>
-            <input id="editAddress" value="${address}"><br>
-
-            <label>카테고리</label><br>
-            <select id="editCategory">
-                <option value="관광지" ${category === "관광지" ? "selected" : ""}>관광지</option>
-                <option value="식당" ${category === "식당" ? "selected" : ""}>식당</option>
-                <option value="쇼핑" ${category === "쇼핑" ? "selected" : ""}>쇼핑</option>
-                <option value="액티비티" ${category === "액티비티" ? "selected" : ""}>액티비티</option>
-            </select><br><br>
-
-            <button onclick="updatePlace('${id}')">수정 완료</button>
-            <button onclick="navigate('places')" style="background:#6b7280; margin-left:10px;">취소</button>
-
-            <div id="editStatus" style="margin-top:10px;"></div>
-        </div>
-    `;
-}
-
-async function updatePlace(id) {
-    const name = document.getElementById("editName").value;
-    const address = document.getElementById("editAddress").value;
-    const category = document.getElementById("editCategory").value;
-
-    const status = document.getElementById("editStatus");
-
-    try {
-        await updateDoc(doc(db, "places", id), {
-            name,
-            address,
-            category,
-            updatedAt: new Date()
-        });
-
-        status.innerText = "수정 완료!";
-        status.style.color = "green";
-
-        setTimeout(() => navigate("places"), 1000);
-
-    } catch (e) {
-        status.innerText = "수정 실패: " + e.message;
-        status.style.color = "red";
-    }
-}
-    
-    async function submitPlace() {
+    window.submitPlace = async function() {
         const name = document.getElementById("placeName").value;
         const address = document.getElementById("placeAddress").value;
-        const category = document.getElementById("placeCategory").value;
-
         const status = document.getElementById("placeStatus");
 
-        try {
-            await addDoc(collection(db, "places"), {
-                name,
-                address,
-                category,
-                createdAt: new Date()
-            });
+        await addDoc(collection(db, "places"), { name, address });
+        status.innerText = "등록 완료!";
+        loadPlaceList();
+    };
 
-            status.innerText = "등록 성공!";
-            status.style.color = "green";
-
-            loadPlaceList();
-        } catch (e) {
-            status.innerText = "등록 실패: " + e.message;
-            status.style.color = "red";
-        }
-    }
-
-    async function loadPlaceList() {
+    window.loadPlaceList = async function() {
         const listDiv = document.getElementById("placeList");
         listDiv.innerHTML = "";
 
         const querySnapshot = await getDocs(collection(db, "places"));
-        querySnapshot.forEach(doc => {
-            const p = doc.data();
-           listDiv.innerHTML += `
-            <div style="padding:10px; border-bottom:1px solid #ddd;">
-                <strong>${p.name}</strong><br>
-                ${p.address}<br>
-                <span style="color:#555;">${p.category}</span><br><br>
+        querySnapshot.forEach(docSnap => {
+            const p = docSnap.data();
+            const id = docSnap.id;
 
-                <button onclick="editPlace('${id}', '${p.name}', '${p.address}', '${p.category}')"
-                        style="background:#10b981; margin-right:10px;">
-                    수정
-                </button>
-
-                <button onclick="deletePlace('${id}')"
-                        style="background:#ef4444;">
-                    삭제
-                </button>
-            </div>
-        `;
-    });
-}
-async function deletePlace(id) {
-    if (!confirm("정말 삭제하시겠습니까?")) return;
-
-    await deleteDoc(doc(db, "places", id));
-    loadPlaceList();
-}
-    
-    /* ---------------- 가이드 관리 ---------------- */
-    function loadGuides() {
-        document.getElementById("app").innerHTML = `
-            <div class="card">
-                <h2>가이드 승인/관리</h2>
-                <p>가이드 목록을 불러와 승인하거나 관리할 수 있습니다.</p>
-                <div id="guideList">준비 중...</div>
-            </div>
-        `;
-    }
-
-    /* ---------------- 예약 관리 ---------------- */
-    function loadBookings() {
-        document.getElementById("app").innerHTML = `
-            <div class="card">
-                <h2>예약 전체 관리</h2>
-                <p>고객 예약을 전체적으로 관리할 수 있습니다.</p>
-            </div>
-        `;
-    }
-
-    /* ---------------- 시스템 설정 ---------------- */
-    function loadSystem() {
-        document.getElementById("app").innerHTML = `
-            <div class="card">
-                <h2>시스템 설정</h2>
-                <p>플랫폼 운영 관련 설정을 관리합니다.</p>
-            </div>
-        `;
-    }
-
-    /* ---------------- 로그아웃 ---------------- */
-    function logout() {
-        auth.signOut().then(() => {
-            window.location.href = "admin-login.html";
+            listDiv.innerHTML += `
+                <div style="padding:10px; border-bottom:1px solid #ddd;">
+                    <strong>${p.name}</strong><br>
+                    ${p.address}<br><br>
+                    <button onclick="deletePlace('${id}')">삭제</button>
+                </div>
+            `;
         });
-    }
+    };
+
+    window.deletePlace = async function(id) {
+        await deleteDoc(doc(db, "places", id));
+        loadPlaceList();
+    };
+
+    /* ---------------- 기타 메뉴 ---------------- */
+    window.loadGuides = function() {
+        document.getElementById("app").innerHTML = `
+            <div class="card"><h2>가이드 승인/관리</h2></div>
+        `;
+    };
+
+    window.loadBookings = function() {
+        document.getElementById("app").innerHTML = `
+            <div class="card"><h2>예약 전체 관리</h2></div>
+        `;
+    };
+
+    window.loadSystem = function() {
+        document.getElementById("app").innerHTML = `
+            <div class="card"><h2>시스템 설정</h2></div>
+        `;
+    };
+
+    /* ---------------- Logout ---------------- */
+    window.logout = function() {
+        signOut(auth);
+    };
 </script>
 
 </body>
